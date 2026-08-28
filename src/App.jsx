@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 
 // ============================================================
@@ -448,18 +449,19 @@ function TalkToUs({ onBack, initialContext }) {
     setMessages(newMessages);
     setLoading(true);
     try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
+      const res = await fetch("https://pathways-backend-production.up.railway.app/api/chat", {
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body: JSON.stringify({
-          model:"claude-sonnet-4-20250514",
-          max_tokens:1000,
-          system: `You are Aria, a warm AI career counselor for Pathways, a platform helping high school students discover careers.${initialContext?` The student's personality type is "${initialContext.name}" (code: ${initialContext.code}). Their top career matches are: ${initialContext.topCareers}. Their top values are: ${initialContext.topValues}. Tailor all advice specifically to these results.`:" Ask them to share their quiz results."} Keep responses to 2-4 sentences unless asked for more. Be supportive, practical, and never preachy.`,
-          messages: newMessages.map(m=>({role:m.role,content:m.text}))
+          messages: newMessages.map(m=>({role:m.role,content:m.text})),
+          pathway: initialContext?.code ?? null,
+          personalityName: initialContext?.name ?? null,
+          topCareers: initialContext?.topCareers ?? null,
+          topValues: initialContext?.topValues ?? null,
         })
       });
       const data = await res.json();
-      const reply = data.content?.map(b=>b.text||"").join("")||"Sorry, something went wrong. Try again!";
+      const reply = data.reply||"Sorry, something went wrong. Try again!";
       setMessages(prev=>[...prev,{role:"assistant",text:reply}]);
     } catch {
       setMessages(prev=>[...prev,{role:"assistant",text:"Hmm, something went wrong. Give it another try!"}]);
