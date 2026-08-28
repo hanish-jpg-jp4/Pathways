@@ -1,5 +1,8 @@
 
 import { useState, useEffect, useRef } from "react";
+import { ClerkProvider, SignIn, SignUp, useClerk, useUser, UserButton } from "@clerk/clerk-react";
+
+const CLERK_KEY = "pk_test_c3BlY2lhbC10ZWFsLTg0NTIuY2xlcmsuYWNjb3VudHMuZGV2JA";
 
 // ============================================================
 // CAREER ENGINE
@@ -586,7 +589,45 @@ function OurStory({onBack}) {
 
 // ── Home / Main ───────────────────────────────────────────────
 
-export default function Pathways() {
+function AuthPage({ mode }) {
+  return (
+    <div style={{ background: "#0a0a0a", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 40 }}>
+        <div style={{ width: 28, height: 28, borderRadius: 8, background: "#FF6B35", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L13 7L7 13M1 7H13" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        </div>
+        <span style={{ fontWeight: 800, fontSize: 20, color: "#fff" }}>Pathways</span>
+      </div>
+      {mode === "sign-in" ? <SignIn routing="hash" /> : <SignUp routing="hash" />}
+    </div>
+  );
+}
+
+function AppContent() {
+  const { isSignedIn, isLoaded } = useUser();
+  const [authMode, setAuthMode] = useState(null);
+
+  if (!isLoaded) return (
+    <div style={{ background: "#0a0a0a", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ color: "#FF6B35", fontSize: 16 }}>Loading...</div>
+    </div>
+  );
+
+  if (authMode === "sign-in") return <AuthPage mode="sign-in" />;
+  if (authMode === "sign-up") return <AuthPage mode="sign-up" />;
+
+  return <Pathways isSignedIn={isSignedIn} onSignIn={() => setAuthMode("sign-in")} onSignUp={() => setAuthMode("sign-up")} />;
+}
+
+export default function App() {
+  return (
+    <ClerkProvider publishableKey={CLERK_KEY}>
+      <AppContent />
+    </ClerkProvider>
+  );
+}
+
+function Pathways({ isSignedIn, onSignIn, onSignUp }) {
   const [page, setPage] = useState("home");
   const [quizStep, setQuizStep] = useState("intro"); // intro | quiz | result
   const [result, setResult] = useState(null);
