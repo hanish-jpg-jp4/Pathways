@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { ClerkProvider, SignIn, SignUp, useClerk, useUser, UserButton } from "@clerk/clerk-react";
 
