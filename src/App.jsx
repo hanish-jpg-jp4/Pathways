@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { ClerkProvider, SignIn, SignUp, useClerk, useUser, UserButton } from "@clerk/clerk-react";
+import { ClerkProvider, SignIn, SignUp, useUser, UserButton } from "@clerk/clerk-react";
 import { createClient } from "@supabase/supabase-js";
 
 const CLERK_KEY = "pk_test_c3BlY2lhbC10ZWFsLTg0NTIuY2xlcmsuYWNjb3VudHMuZGV2JA";
@@ -9,196 +9,537 @@ const supabase = createClient(
 );
 
 // ============================================================
+// PATHWAYS CAREER DATABASE
+// ============================================================
+
+const CAREERS = [
+  {
+    id: "career_software_engineer",
+    name: "Software Engineer",
+    fields: ["technology", "computer science"],
+    description: "Designs, builds, and maintains software systems and applications.",
+    riasec: { R:55, I:95, A:65, S:40, E:55, C:65 },
+    reality: { academicDifficulty:75, competition:70, workPressure:60, computerTime:95, teamwork:65, independentWork:80, routine:40, creativity:70 },
+    workEnvironment: { handsOn:30, peopleInteraction:45, computerBased:95, remotePotential:90 },
+    explorationActivities: ["Build a simple app or website", "Learn Python or JavaScript online", "Contribute to an open source project", "Create a personal project to solve a problem you have"],
+    relatedCareers: ["career_data_scientist", "career_cybersecurity_analyst", "career_ux_designer"],
+    tags: ["tech", "coding", "remote-friendly", "high-salary"]
+  },
+  {
+    id: "career_data_scientist",
+    name: "Data Scientist",
+    fields: ["technology", "mathematics", "research"],
+    description: "Uses statistics, programming, and analytical methods to extract insights from data.",
+    riasec: { R:25, I:100, A:45, S:35, E:45, C:80 },
+    reality: { academicDifficulty:85, competition:75, workPressure:55, computerTime:95, teamwork:55, independentWork:85, routine:40, creativity:55 },
+    workEnvironment: { handsOn:20, peopleInteraction:40, computerBased:95, remotePotential:85 },
+    explorationActivities: ["Analyze a dataset using Excel or Google Sheets", "Take a free statistics course online", "Explore Kaggle beginner datasets", "Build a simple chart or visualization from real data"],
+    relatedCareers: ["career_software_engineer", "career_research_scientist", "career_financial_analyst"],
+    tags: ["tech", "math", "research", "high-salary"]
+  },
+  {
+    id: "career_physician",
+    name: "Physician",
+    fields: ["healthcare", "medicine"],
+    description: "Diagnoses and treats patients, helping manage their overall health.",
+    riasec: { R:35, I:95, A:30, S:90, E:55, C:65 },
+    reality: { academicDifficulty:95, competition:85, workPressure:95, computerTime:55, teamwork:80, independentWork:60, routine:35, creativity:45 },
+    workEnvironment: { handsOn:75, peopleInteraction:95, computerBased:45, remotePotential:15 },
+    explorationActivities: ["Shadow a doctor at a clinic or hospital", "Volunteer at a healthcare facility", "Take a first aid or CPR course", "Interview a physician about their daily routine"],
+    relatedCareers: ["career_nurse", "career_biomedical_researcher", "career_psychologist"],
+    tags: ["healthcare", "helping", "high-salary", "long-training"]
+  },
+  {
+    id: "career_nurse",
+    name: "Registered Nurse",
+    fields: ["healthcare", "medicine"],
+    description: "Provides patient care, administers treatments, and coordinates with medical teams.",
+    riasec: { R:45, I:65, A:35, S:95, E:45, C:60 },
+    reality: { academicDifficulty:70, competition:55, workPressure:85, computerTime:45, teamwork:90, independentWork:50, routine:55, creativity:35 },
+    workEnvironment: { handsOn:85, peopleInteraction:95, computerBased:40, remotePotential:10 },
+    explorationActivities: ["Volunteer at a hospital or nursing home", "Shadow a nurse for a day", "Take a CNA (Certified Nursing Assistant) course", "Join a health-related club at school"],
+    relatedCareers: ["career_physician", "career_psychologist", "career_physical_therapist"],
+    tags: ["healthcare", "helping", "hands-on", "stable"]
+  },
+  {
+    id: "career_psychologist",
+    name: "Psychologist",
+    fields: ["healthcare", "social sciences"],
+    description: "Studies human behavior and mental processes and helps people address challenges.",
+    riasec: { R:15, I:85, A:50, S:100, E:45, C:45 },
+    reality: { academicDifficulty:80, competition:65, workPressure:70, computerTime:45, teamwork:55, independentWork:70, routine:45, creativity:55 },
+    workEnvironment: { handsOn:25, peopleInteraction:90, computerBased:40, remotePotential:60 },
+    explorationActivities: ["Read an introductory psychology book", "Take a free psychology course online", "Volunteer at a mental health awareness event", "Interview a counselor or therapist about their work"],
+    relatedCareers: ["career_social_worker", "career_physician", "career_teacher"],
+    tags: ["helping", "research", "social", "graduate-degree"]
+  },
+  {
+    id: "career_mechanical_engineer",
+    name: "Mechanical Engineer",
+    fields: ["engineering", "manufacturing"],
+    description: "Designs, develops, and tests mechanical systems and products.",
+    riasec: { R:90, I:85, A:55, S:35, E:55, C:65 },
+    reality: { academicDifficulty:80, competition:60, workPressure:65, computerTime:70, teamwork:65, independentWork:70, routine:45, creativity:70 },
+    workEnvironment: { handsOn:80, peopleInteraction:50, computerBased:65, remotePotential:40 },
+    explorationActivities: ["Build something with basic materials", "Take a free CAD (computer-aided design) course", "Join a robotics or engineering club", "Shadow an engineer at a local company"],
+    relatedCareers: ["career_civil_engineer", "career_robotics_engineer", "career_software_engineer"],
+    tags: ["engineering", "hands-on", "building", "stable"]
+  },
+  {
+    id: "career_civil_engineer",
+    name: "Civil Engineer",
+    fields: ["engineering", "construction"],
+    description: "Designs and oversees construction of infrastructure like bridges, roads, and buildings.",
+    riasec: { R:85, I:80, A:50, S:40, E:60, C:70 },
+    reality: { academicDifficulty:75, competition:55, workPressure:70, computerTime:65, teamwork:70, independentWork:65, routine:50, creativity:60 },
+    workEnvironment: { handsOn:75, peopleInteraction:55, computerBased:60, remotePotential:25 },
+    explorationActivities: ["Visit a construction site with a professional", "Research how local bridges or buildings were designed", "Take a free structural engineering course online", "Build a bridge using household materials and test its strength"],
+    relatedCareers: ["career_mechanical_engineer", "career_architect", "career_environmental_scientist"],
+    tags: ["engineering", "building", "stable", "hands-on"]
+  },
+  {
+    id: "career_architect",
+    name: "Architect",
+    fields: ["design", "engineering", "arts"],
+    description: "Designs buildings and spaces, balancing aesthetics, function, and engineering.",
+    riasec: { R:80, I:60, A:100, S:40, E:50, C:70 },
+    reality: { academicDifficulty:75, competition:70, workPressure:75, computerTime:80, teamwork:60, independentWork:75, routine:30, creativity:100 },
+    workEnvironment: { handsOn:55, peopleInteraction:55, computerBased:80, remotePotential:55 },
+    explorationActivities: ["Sketch designs of buildings or spaces you'd want to create", "Take a free architectural drawing course", "Visit a local architecture firm or studio", "Design a room layout using a free tool like Planner 5D"],
+    relatedCareers: ["career_civil_engineer", "career_ux_designer", "career_mechanical_engineer"],
+    tags: ["creative", "design", "building", "art"]
+  },
+  {
+    id: "career_ux_designer",
+    name: "UX Designer",
+    fields: ["technology", "design", "arts"],
+    description: "Designs user interfaces and experiences for apps, websites, and digital products.",
+    riasec: { R:40, I:65, A:95, S:65, E:55, C:55 },
+    reality: { academicDifficulty:60, competition:70, workPressure:65, computerTime:90, teamwork:70, independentWork:70, routine:30, creativity:95 },
+    workEnvironment: { handsOn:30, peopleInteraction:65, computerBased:90, remotePotential:85 },
+    explorationActivities: ["Download Figma (free) and design a simple app screen", "Analyze the UX of an app you use daily", "Take a free UX design course on Google or Coursera", "Interview 3 people about how they use an app"],
+    relatedCareers: ["career_software_engineer", "career_graphic_designer", "career_marketing_manager"],
+    tags: ["creative", "tech", "design", "remote-friendly"]
+  },
+  {
+    id: "career_graphic_designer",
+    name: "Graphic Designer",
+    fields: ["design", "arts", "media"],
+    description: "Creates visual content for brands, media, marketing, and digital platforms.",
+    riasec: { R:30, I:45, A:100, S:50, E:55, C:50 },
+    reality: { academicDifficulty:55, competition:75, workPressure:60, computerTime:85, teamwork:55, independentWork:75, routine:25, creativity:100 },
+    workEnvironment: { handsOn:35, peopleInteraction:50, computerBased:85, remotePotential:80 },
+    explorationActivities: ["Create a logo or poster using Canva or Adobe Express (free)", "Redesign the logo of a brand you like", "Follow graphic designers on Behance or Dribbble", "Take a free graphic design course online"],
+    relatedCareers: ["career_ux_designer", "career_marketing_manager", "career_architect"],
+    tags: ["creative", "art", "design", "freelance-friendly"]
+  },
+  {
+    id: "career_marketing_manager",
+    name: "Marketing Manager",
+    fields: ["business", "communications", "media"],
+    description: "Develops strategies to promote products, services, and brands.",
+    riasec: { R:15, I:50, A:90, S:75, E:95, C:55 },
+    reality: { academicDifficulty:60, competition:70, workPressure:75, computerTime:70, teamwork:80, independentWork:60, routine:25, creativity:90 },
+    workEnvironment: { handsOn:25, peopleInteraction:80, computerBased:70, remotePotential:70 },
+    explorationActivities: ["Create a social media campaign for a cause you care about", "Analyze the marketing strategy of a brand you like", "Run a small promotion for a school club or event", "Take a free digital marketing course from Google"],
+    relatedCareers: ["career_entrepreneur", "career_ux_designer", "career_journalist"],
+    tags: ["business", "creative", "leadership", "social"]
+  },
+  {
+    id: "career_entrepreneur",
+    name: "Entrepreneur",
+    fields: ["business", "leadership"],
+    description: "Creates and grows businesses, products, or services from the ground up.",
+    riasec: { R:45, I:60, A:70, S:70, E:100, C:45 },
+    reality: { academicDifficulty:55, competition:90, workPressure:90, computerTime:60, teamwork:70, independentWork:90, routine:10, creativity:90 },
+    workEnvironment: { handsOn:50, peopleInteraction:75, computerBased:60, remotePotential:70 },
+    explorationActivities: ["Start a small side hustle (sell something, offer a service)", "Read about a founder you admire", "Participate in a startup or business competition", "Develop a business plan for an idea you have"],
+    relatedCareers: ["career_marketing_manager", "career_software_engineer", "career_financial_analyst"],
+    tags: ["leadership", "business", "risk", "freedom"]
+  },
+  {
+    id: "career_teacher",
+    name: "Teacher",
+    fields: ["education", "social sciences"],
+    description: "Educates students, develops curriculum, and fosters learning and growth.",
+    riasec: { R:15, I:55, A:55, S:100, E:60, C:55 },
+    reality: { academicDifficulty:60, competition:40, workPressure:75, computerTime:40, teamwork:75, independentWork:55, routine:65, creativity:70 },
+    workEnvironment: { handsOn:50, peopleInteraction:100, computerBased:35, remotePotential:40 },
+    explorationActivities: ["Tutor a younger student in a subject you're good at", "Volunteer at a local school or after-school program", "Teach a skill to a friend or family member", "Create a short lesson on something you know well"],
+    relatedCareers: ["career_psychologist", "career_social_worker", "career_curriculum_designer"],
+    tags: ["helping", "social", "stable", "impact"]
+  },
+  {
+    id: "career_social_worker",
+    name: "Social Worker",
+    fields: ["social sciences", "healthcare"],
+    description: "Helps individuals and families navigate challenges and access support services.",
+    riasec: { R:15, I:55, A:40, S:100, E:55, C:50 },
+    reality: { academicDifficulty:65, competition:40, workPressure:80, computerTime:40, teamwork:80, independentWork:60, routine:40, creativity:45 },
+    workEnvironment: { handsOn:40, peopleInteraction:100, computerBased:35, remotePotential:35 },
+    explorationActivities: ["Volunteer at a community center or shelter", "Shadow a social worker or case manager", "Research social issues in your community", "Interview someone who works in social services"],
+    relatedCareers: ["career_psychologist", "career_teacher", "career_nurse"],
+    tags: ["helping", "impact", "social", "community"]
+  },
+  {
+    id: "career_financial_analyst",
+    name: "Financial Analyst",
+    fields: ["business", "finance", "mathematics"],
+    description: "Analyzes financial data to guide investment decisions and business strategy.",
+    riasec: { R:20, I:85, A:35, S:40, E:70, C:90 },
+    reality: { academicDifficulty:75, competition:75, workPressure:80, computerTime:85, teamwork:55, independentWork:75, routine:55, creativity:40 },
+    workEnvironment: { handsOn:15, peopleInteraction:55, computerBased:90, remotePotential:65 },
+    explorationActivities: ["Track a stock portfolio (use a simulator — no real money)", "Read a book on personal finance", "Analyze the financials of a company you know", "Take a free accounting or finance course online"],
+    relatedCareers: ["career_data_scientist", "career_entrepreneur", "career_economist"],
+    tags: ["business", "math", "high-salary", "analytical"]
+  },
+  {
+    id: "career_cybersecurity_analyst",
+    name: "Cybersecurity Analyst",
+    fields: ["technology", "computer science"],
+    description: "Protects computer systems and networks from digital threats and attacks.",
+    riasec: { R:60, I:90, A:40, S:35, E:45, C:80 },
+    reality: { academicDifficulty:75, competition:70, workPressure:75, computerTime:90, teamwork:55, independentWork:80, routine:40, creativity:55 },
+    workEnvironment: { handsOn:50, peopleInteraction:40, computerBased:90, remotePotential:80 },
+    explorationActivities: ["Try a free cybersecurity challenge on Hack The Box or TryHackMe", "Learn what phishing attacks look like", "Take a free cybersecurity course on Coursera", "Research a famous cyberattack and how it happened"],
+    relatedCareers: ["career_software_engineer", "career_data_scientist", "career_network_engineer"],
+    tags: ["tech", "security", "high-salary", "remote-friendly"]
+  },
+  {
+    id: "career_biomedical_researcher",
+    name: "Biomedical Researcher",
+    fields: ["science", "healthcare", "research"],
+    description: "Conducts research to advance medicine and develop new treatments and technologies.",
+    riasec: { R:50, I:100, A:40, S:55, E:40, C:65 },
+    reality: { academicDifficulty:90, competition:85, workPressure:65, computerTime:70, teamwork:65, independentWork:80, routine:40, creativity:65 },
+    workEnvironment: { handsOn:75, peopleInteraction:50, computerBased:65, remotePotential:30 },
+    explorationActivities: ["Apply for a summer research program at a university", "Read a scientific paper about a topic you find interesting", "Shadow a researcher at a lab", "Enter a science fair with original research"],
+    relatedCareers: ["career_physician", "career_research_scientist", "career_data_scientist"],
+    tags: ["science", "research", "healthcare", "graduate-degree"]
+  },
+  {
+    id: "career_research_scientist",
+    name: "Research Scientist",
+    fields: ["science", "research", "academia"],
+    description: "Conducts original research to expand knowledge in a scientific field.",
+    riasec: { R:45, I:100, A:50, S:45, E:40, C:70 },
+    reality: { academicDifficulty:90, competition:80, workPressure:60, computerTime:75, teamwork:60, independentWork:85, routine:35, creativity:70 },
+    workEnvironment: { handsOn:65, peopleInteraction:45, computerBased:70, remotePotential:45 },
+    explorationActivities: ["Enter a science fair or research competition", "Find a university lab that accepts high school volunteers", "Read about a scientist whose work interests you", "Take an advanced science course or online seminar"],
+    relatedCareers: ["career_biomedical_researcher", "career_data_scientist", "career_environmental_scientist"],
+    tags: ["science", "research", "discovery", "graduate-degree"]
+  },
+  {
+    id: "career_environmental_scientist",
+    name: "Environmental Scientist",
+    fields: ["science", "environment", "policy"],
+    description: "Studies the environment and develops solutions to environmental problems.",
+    riasec: { R:70, I:85, A:45, S:60, E:50, C:60 },
+    reality: { academicDifficulty:70, competition:60, workPressure:55, computerTime:60, teamwork:65, independentWork:70, routine:40, creativity:60 },
+    workEnvironment: { handsOn:75, peopleInteraction:55, computerBased:55, remotePotential:35 },
+    explorationActivities: ["Volunteer for a local environmental cleanup", "Monitor air or water quality data in your area", "Read about a current environmental challenge", "Join or start an environmental club at school"],
+    relatedCareers: ["career_research_scientist", "career_civil_engineer", "career_biomedical_researcher"],
+    tags: ["science", "environment", "impact", "outdoor"]
+  },
+  {
+    id: "career_journalist",
+    name: "Journalist",
+    fields: ["media", "communications", "writing"],
+    description: "Investigates and reports on news, events, and stories for public audiences.",
+    riasec: { R:20, I:70, A:85, S:75, E:70, C:45 },
+    reality: { academicDifficulty:60, competition:75, workPressure:80, computerTime:70, teamwork:55, independentWork:70, routine:15, creativity:85 },
+    workEnvironment: { handsOn:40, peopleInteraction:80, computerBased:65, remotePotential:65 },
+    explorationActivities: ["Write an article about something happening at your school", "Start a blog or newsletter on a topic you care about", "Interview someone in your community", "Shadow a journalist or editor for a day"],
+    relatedCareers: ["career_marketing_manager", "career_graphic_designer", "career_social_worker"],
+    tags: ["creative", "writing", "social", "media"]
+  },
+  {
+    id: "career_attorney",
+    name: "Attorney",
+    fields: ["law", "policy"],
+    description: "Represents clients in legal matters, provides legal advice, and argues cases.",
+    riasec: { R:20, I:80, A:55, S:70, E:90, C:65 },
+    reality: { academicDifficulty:85, competition:80, workPressure:85, computerTime:70, teamwork:60, independentWork:70, routine:30, creativity:60 },
+    workEnvironment: { handsOn:25, peopleInteraction:85, computerBased:65, remotePotential:50 },
+    explorationActivities: ["Attend a mock trial or debate competition", "Watch a real court case (many are public)", "Read about a famous legal case", "Volunteer with a legal aid organization"],
+    relatedCareers: ["career_policy_analyst", "career_journalist", "career_entrepreneur"],
+    tags: ["law", "leadership", "high-salary", "long-training"]
+  },
+  {
+    id: "career_policy_analyst",
+    name: "Policy Analyst",
+    fields: ["policy", "government", "social sciences"],
+    description: "Researches and evaluates policies to help governments and organizations make better decisions.",
+    riasec: { R:15, I:85, A:50, S:65, E:70, C:70 },
+    reality: { academicDifficulty:75, competition:65, workPressure:65, computerTime:75, teamwork:65, independentWork:75, routine:40, creativity:55 },
+    workEnvironment: { handsOn:20, peopleInteraction:60, computerBased:75, remotePotential:65 },
+    explorationActivities: ["Research a local policy issue you care about", "Write an opinion piece on a policy topic", "Attend a town hall or city council meeting", "Intern with a local government office or nonprofit"],
+    relatedCareers: ["career_attorney", "career_journalist", "career_social_worker"],
+    tags: ["policy", "research", "impact", "government"]
+  },
+  {
+    id: "career_physical_therapist",
+    name: "Physical Therapist",
+    fields: ["healthcare", "sports", "rehabilitation"],
+    description: "Helps patients recover from injuries and improve physical function through exercise and treatment.",
+    riasec: { R:65, I:65, A:40, S:90, E:55, C:55 },
+    reality: { academicDifficulty:70, competition:55, workPressure:65, computerTime:35, teamwork:75, independentWork:55, routine:55, creativity:50 },
+    workEnvironment: { handsOn:90, peopleInteraction:90, computerBased:30, remotePotential:15 },
+    explorationActivities: ["Shadow a physical therapist at a clinic or hospital", "Volunteer at a sports medicine or rehabilitation center", "Take a sports first aid course", "Research what a PT does differently from a doctor"],
+    relatedCareers: ["career_nurse", "career_physician", "career_social_worker"],
+    tags: ["healthcare", "hands-on", "helping", "sports"]
+  },
+  {
+    id: "career_robotics_engineer",
+    name: "Robotics Engineer",
+    fields: ["engineering", "technology", "computer science"],
+    description: "Designs and builds robotic systems for manufacturing, medicine, exploration, and more.",
+    riasec: { R:90, I:90, A:60, S:35, E:50, C:65 },
+    reality: { academicDifficulty:85, competition:70, workPressure:65, computerTime:80, teamwork:65, independentWork:75, routine:35, creativity:80 },
+    workEnvironment: { handsOn:85, peopleInteraction:40, computerBased:75, remotePotential:40 },
+    explorationActivities: ["Join a robotics team or competition", "Build a simple robot with a kit (like LEGO Mindstorms or Arduino)", "Watch videos about robotic systems in industry", "Take a free intro to robotics course online"],
+    relatedCareers: ["career_mechanical_engineer", "career_software_engineer", "career_research_scientist"],
+    tags: ["engineering", "tech", "hands-on", "building"]
+  },
+  {
+    id: "career_curriculum_designer",
+    name: "Curriculum Designer",
+    fields: ["education", "instructional design"],
+    description: "Develops educational programs, courses, and learning materials for schools and organizations.",
+    riasec: { R:20, I:65, A:75, S:80, E:55, C:70 },
+    reality: { academicDifficulty:60, competition:45, workPressure:55, computerTime:70, teamwork:65, independentWork:70, routine:50, creativity:80 },
+    workEnvironment: { handsOn:30, peopleInteraction:65, computerBased:70, remotePotential:75 },
+    explorationActivities: ["Design a short lesson plan on a topic you love", "Critique a textbook chapter and suggest improvements", "Volunteer to help teach or run a workshop", "Take a course on instructional design principles"],
+    relatedCareers: ["career_teacher", "career_ux_designer", "career_journalist"],
+    tags: ["education", "creative", "design", "remote-friendly"]
+  },
+  {
+    id: "career_economist",
+    name: "Economist",
+    fields: ["economics", "policy", "research"],
+    description: "Studies how people, businesses, and governments allocate resources and make decisions.",
+    riasec: { R:20, I:95, A:40, S:50, E:65, C:80 },
+    reality: { academicDifficulty:85, competition:70, workPressure:60, computerTime:80, teamwork:50, independentWork:85, routine:45, creativity:50 },
+    workEnvironment: { handsOn:15, peopleInteraction:50, computerBased:85, remotePotential:70 },
+    explorationActivities: ["Read about a current economic issue in the news", "Take a free introductory economics course", "Analyze the economy of a country that interests you", "Model a simple supply and demand scenario"],
+    relatedCareers: ["career_financial_analyst", "career_policy_analyst", "career_data_scientist"],
+    tags: ["research", "math", "policy", "analytical"]
+  }
+];
+
+// ============================================================
+// OPPORTUNITIES DATABASE
+// ============================================================
+
+const OPPORTUNITIES = [
+  { id: "opp_nasa", name: "NASA OSTEM Internships", organization: "NASA", type: "internship", description: "Student internships across engineering, science, technology, and business.", fields: ["engineering","science","technology","math"], interestCodes: ["R","I","C","E"], difficulty: "highly_competitive", url: "https://www.nasa.gov/learning-resources/internship-programs/", educationLevels: ["college"] },
+  { id: "opp_nsf_reu", name: "NSF Research Experiences for Undergraduates", organization: "National Science Foundation", type: "research", description: "Paid research at NSF-funded institutions across science and engineering.", fields: ["science","engineering","math","research"], interestCodes: ["I","R","C"], difficulty: "competitive", url: "https://www.nsf.gov/funding/initiatives/reu/students", educationLevels: ["college"] },
+  { id: "opp_smithsonian", name: "Smithsonian Internships", organization: "Smithsonian Institution", type: "internship", description: "Internships spanning science, arts, education, research, and communications.", fields: ["science","arts","education","research"], interestCodes: ["I","A","S","C"], difficulty: "competitive", url: "https://www.si.edu/support/internships", educationLevels: ["high_school","college"] },
+  { id: "opp_nih", name: "NIH Summer Internship Program", organization: "National Institutes of Health", type: "research", description: "Research experience at NIH laboratories for students interested in biomedical sciences.", fields: ["healthcare","science","research"], interestCodes: ["I","R","S"], difficulty: "competitive", url: "https://www.training.nih.gov/programs/sip", educationLevels: ["high_school","college"] },
+  { id: "opp_google_step", name: "Google STEP Internship", organization: "Google", type: "internship", description: "Software engineering internship for first and second year college students.", fields: ["technology","computer science"], interestCodes: ["I","R","C"], difficulty: "highly_competitive", url: "https://buildyourfuture.withgoogle.com/programs/step", educationLevels: ["college"] },
+  { id: "opp_microsoft_explore", name: "Microsoft Explore Internship", organization: "Microsoft", type: "internship", description: "Software engineering and program management internship for first and second year students.", fields: ["technology","computer science"], interestCodes: ["I","R","E","C"], difficulty: "highly_competitive", url: "https://careers.microsoft.com/students/", educationLevels: ["college"] },
+  { id: "opp_legal_aid", name: "Legal Aid Clinic Volunteer", organization: "Local Legal Aid", type: "volunteering", description: "Help provide legal assistance to underserved communities alongside attorneys.", fields: ["law","policy","social sciences"], interestCodes: ["S","E","C"], difficulty: "accessible", url: "", educationLevels: ["high_school","college"] },
+  { id: "opp_teach_america", name: "Teach For America", organization: "Teach For America", type: "internship", description: "Teaching fellows program placing graduates in under-resourced schools.", fields: ["education"], interestCodes: ["S","E","A"], difficulty: "competitive", url: "https://www.teachforamerica.org", educationLevels: ["college"] },
+  { id: "opp_robotics", name: "FIRST Robotics Competition", organization: "FIRST", type: "competition", description: "Hands-on robotics competition involving engineering, programming, and teamwork.", fields: ["engineering","computer science","robotics"], interestCodes: ["R","I","C"], difficulty: "accessible", url: "https://www.firstinspires.org", educationLevels: ["high_school"] },
+  { id: "opp_science_fair", name: "Science Fair / Research Competition", organization: "Various", type: "competition", description: "Present original research at regional, state, or national competitions.", fields: ["science","research","engineering"], interestCodes: ["I","R"], difficulty: "moderate", url: "", educationLevels: ["high_school"] },
+  { id: "opp_job_shadow", name: "Professional Job Shadow", organization: "Local Employer", type: "job_shadow", description: "Spend a day with a professional to see what their job actually looks like.", fields: ["all"], interestCodes: ["R","I","A","S","E","C"], difficulty: "accessible", url: "", educationLevels: ["high_school","college"] },
+  { id: "opp_mentor", name: "Career Mentor", organization: "Local Network", type: "mentorship", description: "Connect with a professional in a field you're exploring for guidance and insight.", fields: ["all"], interestCodes: ["R","I","A","S","E","C"], difficulty: "accessible", url: "", educationLevels: ["high_school","college"] },
+  { id: "opp_goldman", name: "Goldman Sachs Freshman Summit", organization: "Goldman Sachs", type: "internship", description: "Early career exposure to finance, business, and professional development.", fields: ["finance","business"], interestCodes: ["E","C","I"], difficulty: "highly_competitive", url: "https://www.goldmansachs.com/careers/students/programs/", educationLevels: ["college"] },
+  { id: "opp_city_year", name: "City Year", organization: "City Year", type: "volunteering", description: "Year of service supporting students in under-resourced schools.", fields: ["education","social sciences"], interestCodes: ["S","E"], difficulty: "moderate", url: "https://www.cityyear.org", educationLevels: ["college"] },
+  { id: "opp_hackathon", name: "Hackathon", organization: "Various", type: "competition", description: "Time-limited coding and design challenge to build a product or solve a problem.", fields: ["technology","design","business"], interestCodes: ["I","R","A","E"], difficulty: "accessible", url: "https://devpost.com", educationLevels: ["high_school","college"] },
+];
+
+// ============================================================
 // CAREER ENGINE
 // ============================================================
 
 const questions = [
-  // SECTION 1 — INTERESTS
-  { id: "S1_R01", section: 1, type: "slider", text: "I enjoy figuring out how things work.", weights: { R: 1.0, I: 0.25 } },
-  { id: "S1_R02", section: 1, type: "slider", text: "I like building or fixing things.", weights: { R: 1.0 } },
-  { id: "S1_R03", section: 1, type: "slider", text: "I would enjoy creating something that solves a real problem.", weights: { R: 0.75, I: 0.5 } },
-  { id: "S1_R04", section: 1, type: "slider", text: "I like working with technology.", weights: { R: 0.75, I: 0.5 } },
-  { id: "S1_R05", section: 1, type: "slider", text: "I would rather learn by doing something than only reading about it.", weights: { R: 1.0 } },
-  { id: "S1_I01", section: 1, type: "slider", text: "I enjoy solving difficult problems.", weights: { I: 1.0 } },
-  { id: "S1_I02", section: 1, type: "slider", text: "I get curious about how or why something works.", weights: { I: 1.0 } },
-  { id: "S1_I03", section: 1, type: "slider", text: "I enjoy researching things I am interested in.", weights: { I: 1.0 } },
-  { id: "S1_I04", section: 1, type: "slider", text: "I like finding answers to questions that don't have an obvious solution.", weights: { I: 1.0 } },
-  { id: "S1_I05", section: 1, type: "slider", text: "I enjoy subjects that challenge me to think deeply.", weights: { I: 1.0 } },
-  { id: "S1_A01", section: 1, type: "slider", text: "I enjoy creating things that other people can see or experience.", weights: { A: 1.0 } },
-  { id: "S1_A02", section: 1, type: "slider", text: "I often think of different ways to solve the same problem.", weights: { A: 0.75, I: 0.5 } },
-  { id: "S1_A03", section: 1, type: "slider", text: "I care about how something looks, feels, or is presented.", weights: { A: 1.0 } },
-  { id: "S1_A04", section: 1, type: "slider", text: "I would enjoy turning an idea into something original.", weights: { A: 1.0 } },
-  { id: "S1_S01", section: 1, type: "slider", text: "I feel good when I help someone solve a problem.", weights: { S: 1.0 } },
-  { id: "S1_S02", section: 1, type: "slider", text: "I would enjoy teaching someone something I know.", weights: { S: 1.0 } },
-  { id: "S1_S03", section: 1, type: "slider", text: "I care about making a positive difference in people's lives.", weights: { S: 1.0 } },
-  { id: "S1_S04", section: 1, type: "slider", text: "I enjoy understanding why people think or act differently.", weights: { S: 1.0, I: 0.25 } },
-  { id: "S1_E01", section: 1, type: "slider", text: "I enjoy taking charge when a group needs direction.", weights: { E: 1.0 } },
-  { id: "S1_E02", section: 1, type: "slider", text: "I would like to start my own project, organization, or business.", weights: { E: 1.0 } },
-  { id: "S1_E03", section: 1, type: "slider", text: "I enjoy convincing people to support an idea.", weights: { E: 1.0 } },
-  { id: "S1_E04", section: 1, type: "slider", text: "I like turning an idea into something successful.", weights: { E: 1.0 } },
-  { id: "S1_C01", section: 1, type: "slider", text: "I like organizing messy information.", weights: { C: 1.0 } },
-  { id: "S1_C02", section: 1, type: "slider", text: "I enjoy making plans.", weights: { C: 1.0 } },
-  { id: "S1_C03", section: 1, type: "slider", text: "I notice when a process could be improved.", weights: { C: 1.0, I: 0.25 } },
-  { id: "S1_C04", section: 1, type: "slider", text: "I like knowing that things are accurate and organized.", weights: { C: 1.0 } },
-  // SECTION 2 — EXPERIENCE
-  { id: "S2_E01", section: 2, type: "choice", text: "Have you ever built something outside of a school assignment?", tags: ["building"] },
-  { id: "S2_E02", section: 2, type: "choice", text: "Have you ever joined a club because you were genuinely interested in it?", tags: ["club"] },
-  { id: "S2_E03", section: 2, type: "choice", text: "Have you ever led a group or project?", tags: ["leadership"] },
-  { id: "S2_E04", section: 2, type: "choice", text: "Have you ever started your own project?", tags: ["project"] },
-  { id: "S2_E05", section: 2, type: "choice", text: "Have you ever helped someone learn something?", tags: ["teaching"] },
-  { id: "S2_E06", section: 2, type: "choice", text: "Have you ever volunteered?", tags: ["volunteering"] },
-  { id: "S2_E07", section: 2, type: "choice", text: "Have you ever participated in a competition?", tags: ["competition"] },
-  { id: "S2_E08", section: 2, type: "choice", text: "Have you ever shadowed someone at their job?", tags: ["shadowing"] },
-  { id: "S2_E09", section: 2, type: "choice", text: "Have you ever talked to someone about their career?", tags: ["careerConversation"] },
-  { id: "S2_E10", section: 2, type: "choice", text: "Have you ever taken an online course just because you were interested?", tags: ["selfLearning"] },
-  { id: "S2_E11", section: 2, type: "choice", text: "Have you ever made money from something you created or did?", tags: ["earning"] },
-  // SECTION 3 — PREFERENCES
-  { id: "S3_P01", section: 3, type: "slider", text: "I would be comfortable spending several years learning or training for a career.", weights: { growth: 1.0 } },
-  { id: "S3_P02", section: 3, type: "slider", text: "Having a high salary is important to me.", weights: { income: 1.0 } },
-  { id: "S3_P03", section: 3, type: "slider", text: "Having free time outside of work is important to me.", weights: { balance: 1.0 } },
-  { id: "S3_P04", section: 3, type: "slider", text: "I would rather have a stable career than take big risks for greater rewards.", weights: { stability: 1.0 } },
-  { id: "S3_P05", section: 3, type: "slider", text: "I would enjoy working with people every day.", weights: { social: 1.0 } },
-  { id: "S3_P06", section: 3, type: "slider", text: "I would enjoy spending a large amount of time solving problems independently.", weights: { independence: 1.0 } },
-  { id: "S3_P07", section: 3, type: "slider", text: "I want my work to make a noticeable difference in people's lives.", weights: { impact: 1.0 } },
-  // SECTION 4 — REALITY
-  { id: "S4_R01", section: 4, type: "slider", text: "I would be okay with a job where I sometimes work long hours.", weights: { longHours: 1.0 } },
-  { id: "S4_R02", section: 4, type: "slider", text: "I would be comfortable speaking in front of groups.", weights: { publicSpeaking: 1.0 } },
-  { id: "S4_R03", section: 4, type: "slider", text: "I would enjoy sitting at a computer for several hours a day.", weights: { computer: 1.0 } },
-  { id: "S4_R04", section: 4, type: "slider", text: "I would be comfortable making important decisions under pressure.", weights: { pressure: 1.0 } },
-  { id: "S4_R05", section: 4, type: "slider", text: "I would enjoy working with the same type of problem repeatedly and becoming an expert.", weights: { specialization: 1.0 } },
-  { id: "S4_R06", section: 4, type: "slider", text: "I would rather have a predictable routine than a job where every day is different.", weights: { routine: 1.0 } },
-  // SECTION 5 — EXPLORATION
-  { id: "S5_T01", section: 5, type: "choice", text: "Would you try designing a robot to complete a challenge?", tags: ["robotics"] },
-  { id: "S5_T02", section: 5, type: "choice", text: "Would you try helping diagnose why something isn't working?", tags: ["diagnosis"] },
-  { id: "S5_T03", section: 5, type: "choice", text: "Would you try creating an app that solves a problem?", tags: ["appDevelopment"] },
-  { id: "S5_T04", section: 5, type: "choice", text: "Would you try teaching younger students?", tags: ["teaching"] },
-  { id: "S5_T05", section: 5, type: "choice", text: "Would you try running a business for a month?", tags: ["business"] },
-  { id: "S5_T06", section: 5, type: "choice", text: "Would you try designing a social media campaign?", tags: ["marketing"] },
-  { id: "S5_T07", section: 5, type: "choice", text: "Would you try analyzing evidence to solve a mystery?", tags: ["investigation"] },
-  { id: "S5_T08", section: 5, type: "choice", text: "Would you try interviewing someone about their life?", tags: ["interviewing"] },
-  { id: "S5_T09", section: 5, type: "choice", text: "Would you try designing a building?", tags: ["architecture"] },
-  { id: "S5_T10", section: 5, type: "choice", text: "Would you try conducting a science experiment?", tags: ["science"] },
-  { id: "S5_T11", section: 5, type: "choice", text: "Would you try organizing an event for hundreds of people?", tags: ["event"] },
+  { id:"R1",section:1,type:"slider",text:"I enjoy figuring out how things work.",cat:"R" },
+  { id:"R2",section:1,type:"slider",text:"I like building or fixing things.",cat:"R" },
+  { id:"R3",section:1,type:"slider",text:"I would enjoy creating something that solves a real problem.",cat:"R" },
+  { id:"R4",section:1,type:"slider",text:"I like working with technology.",cat:"R" },
+  { id:"R5",section:1,type:"slider",text:"I would rather learn by doing something than only reading about it.",cat:"R" },
+  { id:"I1",section:1,type:"slider",text:"I enjoy solving difficult problems.",cat:"I" },
+  { id:"I2",section:1,type:"slider",text:"I get curious about how or why something works.",cat:"I" },
+  { id:"I3",section:1,type:"slider",text:"I enjoy researching things I am interested in.",cat:"I" },
+  { id:"I4",section:1,type:"slider",text:"I like finding answers to questions that don't have an obvious solution.",cat:"I" },
+  { id:"I5",section:1,type:"slider",text:"I enjoy subjects that challenge me to think deeply.",cat:"I" },
+  { id:"A1",section:1,type:"slider",text:"I enjoy creating things that other people can see or experience.",cat:"A" },
+  { id:"A2",section:1,type:"slider",text:"I often think of different ways to solve the same problem.",cat:"A" },
+  { id:"A3",section:1,type:"slider",text:"I care about how something looks, feels, or is presented.",cat:"A" },
+  { id:"A4",section:1,type:"slider",text:"I would enjoy turning an idea into something original.",cat:"A" },
+  { id:"S1",section:1,type:"slider",text:"I feel good when I help someone solve a problem.",cat:"S" },
+  { id:"S2",section:1,type:"slider",text:"I would enjoy teaching someone something I know.",cat:"S" },
+  { id:"S3",section:1,type:"slider",text:"I care about making a positive difference in people's lives.",cat:"S" },
+  { id:"S4",section:1,type:"slider",text:"I enjoy understanding why people think or act differently.",cat:"S" },
+  { id:"E1",section:1,type:"slider",text:"I enjoy taking charge when a group needs direction.",cat:"E" },
+  { id:"E2",section:1,type:"slider",text:"I would like to start my own project, organization, or business.",cat:"E" },
+  { id:"E3",section:1,type:"slider",text:"I enjoy convincing people to support an idea.",cat:"E" },
+  { id:"E4",section:1,type:"slider",text:"I like turning an idea into something successful.",cat:"E" },
+  { id:"C1",section:1,type:"slider",text:"I like organizing messy information.",cat:"C" },
+  { id:"C2",section:1,type:"slider",text:"I enjoy making plans.",cat:"C" },
+  { id:"C3",section:1,type:"slider",text:"I notice when a process could be improved.",cat:"C" },
+  { id:"C4",section:1,type:"slider",text:"I like knowing that things are accurate and organized.",cat:"C" },
+  { id:"EXP1",section:2,type:"choice",text:"Have you ever built something outside of a school assignment?" },
+  { id:"EXP2",section:2,type:"choice",text:"Have you ever joined a club because you were genuinely interested in it?" },
+  { id:"EXP3",section:2,type:"choice",text:"Have you ever led a group or project?" },
+  { id:"EXP4",section:2,type:"choice",text:"Have you ever started your own project?" },
+  { id:"EXP5",section:2,type:"choice",text:"Have you ever helped someone learn something?" },
+  { id:"EXP6",section:2,type:"choice",text:"Have you ever volunteered?" },
+  { id:"EXP7",section:2,type:"choice",text:"Have you ever participated in a competition?" },
+  { id:"EXP8",section:2,type:"choice",text:"Have you ever shadowed someone at their job?" },
+  { id:"EXP9",section:2,type:"choice",text:"Have you ever talked to someone about their career?" },
+  { id:"EXP10",section:2,type:"choice",text:"Have you ever taken an online course just because you were interested?" },
+  { id:"EXP11",section:2,type:"choice",text:"Have you ever made money from something you created or did?" },
+  { id:"P1",section:3,type:"slider",text:"I would be comfortable spending several years learning or training for a career." },
+  { id:"P2",section:3,type:"slider",text:"Having a high salary is important to me." },
+  { id:"P3",section:3,type:"slider",text:"Having free time outside of work is important to me." },
+  { id:"P4",section:3,type:"slider",text:"I would rather have a stable career than take big risks for greater rewards." },
+  { id:"P5",section:3,type:"slider",text:"I would enjoy working with people every day." },
+  { id:"P6",section:3,type:"slider",text:"I would enjoy spending a large amount of time solving problems independently." },
+  { id:"P7",section:3,type:"slider",text:"I want my work to make a noticeable difference in people's lives." },
+  { id:"RL1",section:4,type:"slider",text:"I would be okay with a job where I sometimes work long hours." },
+  { id:"RL2",section:4,type:"slider",text:"I would be comfortable speaking in front of groups." },
+  { id:"RL3",section:4,type:"slider",text:"I would enjoy sitting at a computer for several hours a day." },
+  { id:"RL4",section:4,type:"slider",text:"I would be comfortable making important decisions under pressure." },
+  { id:"RL5",section:4,type:"slider",text:"I would enjoy working with the same type of problem repeatedly and becoming an expert." },
+  { id:"RL6",section:4,type:"slider",text:"I would rather have a predictable routine than a job where every day is different." },
+  { id:"TRY1",section:5,type:"explore",text:"Would you try designing a robot to complete a challenge?" },
+  { id:"TRY2",section:5,type:"explore",text:"Would you try helping diagnose why something isn't working?" },
+  { id:"TRY3",section:5,type:"explore",text:"Would you try creating an app that solves a problem?" },
+  { id:"TRY4",section:5,type:"explore",text:"Would you try teaching younger students?" },
+  { id:"TRY5",section:5,type:"explore",text:"Would you try running a business for a month?" },
+  { id:"TRY6",section:5,type:"explore",text:"Would you try designing a social media campaign?" },
+  { id:"TRY7",section:5,type:"explore",text:"Would you try analyzing evidence to solve a mystery?" },
+  { id:"TRY8",section:5,type:"explore",text:"Would you try interviewing someone about their life?" },
+  { id:"TRY9",section:5,type:"explore",text:"Would you try designing a building?" },
+  { id:"TRY10",section:5,type:"explore",text:"Would you try conducting a science experiment?" },
+  { id:"TRY11",section:5,type:"explore",text:"Would you try organizing an event for hundreds of people?" },
 ];
 
-const careers = [
-  { id: "mechanical-engineer", name: "Mechanical Engineer", description: "Designs, develops, tests, and improves machines, products, and mechanical systems.", interests: { R:90,I:85,A:55,S:35,E:55,C:65 }, workStyle: { independence:70,structure:65,social:45,risk:40 }, values: { income:75,impact:65,balance:60,stability:70,freedom:55,creativity:65,growth:80,leadership:55,discovery:75 }, reality: { computer:75,specialization:75,pressure:60,longHours:45,routine:45 } },
-  { id: "software-engineer", name: "Software Engineer", description: "Designs, builds, tests, and maintains software systems and applications.", interests: { R:55,I:95,A:65,S:40,E:55,C:65 }, workStyle: { independence:80,structure:55,social:45,risk:55 }, values: { income:85,impact:60,balance:65,stability:70,freedom:75,creativity:70,growth:90,leadership:50,discovery:90 }, reality: { computer:95,specialization:85,pressure:55,longHours:45,routine:40 } },
-  { id: "doctor", name: "Physician", description: "Diagnoses and treats patients and helps manage their health.", interests: { R:35,I:95,A:30,S:90,E:55,C:65 }, workStyle: { independence:60,structure:70,social:90,risk:35 }, values: { income:85,impact:95,balance:35,stability:90,freedom:45,creativity:40,growth:90,leadership:70,discovery:85 }, reality: { computer:55,specialization:90,pressure:95,longHours:90,routine:35 } },
-  { id: "entrepreneur", name: "Entrepreneur", description: "Creates and develops businesses, products, or services.", interests: { R:45,I:60,A:70,S:70,E:100,C:45 }, workStyle: { independence:95,structure:25,social:75,risk:95 }, values: { income:90,impact:70,balance:35,stability:20,freedom:100,creativity:90,growth:100,leadership:100,discovery:80 }, reality: { computer:60,specialization:45,pressure:90,longHours:85,routine:15 } },
-  { id: "psychologist", name: "Psychologist", description: "Studies behavior and mental processes and helps people understand and address problems.", interests: { R:15,I:85,A:50,S:100,E:45,C:45 }, workStyle: { independence:65,structure:55,social:90,risk:30 }, values: { income:65,impact:100,balance:60,stability:70,freedom:65,creativity:55,growth:85,leadership:40,discovery:90 }, reality: { computer:45,specialization:80,pressure:70,longHours:45,routine:45 } },
-  { id: "marketing-manager", name: "Marketing Manager", description: "Develops strategies to promote products, services, organizations, or brands.", interests: { R:15,I:50,A:90,S:75,E:95,C:55 }, workStyle: { independence:65,structure:40,social:85,risk:65 }, values: { income:80,impact:65,balance:55,stability:55,freedom:65,creativity:95,growth:90,leadership:90,discovery:70 }, reality: { computer:75,specialization:50,pressure:75,longHours:60,routine:25 } },
-  { id: "data-scientist", name: "Data Scientist", description: "Uses data, statistics, and analytical methods to solve problems and discover insights.", interests: { R:25,I:100,A:45,S:35,E:45,C:80 }, workStyle: { independence:80,structure:65,social:40,risk:40 }, values: { income:85,impact:65,balance:65,stability:75,freedom:70,creativity:50,growth:95,leadership:40,discovery:100 }, reality: { computer:95,specialization:90,pressure:50,longHours:40,routine:40 } },
-  { id: "teacher", name: "Teacher", description: "Educates students, develops learning experiences, and helps students grow.", interests: { R:15,I:55,A:55,S:100,E:60,C:55 }, workStyle: { independence:55,structure:70,social:100,risk:20 }, values: { income:50,impact:100,balance:55,stability:80,freedom:50,creativity:70,growth:80,leadership:65,discovery:65 }, reality: { computer:40,specialization:55,pressure:75,longHours:55,routine:65 } },
-  { id: "architect", name: "Architect", description: "Designs buildings and spaces balancing creativity, engineering, and practical requirements.", interests: { R:80,I:60,A:100,S:40,E:50,C:70 }, workStyle: { independence:75,structure:55,social:55,risk:40 }, values: { income:70,impact:70,balance:50,stability:65,freedom:70,creativity:100,growth:80,leadership:55,discovery:70 }, reality: { computer:85,specialization:80,pressure:75,longHours:70,routine:30 } },
-];
-
-const personalityNames = {
-  RIA:"The Engineering Creator",RIE:"The Technical Innovator",RIS:"The Practical Problem Solver",RIC:"The Systems Builder",REI:"The Technical Leader",
-  IRE:"The Technical Strategist",IER:"The Technical Innovator",IAE:"The Innovative Creator",IAS:"The Creative Researcher",ISA:"The Human-Centered Investigator",ISE:"The Impact Strategist",IRC:"The Analytical Engineer",
-  ARI:"The Creative Builder",AIE:"The Innovative Entrepreneur",ASE:"The Creative Leader",AIS:"The Human-Centered Creator",AER:"The Creative Entrepreneur",AIC:"The Design Strategist",
-  SIA:"The Insightful Helper",SIE:"The Impact Strategist",SEA:"The Community Builder",SAI:"The Human-Centered Creator",SEI:"The Strategic Helper",
-  EIA:"The Innovative Leader",EIS:"The Strategic Leader",EAS:"The Creative Leader",ERI:"The Technical Entrepreneur",ESA:"The People-Centered Entrepreneur",ECS:"The Organized Leader",
-  CIS:"The Analytical Organizer",CIE:"The Systems Strategist",CES:"The Organizational Leader",CIR:"The Systems Builder",CRE:"The Operations Strategist",CSE:"The People Systems Leader"
-};
-
-function clamp(v, min=0, max=100) { return Math.max(min, Math.min(max, v)); }
-function avg(vals) { return vals.length === 0 ? 0 : vals.reduce((s,v)=>s+v,0)/vals.length; }
-function normalize(weighted, max) { return max<=0?0:Math.round(clamp((weighted/max)*100)); }
-
-function calcRiasec(answers) {
-  const totals={R:0,I:0,A:0,S:0,E:0,C:0}, maxes={R:0,I:0,A:0,S:0,E:0,C:0};
-  for (const q of questions) {
-    if (q.section!==1||q.type!=="slider"||!q.weights) continue;
-    const a = answers[q.id];
-    if (typeof a!=="number") continue;
-    for (const [t,w] of Object.entries(q.weights)) {
-      if (!["R","I","A","S","E","C"].includes(t)) continue;
-      totals[t]+=clamp(a)*Math.abs(w); maxes[t]+=100*Math.abs(w);
-    }
-  }
-  return { R:normalize(totals.R,maxes.R),I:normalize(totals.I,maxes.I),A:normalize(totals.A,maxes.A),S:normalize(totals.S,maxes.S),E:normalize(totals.E,maxes.E),C:normalize(totals.C,maxes.C) };
-}
-
-function sliderAvg(answers, ids, invert=false) {
-  const vals = ids.map(id=>answers[id]).filter(v=>typeof v==="number").map(v=>invert?100-v:v);
-  return Math.round(avg(vals));
-}
-
-function calcWorkStyle(answers) {
-  return {
-    independence: sliderAvg(answers,["S3_P06"]),
-    social: sliderAvg(answers,["S3_P05"]),
-    risk: sliderAvg(answers,["S3_P04"],true),
-    structure: sliderAvg(answers,["S4_R06"],true),
-  };
-}
-
-function calcValues(answers) {
-  return {
-    income: sliderAvg(answers,["S3_P02"]),
-    impact: sliderAvg(answers,["S3_P07"]),
-    balance: sliderAvg(answers,["S3_P03"]),
-    stability: sliderAvg(answers,["S3_P04"]),
-    freedom: sliderAvg(answers,["S3_P06"]),
-    creativity: sliderAvg(answers,["S1_A01","S1_A02","S1_A03","S1_A04"]),
-    growth: sliderAvg(answers,["S3_P01"]),
-    leadership: sliderAvg(answers,["S1_E01","S1_E02","S1_E03","S1_E04"]),
-    discovery: sliderAvg(answers,["S1_I01","S1_I02","S1_I03","S1_I04","S1_I05"]),
-  };
-}
-
-function topThreeRiasec(scores) {
-  return Object.entries(scores).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([c])=>c).join("");
-}
-
-function similarity(user, target) {
-  const keys = Object.keys(target);
-  if (!keys.length) return 0;
-  const diff = keys.reduce((s,k)=>s+Math.abs((user[k]??50)-(target[k]??50)),0);
-  return clamp(100-(diff/keys.length));
-}
-
-function matchCareers(riasec, workStyle, values) {
-  return careers.map(c => {
-    const iScore = similarity(riasec, c.interests);
-    const wScore = similarity(workStyle, c.workStyle);
-    const vScore = similarity(values, c.values);
-    const score = Math.round(iScore*0.5+wScore*0.3+vScore*0.2);
-    const reasons = [];
-    if (iScore>=80) reasons.push("Your interests strongly align with this career.");
-    else if (iScore>=65) reasons.push("Your interests have several connections to this career.");
-    if (wScore>=80) reasons.push("The work style is highly compatible with your preferences.");
-    if (vScore>=80) reasons.push("This career aligns strongly with what you value in work.");
-    return { id:c.id, name:c.name, description:c.description, score, reasons };
-  }).sort((a,b)=>b.score-a.score);
-}
-
-function calculatePersonality(answers) {
-  const riasec = calcRiasec(answers);
-  const workStyle = calcWorkStyle(answers);
-  const values = calcValues(answers);
-  const top3 = topThreeRiasec(riasec);
-  const personalityName = personalityNames[top3] ?? `The ${top3} Explorer`;
-  const topValues = Object.entries(values).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k])=>k);
-  const careerMatches = matchCareers(riasec, workStyle, values);
-  return { code:top3, name:personalityName, riasec, workStyle, values, topValues, careerMatches };
-}
-
-// ============================================================
-// SECTION METADATA
-// ============================================================
 const SECTION_LABELS = ["Interests","Experience","Preferences","Career Reality","Exploration"];
 const SECTION_DESCS = [
-  "Rate how much each statement applies to you.",
+  "Rate how much each statement applies to you (0 = strongly disagree, 100 = strongly agree).",
   "Tell us about your past experiences.",
   "What matters to you in a career?",
   "How do you feel about real-world job realities?",
   "Would you try any of these activities?",
 ];
 
+function clamp(v,min=0,max=100){return Math.max(min,Math.min(max,v));}
+function avg(vals){return vals.length===0?0:vals.reduce((s,v)=>s+v,0)/vals.length;}
+
+function calcRiasec(answers) {
+  const totals={R:0,I:0,A:0,S:0,E:0,C:0}, counts={R:0,I:0,A:0,S:0,E:0,C:0};
+  for (const q of questions) {
+    if (q.section!==1||!q.cat) continue;
+    const a=answers[q.id];
+    if (typeof a!=="number") continue;
+    totals[q.cat]+=clamp(a); counts[q.cat]++;
+  }
+  return {
+    R:counts.R?Math.round(totals.R/counts.R):0,
+    I:counts.I?Math.round(totals.I/counts.I):0,
+    A:counts.A?Math.round(totals.A/counts.A):0,
+    S:counts.S?Math.round(totals.S/counts.S):0,
+    E:counts.E?Math.round(totals.E/counts.E):0,
+    C:counts.C?Math.round(totals.C/counts.C):0,
+  };
+}
+
+function topThree(scores) {
+  return Object.entries(scores).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([c])=>c).join("");
+}
+
+function calcExplorationConfidence(answers) {
+  const expIds = questions.filter(q=>q.section===2).map(q=>q.id);
+  const tried = expIds.filter(id=>answers[id]==="yes");
+  if (tried.length===0) return 10;
+  return Math.round(clamp((tried.length/expIds.length)*100));
+}
+
+function similarityScore(userRiasec, careerRiasec) {
+  const keys=["R","I","A","S","E","C"];
+  const diff=keys.reduce((s,k)=>s+Math.abs((userRiasec[k]??50)-(careerRiasec[k]??50)),0);
+  return clamp(100-(diff/keys.length));
+}
+
+function matchLevel(score) {
+  if (score>=85) return "Excellent Match";
+  if (score>=72) return "Strong Match";
+  if (score>=55) return "Possible Match";
+  return "Explore";
+}
+
+function matchLevelColor(score) {
+  if (score>=85) return "#4ade80";
+  if (score>=72) return "#FF6B35";
+  if (score>=55) return "#FFE66D";
+  return "#888";
+}
+
+function buildRoadmap(career) {
+  return {
+    next30Days: [
+      `Learn the basics of ${career.name}.`,
+      `Complete one small activity: ${career.explorationActivities[0]}.`,
+      `Talk to at least one person working in or near ${career.name}.`,
+      `Research three real opportunities related to ${career.name}.`,
+    ],
+    next90Days: [
+      `Complete a larger ${career.name}-related project or experience.`,
+      "Join a club, competition, or volunteer group connected to the field.",
+      "Apply to at least two relevant opportunities.",
+      `Compare ${career.name} with at least two related careers: ${career.relatedCareers.slice(0,2).map(id=>CAREERS.find(c=>c.id===id)?.name||id).join(" and ")}.`,
+    ],
+    beforeChoosing: [
+      "Talk to someone currently working in the career.",
+      "Find out what a normal Tuesday actually looks like in this field.",
+      "Research the education and training required.",
+      "Research salary ranges for entry-level and experienced workers.",
+      "Identify the parts of the job that are less exciting.",
+      "Try the work yourself before making a major education decision.",
+    ],
+  };
+}
+
+function matchOpportunities(riasec, career) {
+  const code = topThree(riasec);
+  return OPPORTUNITIES.map(opp => {
+    const interestMatch = opp.interestCodes.filter(c=>code.includes(c)).length/Math.max(opp.interestCodes.length,1)*100;
+    const fieldMatch = opp.fields.includes("all")||opp.fields.some(f=>career.fields.includes(f))?80:40;
+    const score = Math.round(interestMatch*0.4+fieldMatch*0.6);
+    return {...opp, score};
+  }).sort((a,b)=>b.score-a.score).slice(0,6);
+}
+
+function calculatePersonality(answers) {
+  const riasec = calcRiasec(answers);
+  const code = topThree(riasec);
+  const explorationConfidence = calcExplorationConfidence(answers);
+
+  const careerMatches = CAREERS.map(career => {
+    const score = Math.round(similarityScore(riasec, career.riasec));
+    return { ...career, score, matchLevel: matchLevel(score) };
+  }).sort((a,b)=>b.score-a.score);
+
+  const topCareer = careerMatches[0];
+  const roadmap = topCareer ? buildRoadmap(topCareer) : null;
+  const opportunities = topCareer ? matchOpportunities(riasec, topCareer) : [];
+
+  const topValues = [];
+  if ((answers.P7||0)>60) topValues.push("Impact");
+  if ((answers.P2||0)>60) topValues.push("Income");
+  if ((answers.P3||0)>60) topValues.push("Balance");
+  if ((answers.P6||0)>60) topValues.push("Independence");
+  if ((answers.P4||0)>60) topValues.push("Stability");
+  if (topValues.length===0) topValues.push("Growth","Discovery");
+
+  return { code, riasec, explorationConfidence, careerMatches, topValues, roadmap, opportunities };
+}
+
 // ============================================================
-// COMPONENTS
+// HOOKS
 // ============================================================
 
 function useInView(threshold=0.15) {
@@ -210,6 +551,10 @@ function useInView(threshold=0.15) {
   },[]);
   return[ref,inView];
 }
+
+// ============================================================
+// COMPONENTS
+// ============================================================
 
 function FeatureRow({f,i}) {
   const[ref,inView]=useInView();
@@ -249,53 +594,40 @@ function TeamCard({name,role,desc}) {
 }
 
 // ── Quiz ──────────────────────────────────────────────────────
+function QuizFlow({onComplete}) {
+  const sectionQs=[1,2,3,4,5].map(s=>questions.filter(q=>q.section===s));
+  const[section,setSection]=useState(0);
+  const[qIndex,setQIndex]=useState(0);
+  const[answers,setAnswers]=useState({});
+  const[sliderVal,setSliderVal]=useState(50);
+  const[visible,setVisible]=useState(true);
 
-function QuizFlow({ onComplete }) {
-  const sectionQuestions = [1,2,3,4,5].map(s=>questions.filter(q=>q.section===s));
-  const [section, setSection] = useState(0);
-  const [qIndex, setQIndex] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [sliderVal, setSliderVal] = useState(50);
-  const [animDir, setAnimDir] = useState(1);
-  const [visible, setVisible] = useState(true);
+  const currentQ=sectionQs[section][qIndex];
+  const overallDone=[0,1,2,3,4].slice(0,section).reduce((s,i)=>s+sectionQs[i].length,0)+qIndex;
+  const progress=Math.round((overallDone/questions.length)*100);
 
-  const currentQ = sectionQuestions[section][qIndex];
-  const totalSections = 5;
-  const totalInSection = sectionQuestions[section].length;
-  const overallTotal = questions.length;
-  const overallDone = [0,1,2,3,4].slice(0,section).reduce((s,i)=>s+sectionQuestions[i].length,0)+qIndex;
-  const progress = Math.round((overallDone/overallTotal)*100);
+  function transition(fn){setVisible(false);setTimeout(()=>{fn();setVisible(true);},250);}
 
-  function transition(fn) {
-    setVisible(false);
-    setTimeout(()=>{ fn(); setVisible(true); }, 250);
-  }
-
-  function answer(val) {
-    const newAnswers = {...answers, [currentQ.id]: val};
+  function answer(val){
+    const newAnswers={...answers,[currentQ.id]:val};
     setAnswers(newAnswers);
-    if (currentQ.type==="slider") setSliderVal(50);
+    if(currentQ.type==="slider")setSliderVal(50);
     transition(()=>{
-      if (qIndex < totalInSection-1) { setAnimDir(1); setQIndex(q=>q+1); }
-      else if (section < totalSections-1) { setAnimDir(1); setSection(s=>s+1); setQIndex(0); }
-      else { onComplete(newAnswers); }
+      if(qIndex<sectionQs[section].length-1){setQIndex(q=>q+1);}
+      else if(section<4){setSection(s=>s+1);setQIndex(0);}
+      else{onComplete(newAnswers);}
     });
   }
 
-  function goBack() {
+  function goBack(){
     transition(()=>{
-      setAnimDir(-1);
-      if (qIndex>0) setQIndex(q=>q-1);
-      else if (section>0) { setSection(s=>s-1); setQIndex(sectionQuestions[section-1].length-1); }
+      if(qIndex>0)setQIndex(q=>q-1);
+      else if(section>0){setSection(s=>s-1);setQIndex(sectionQs[section-1].length-1);}
     });
   }
 
-  const prevId = qIndex>0 ? sectionQuestions[section][qIndex-1]?.id : section>0 ? sectionQuestions[section-1][sectionQuestions[section-1].length-1]?.id : null;
-  const canBack = prevId && answers[prevId] !== undefined || qIndex>0 || section>0;
-
-  return (
+  return(
     <div style={{maxWidth:680,margin:"0 auto",padding:"0 0 40px"}}>
-      {/* Progress */}
       <div style={{marginBottom:36}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
           <span style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase"}}>Section {section+1} of 5 — {SECTION_LABELS[section]}</span>
@@ -307,42 +639,36 @@ function QuizFlow({ onComplete }) {
         <p style={{color:"#444",fontSize:13,marginTop:10}}>{SECTION_DESCS[section]}</p>
       </div>
 
-      {/* Question card */}
       <div style={{opacity:visible?1:0,transform:visible?"translateY(0)":"translateY(16px)",transition:"all 0.25s ease"}}>
         <div style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:24,padding:"36px 32px",marginBottom:24}}>
-          <div style={{color:"#444",fontSize:12,marginBottom:16}}>Q{qIndex+1} of {totalInSection}</div>
+          <div style={{color:"#444",fontSize:12,marginBottom:16}}>Q{qIndex+1} of {sectionQs[section].length}</div>
           <p style={{fontSize:20,fontWeight:600,lineHeight:1.5,marginBottom:32,color:"#fff"}}>{currentQ.text}</p>
 
-          {currentQ.type==="slider" ? (
+          {currentQ.type==="slider"?(
             <div>
               <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
                 <span style={{color:"#555",fontSize:13}}>Strongly disagree</span>
                 <span style={{color:"#FF6B35",fontSize:15,fontWeight:700}}>{sliderVal}</span>
                 <span style={{color:"#555",fontSize:13}}>Strongly agree</span>
               </div>
-              <input type="range" min={0} max={100} value={sliderVal}
-                onChange={e=>setSliderVal(Number(e.target.value))}
+              <input type="range" min={0} max={100} value={sliderVal} onChange={e=>setSliderVal(Number(e.target.value))}
                 style={{width:"100%",accentColor:"#FF6B35",cursor:"pointer",height:6}}/>
               <div style={{display:"flex",justifyContent:"center",marginTop:24}}>
-                <button onClick={()=>answer(sliderVal)}
-                  style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"13px 40px",fontSize:15,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>
-                  Next →
-                </button>
+                <button onClick={()=>answer(sliderVal)} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"13px 40px",fontSize:15,fontWeight:600,cursor:"pointer"}}>Next →</button>
               </div>
             </div>
-          ) : (
+          ):(
             <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-              {(currentQ.section===5?["yes","no","maybe"]:["yes","no"]).map(opt=>(
+              {(currentQ.type==="explore"?["yes","no","maybe"]:["yes","no"]).map(opt=>(
                 <button key={opt} onClick={()=>answer(opt)}
-                  style={{flex:1,minWidth:100,background:"#0d0d0d",border:"1px solid #2a2a2a",color:"#ccc",borderRadius:14,padding:"14px 20px",fontSize:15,fontWeight:500,cursor:"pointer",textTransform:"capitalize",transition:"all 0.2s"}}>
+                  style={{flex:1,minWidth:100,background:"#0d0d0d",border:"1px solid #2a2a2a",color:"#ccc",borderRadius:14,padding:"14px 20px",fontSize:15,fontWeight:500,cursor:"pointer",textTransform:"capitalize"}}>
                   {opt==="yes"?"✅ Yes":opt==="no"?"❌ No":"🤔 Maybe"}
                 </button>
               ))}
             </div>
           )}
         </div>
-
-        {(section>0||qIndex>0) && (
+        {(section>0||qIndex>0)&&(
           <button onClick={goBack} style={{background:"transparent",color:"#555",border:"1px solid #222",borderRadius:999,padding:"8px 20px",fontSize:13,cursor:"pointer"}}>← Back</button>
         )}
       </div>
@@ -351,82 +677,125 @@ function QuizFlow({ onComplete }) {
 }
 
 // ── Results ───────────────────────────────────────────────────
-
-function RatingRing({value,size=96,strokeWidth=6}) {
+function RatingRing({value,size=80,strokeWidth=5}) {
   const r=(size/2)-strokeWidth, circ=2*Math.PI*r, dash=(value/100)*circ;
   return(
-    <div style={{position:"relative",width:size,height:size}}>
+    <div style={{position:"relative",width:size,height:size,flexShrink:0}}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{transform:"rotate(-90deg)"}}>
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#2a2a2a" strokeWidth={strokeWidth}/>
         <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#FF6B35" strokeWidth={strokeWidth} strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" style={{transition:"stroke-dasharray 1.2s cubic-bezier(.4,0,.2,1)"}}/>
       </svg>
       <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column"}}>
         <span style={{fontSize:size*0.22,fontWeight:800,color:"#fff"}}>{value}</span>
-        <span style={{fontSize:size*0.1,color:"#888",letterSpacing:1}}>/100</span>
+        <span style={{fontSize:size*0.1,color:"#888"}}>/100</span>
       </div>
     </div>
   );
 }
 
-function ResultsView({ result, onRetake, onChat }) {
-  const [ref, inView] = useInView(0.05);
-  const top3 = result.careerMatches.slice(0,3);
-  const riasecLabels = {R:"Realistic",I:"Investigative",A:"Artistic",S:"Social",E:"Enterprising",C:"Conventional"};
-  const valueLabels = {income:"Income",impact:"Impact",balance:"Balance",stability:"Stability",freedom:"Freedom",creativity:"Creativity",growth:"Growth",leadership:"Leadership",discovery:"Discovery"};
+function ResultsView({result,onRetake,onChat}) {
+  const[tab,setTab]=useState("careers");
+  const[ref,inView]=useInView(0.05);
+  const riasecLabels={R:"Realistic",I:"Investigative",A:"Artistic",S:"Social",E:"Enterprising",C:"Conventional"};
 
   return(
     <div ref={ref} style={{maxWidth:780,margin:"0 auto",opacity:inView?1:0,transform:inView?"translateY(0)":"translateY(30px)",transition:"all 0.7s ease"}}>
       {/* Header */}
-      <div style={{textAlign:"center",marginBottom:40}}>
-        <div style={{display:"inline-block",background:"#FF6B3522",border:"1px solid #FF6B3566",borderRadius:999,padding:"6px 20px",marginBottom:16}}>
+      <div style={{textAlign:"center",marginBottom:32}}>
+        <div style={{display:"inline-block",background:"#FF6B3522",border:"1px solid #FF6B3566",borderRadius:999,padding:"6px 20px",marginBottom:12}}>
           <span style={{color:"#FF6B35",fontWeight:700,fontSize:13,letterSpacing:1}}>{result.code}</span>
         </div>
-        <h2 style={{fontWeight:800,fontSize:"clamp(28px,4vw,48px)",letterSpacing:-2,marginBottom:8}}>{result.name}</h2>
-        <p style={{color:"#555",fontSize:15}}>Top values: {result.topValues.map(v=>valueLabels[v]).join(" · ")}</p>
+        <h2 style={{fontWeight:800,fontSize:"clamp(24px,4vw,42px)",letterSpacing:-2,marginBottom:8}}>Your Career Personality</h2>
+        <p style={{color:"#555",fontSize:14}}>Top values: {result.topValues.join(" · ")} · Exploration confidence: {result.explorationConfidence}%</p>
       </div>
 
-      {/* RIASEC bars */}
-      <div style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:20,padding:28,marginBottom:20}}>
-        <div style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",marginBottom:16}}>Interest Profile</div>
-        <div style={{display:"flex",flexDirection:"column",gap:12}}>
-          {Object.entries(result.riasec).map(([code,score])=>(
-            <div key={code} style={{display:"flex",alignItems:"center",gap:12}}>
-              <span style={{color:"#666",fontSize:13,width:90,flexShrink:0}}>{riasecLabels[code]}</span>
-              <div style={{flex:1,height:6,background:"#1a1a1a",borderRadius:999}}>
-                <div style={{height:"100%",background:"#FF6B35",borderRadius:999,width:`${score}%`,transition:"width 1s ease"}}/>
-              </div>
-              <span style={{color:"#555",fontSize:13,width:36,textAlign:"right"}}>{score}</span>
+      {/* RIASEC */}
+      <div style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:20,padding:24,marginBottom:16}}>
+        <div style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",marginBottom:14}}>Interest Profile</div>
+        {Object.entries(result.riasec).map(([code,score])=>(
+          <div key={code} style={{display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
+            <span style={{color:"#666",fontSize:13,width:100,flexShrink:0}}>{riasecLabels[code]}</span>
+            <div style={{flex:1,height:6,background:"#1a1a1a",borderRadius:999}}>
+              <div style={{height:"100%",background:"#FF6B35",borderRadius:999,width:`${score}%`,transition:"width 1s ease"}}/>
             </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Career matches */}
-      <div style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",marginBottom:16}}>Top Career Matches</div>
-      <div style={{display:"flex",flexDirection:"column",gap:16,marginBottom:24}}>
-        {top3.map((c,i)=>(
-          <div key={c.id} style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:20,padding:24,display:"flex",gap:20,alignItems:"flex-start"}}>
-            <div style={{flexShrink:0}}>
-              <RatingRing value={c.score} size={72} strokeWidth={5}/>
-            </div>
-            <div style={{flex:1}}>
-              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6}}>
-                <span style={{fontWeight:700,fontSize:18}}>{c.name}</span>
-                {i===0&&<span style={{background:"#FF6B3522",color:"#FF6B35",fontSize:11,fontWeight:700,borderRadius:999,padding:"2px 10px"}}>Best Match</span>}
-              </div>
-              <p style={{color:"#666",fontSize:13,lineHeight:1.6,marginBottom:10}}>{c.description}</p>
-              {c.reasons.map((r,j)=>(
-                <div key={j} style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:4}}>
-                  <div style={{width:5,height:5,borderRadius:"50%",background:"#FF6B35",flexShrink:0,marginTop:5}}/>
-                  <span style={{color:"#888",fontSize:13}}>{r}</span>
-                </div>
-              ))}
-            </div>
+            <span style={{color:"#555",fontSize:13,width:36,textAlign:"right"}}>{score}</span>
           </div>
         ))}
       </div>
 
-      <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+      {/* Tabs */}
+      <div style={{display:"flex",gap:8,marginBottom:20}}>
+        {["careers","opportunities","roadmap"].map(t=>(
+          <button key={t} onClick={()=>setTab(t)}
+            style={{background:tab===t?"#FF6B35":"#111",color:tab===t?"#fff":"#555",border:`1px solid ${tab===t?"#FF6B35":"#222"}`,borderRadius:999,padding:"8px 20px",fontSize:13,fontWeight:600,cursor:"pointer",textTransform:"capitalize"}}>
+            {t==="careers"?"🎯 Careers":t==="opportunities"?"🚀 Opportunities":"🗺️ Roadmap"}
+          </button>
+        ))}
+      </div>
+
+      {/* Careers Tab */}
+      {tab==="careers"&&(
+        <div style={{display:"flex",flexDirection:"column",gap:14}}>
+          {result.careerMatches.slice(0,5).map((c,i)=>(
+            <div key={c.id} style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:20,padding:22,display:"flex",gap:18,alignItems:"flex-start"}}>
+              <RatingRing value={c.score}/>
+              <div style={{flex:1}}>
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6,flexWrap:"wrap"}}>
+                  <span style={{fontWeight:700,fontSize:17}}>{c.name}</span>
+                  <span style={{background:matchLevelColor(c.score)+"22",color:matchLevelColor(c.score),fontSize:11,fontWeight:700,borderRadius:999,padding:"2px 10px"}}>{c.matchLevel}</span>
+                  {i===0&&<span style={{background:"#FF6B3522",color:"#FF6B35",fontSize:11,fontWeight:700,borderRadius:999,padding:"2px 10px"}}>Best Match</span>}
+                </div>
+                <p style={{color:"#666",fontSize:13,lineHeight:1.6,marginBottom:10}}>{c.description}</p>
+                <div style={{color:"#FF6B35",fontSize:11,letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Try This</div>
+                <p style={{color:"#888",fontSize:13}}>{c.explorationActivities[0]}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Opportunities Tab */}
+      {tab==="opportunities"&&(
+        <div style={{display:"flex",flexDirection:"column",gap:12}}>
+          {result.opportunities.map(opp=>(
+            <div key={opp.id} style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:16,padding:20}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
+                <div>
+                  <div style={{fontWeight:700,fontSize:15,marginBottom:2}}>{opp.name}</div>
+                  <div style={{color:"#555",fontSize:12}}>{opp.organization} · {opp.type} · {opp.difficulty}</div>
+                </div>
+                <div style={{background:"#FF6B3522",color:"#FF6B35",fontSize:12,fontWeight:700,borderRadius:999,padding:"3px 12px",flexShrink:0}}>{opp.score}%</div>
+              </div>
+              <p style={{color:"#666",fontSize:13,lineHeight:1.6,marginBottom:10}}>{opp.description}</p>
+              {opp.url&&<a href={opp.url} target="_blank" rel="noopener noreferrer" style={{color:"#FF6B35",fontSize:13,textDecoration:"none"}}>Learn more →</a>}
+              {!opp.url&&<span style={{color:"#444",fontSize:13}}>Search online to find current openings</span>}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Roadmap Tab */}
+      {tab==="roadmap"&&result.roadmap&&(
+        <div style={{display:"flex",flexDirection:"column",gap:16}}>
+          {[
+            {label:"📅 Next 30 Days",items:result.roadmap.next30Days,color:"#4ade80"},
+            {label:"🗓️ Next 90 Days",items:result.roadmap.next90Days,color:"#FF6B35"},
+            {label:"✅ Before You Commit",items:result.roadmap.beforeChoosing,color:"#FFE66D"},
+          ].map(section=>(
+            <div key={section.label} style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:16,padding:22}}>
+              <div style={{color:section.color,fontSize:13,fontWeight:700,marginBottom:14}}>{section.label}</div>
+              {section.items.map((item,i)=>(
+                <div key={i} style={{display:"flex",gap:10,marginBottom:10,alignItems:"flex-start"}}>
+                  <div style={{width:6,height:6,borderRadius:"50%",background:section.color,flexShrink:0,marginTop:6}}/>
+                  <span style={{color:"#aaa",fontSize:14,lineHeight:1.6}}>{item}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{display:"flex",gap:12,flexWrap:"wrap",marginTop:24}}>
         <button onClick={onRetake} style={{background:"transparent",color:"#555",border:"1px solid #222",borderRadius:999,padding:"12px 28px",fontSize:14,cursor:"pointer"}}>← Retake Quiz</button>
         <button onClick={onChat} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"12px 28px",fontSize:14,fontWeight:600,cursor:"pointer"}}>Talk to Aria about your results →</button>
       </div>
@@ -435,48 +804,46 @@ function ResultsView({ result, onRetake, onChat }) {
 }
 
 // ── Aria Chat ─────────────────────────────────────────────────
+function TalkToUs({onBack,initialContext}) {
+  const greeting=initialContext
+    ?`Hi! I'm Aria 👋 I can see you got the **${initialContext.code}** personality type with top careers in ${initialContext.topCareers}. What would you like to explore?`
+    :"Hi! I'm Aria, your Pathways career counselor 👋 What personality code did you get from the quiz?";
 
-function TalkToUs({ onBack, initialContext }) {
-  const greeting = initialContext
-    ? `Hi! I'm Aria 👋 I can see you got **${initialContext.name}** (${initialContext.code}) with top careers in ${initialContext.topCareers}. What would you like to explore?`
-    : "Hi! I'm Aria, your Pathways career counselor 👋 What Career Pathway did you get from the quiz?";
+  const[messages,setMessages]=useState([{role:"assistant",text:greeting}]);
+  const[input,setInput]=useState("");
+  const[loading,setLoading]=useState(false);
+  const bottomRef=useRef(null);
 
-  const [messages, setMessages] = useState([{ role:"assistant", text:greeting }]);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(false);
-  const bottomRef = useRef(null);
+  useEffect(()=>{bottomRef.current?.scrollIntoView({behavior:"smooth"});},[messages,loading]);
 
-  useEffect(()=>{ bottomRef.current?.scrollIntoView({behavior:"smooth"}); },[messages,loading]);
-
-  const send = async () => {
-    const text = input.trim();
-    if (!text||loading) return;
+  const send=async()=>{
+    const text=input.trim();
+    if(!text||loading)return;
     setInput("");
-    const newMessages = [...messages, {role:"user",text}];
+    const newMessages=[...messages,{role:"user",text}];
     setMessages(newMessages);
     setLoading(true);
-    try {
-      const res = await fetch("https://pathways-backend-production.up.railway.app/api/chat", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify({
-          messages: newMessages.map(m=>({role:m.role,content:m.text})),
-          pathway: initialContext?.code ?? null,
-          personalityName: initialContext?.name ?? null,
-          topCareers: initialContext?.topCareers ?? null,
-          topValues: initialContext?.topValues ?? null,
+    try{
+      const res=await fetch("https://pathways-backend-production.up.railway.app/api/chat",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          messages:newMessages.map(m=>({role:m.role,content:m.text})),
+          pathway:initialContext?.code??null,
+          personalityName:initialContext?.code??null,
+          topCareers:initialContext?.topCareers??null,
+          topValues:initialContext?.topValues??null,
         })
       });
-      const data = await res.json();
-      const reply = data.reply||"Sorry, something went wrong. Try again!";
+      const data=await res.json();
+      const reply=data.reply||"Sorry, something went wrong. Try again!";
       setMessages(prev=>[...prev,{role:"assistant",text:reply}]);
-    } catch {
+    }catch{
       setMessages(prev=>[...prev,{role:"assistant",text:"Hmm, something went wrong. Give it another try!"}]);
     }
     setLoading(false);
   };
 
-  const onKey = e => { if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();} };
+  const onKey=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}};
 
   return(
     <div style={{background:"#0a0a0a",minHeight:"100vh",fontFamily:"system-ui,sans-serif",color:"#fff",display:"flex",flexDirection:"column"}}>
@@ -591,53 +958,46 @@ function OurStory({onBack}) {
   );
 }
 
-// ── Home / Main ───────────────────────────────────────────────
-
-function AuthPage({ mode }) {
-  return (
-    <div style={{ background: "#0a0a0a", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "system-ui, sans-serif" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 40 }}>
-        <div style={{ width: 28, height: 28, borderRadius: 8, background: "#FF6B35", display: "flex", alignItems: "center", justifyContent: "center" }}>
+// ── Auth ──────────────────────────────────────────────────────
+function AuthPage({mode}) {
+  return(
+    <div style={{background:"#0a0a0a",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif"}}>
+      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:40}}>
+        <div style={{width:28,height:28,borderRadius:8,background:"#FF6B35",display:"flex",alignItems:"center",justifyContent:"center"}}>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L13 7L7 13M1 7H13" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </div>
-        <span style={{ fontWeight: 800, fontSize: 20, color: "#fff" }}>Pathways</span>
+        <span style={{fontWeight:800,fontSize:20,color:"#fff"}}>Pathways</span>
       </div>
-      {mode === "sign-in" ? <SignIn routing="hash" /> : <SignUp routing="hash" />}
+      {mode==="sign-in"?<SignIn routing="hash"/>:<SignUp routing="hash"/>}
     </div>
   );
 }
 
 function AppContent() {
-  const { isSignedIn, isLoaded } = useUser();
-  const [authMode, setAuthMode] = useState(null);
-
-  if (!isLoaded) return (
-    <div style={{ background: "#0a0a0a", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ color: "#FF6B35", fontSize: 16 }}>Loading...</div>
-    </div>
-  );
-
-  if (authMode === "sign-in") return <AuthPage mode="sign-in" />;
-  if (authMode === "sign-up") return <AuthPage mode="sign-up" />;
-
-  return <Pathways isSignedIn={isSignedIn} onSignIn={() => setAuthMode("sign-in")} onSignUp={() => setAuthMode("sign-up")} />;
+  const{isSignedIn,isLoaded}=useUser();
+  const[authMode,setAuthMode]=useState(null);
+  if(!isLoaded)return(<div style={{background:"#0a0a0a",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:"#FF6B35",fontSize:16}}>Loading...</div></div>);
+  if(authMode==="sign-in")return<AuthPage mode="sign-in"/>;
+  if(authMode==="sign-up")return<AuthPage mode="sign-up"/>;
+  return<Pathways isSignedIn={isSignedIn} onSignIn={()=>setAuthMode("sign-in")} onSignUp={()=>setAuthMode("sign-up")}/>;
 }
 
 export default function App() {
-  return (
+  return(
     <ClerkProvider publishableKey={CLERK_KEY}>
-      <AppContent />
+      <AppContent/>
     </ClerkProvider>
   );
 }
 
-function Pathways({ isSignedIn, onSignIn, onSignUp }) {
-  const [page, setPage] = useState("home");
-  const [quizStep, setQuizStep] = useState("intro"); // intro | quiz | result
-  const [result, setResult] = useState(null);
-  const [ariaContext, setAriaContext] = useState(null);
-  const [scrollY, setScrollY] = useState(0);
-  const [featRef, featInView] = useInView(0.1);
+// ── Main App ──────────────────────────────────────────────────
+function Pathways({isSignedIn,onSignIn,onSignUp}) {
+  const[page,setPage]=useState("home");
+  const[quizStep,setQuizStep]=useState("intro");
+  const[result,setResult]=useState(null);
+  const[ariaContext,setAriaContext]=useState(null);
+  const[scrollY,setScrollY]=useState(0);
+  const[featRef,featInView]=useInView(0.1);
 
   useEffect(()=>{
     const onScroll=()=>setScrollY(window.scrollY);
@@ -645,51 +1005,45 @@ function Pathways({ isSignedIn, onSignIn, onSignUp }) {
     return()=>window.removeEventListener("scroll",onScroll);
   },[]);
 
-  if (page==="ourstory") return <OurStory onBack={()=>setPage("home")}/>;
-  if (page==="talktous") return <TalkToUs onBack={()=>setPage("home")} initialContext={ariaContext}/>;
+  if(page==="ourstory")return<OurStory onBack={()=>setPage("home")}/>;
+  if(page==="talktous")return<TalkToUs onBack={()=>setPage("home")} initialContext={ariaContext}/>;
 
-  const scrollTo = id => document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
+  const scrollTo=id=>document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
 
   async function handleQuizComplete(answers) {
-    const r = calculatePersonality(answers);
+    const r=calculatePersonality(answers);
     setResult(r);
     setQuizStep("result");
-    // Save to Supabase if logged in
-    if (isSignedIn) {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        const userId = user?.id ?? "anonymous";
+    if(isSignedIn){
+      try{
         await supabase.from("quiz_results").insert({
-          user_id: userId,
-          personality_code: r.code,
-          personality_name: r.name,
-          riasec: r.riasec,
-          top_values: r.topValues,
-          career_matches: r.careerMatches.slice(0, 3),
+          user_id:"clerk_user",
+          personality_code:r.code,
+          personality_name:r.code,
+          riasec:r.riasec,
+          top_values:r.topValues,
+          career_matches:r.careerMatches.slice(0,3).map(c=>({id:c.id,name:c.name,score:c.score})),
         });
-      } catch (e) {
-        console.error("Failed to save quiz results:", e);
-      }
+      }catch(e){console.error("Save failed:",e);}
     }
   }
 
-  function handleChatFromResult() {
-    if (result) {
+  function handleChatFromResult(){
+    if(result){
       setAriaContext({
-        name: result.name,
-        code: result.code,
-        topCareers: result.careerMatches.slice(0,3).map(c=>c.name).join(", "),
-        topValues: result.topValues.join(", "),
+        code:result.code,
+        topCareers:result.careerMatches.slice(0,3).map(c=>c.name).join(", "),
+        topValues:result.topValues.join(", "),
       });
     }
     setPage("talktous");
   }
 
-  const stats = [{num:"2,400+",label:"Internship Opportunities"},{num:"97%",label:"Find Clearer Direction"},{num:"180+",label:"Career Paths Mapped"}];
-  const features = [
-    {num:"01",title:"Career Discovery",sub:"Know yourself first.",desc:"We analyze your interests, work style, and values to map genuine career paths — not just the ones that pay well, but ones you'll actually want to show up for.",tags:["Interest mapping","Personality fit","Real-world alignment"]},
-    {num:"02",title:"Internship Matching",sub:"Connections, made for you.",desc:"Stop cold-emailing into the void. We connect you with local businesses and known programs sorted by your pathway, proximity, acceptance rate, and fit score.",tags:["Local + remote options","Application guides","Fit rating"]},
-    {num:"03",title:"Live the Day",sub:"Before you commit.",desc:"Most students choose careers based on salary and parents' advice — without ever seeing a normal Tuesday. We simulate and connect you to real job shadow experiences.",tags:["Job shadowing","Day-in-life previews","Field experiences"]},
+  const stats=[{num:"25+",label:"Career Paths Mapped"},{num:"97%",label:"Find Clearer Direction"},{num:"15+",label:"Opportunities Matched"}];
+  const features=[
+    {num:"01",title:"Career Discovery",sub:"Know yourself first.",desc:"Answer 57 questions across 5 sections. We score your RIASEC personality type and match you to careers that actually fit — not just the ones that pay well.",tags:["RIASEC scoring","Personality fit","25+ careers"]},
+    {num:"02",title:"Opportunity Matching",sub:"Connections, made for you.",desc:"Get matched to real internships, research programs, competitions, and job shadows based on your results.",tags:["Internships","Research programs","Competitions"]},
+    {num:"03",title:"Your Roadmap",sub:"A plan, not just a result.",desc:"Walk away with a 30-day and 90-day action plan specific to your top career match — with real next steps.",tags:["30-day plan","90-day plan","Before you commit"]},
   ];
 
   return(
@@ -717,14 +1071,14 @@ function Pathways({ isSignedIn, onSignIn, onSignUp }) {
             <a key={l} className="nav-link" href="#" onClick={e=>{e.preventDefault();l==="Our Story"?setPage("ourstory"):l==="Want Help?"?setPage("talktous"):scrollTo(l==="How It Works"?"howitworks":"quiz");}}
               style={{color:"#888",fontSize:14,textDecoration:"none",transition:"color 0.2s",cursor:"pointer"}}>{l}</a>
           ))}
-         {isSignedIn ? (
-  <UserButton afterSignOutUrl="#" appearance={{ elements: { avatarBox: { width: 36, height: 36 } } }} />
-) : (
-  <div style={{ display: "flex", gap: 10 }}>
-    <button onClick={onSignIn} style={{ background: "transparent", color: "#888", border: "1px solid #333", borderRadius: 999, padding: "9px 22px", fontSize: 14, cursor: "pointer" }}>Log In</button>
-    <button className="cta-btn" onClick={onSignUp} style={{ background: "#FF6B35", color: "#fff", border: "none", borderRadius: 999, padding: "9px 22px", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>Sign Up →</button>
-  </div>
-)}
+          {isSignedIn?(
+            <UserButton afterSignOutUrl="#" appearance={{elements:{avatarBox:{width:36,height:36}}}}/>
+          ):(
+            <div style={{display:"flex",gap:10}}>
+              <button onClick={onSignIn} style={{background:"transparent",color:"#888",border:"1px solid #333",borderRadius:999,padding:"9px 22px",fontSize:14,cursor:"pointer"}}>Log In</button>
+              <button className="cta-btn" onClick={onSignUp} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"9px 22px",fontSize:14,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>Sign Up →</button>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -761,17 +1115,17 @@ function Pathways({ isSignedIn, onSignIn, onSignUp }) {
         </div>
       </section>
 
-      {/* Quiz Section */}
+      {/* Quiz */}
       <section id="quiz" style={{padding:"100px 5%",background:"#050505"}}>
         <div style={{textAlign:"center",marginBottom:56}}>
           <div style={{color:"#FF6B35",fontSize:11,letterSpacing:3,textTransform:"uppercase",marginBottom:16}}>Try It Now</div>
           <h2 style={{fontWeight:800,fontSize:"clamp(32px,5vw,54px)",letterSpacing:-2}}>Discover your career personality.</h2>
-          <p style={{color:"#555",marginTop:16,fontSize:15}}>A 5-section quiz that maps your real interests, values, and work style to the careers that fit you best.</p>
+          <p style={{color:"#555",marginTop:16,fontSize:15}}>57 questions · 5 sections · Instant results with roadmap and opportunities.</p>
         </div>
 
-        {quizStep==="intro" && (
+        {quizStep==="intro"&&(
           <div style={{maxWidth:560,margin:"0 auto",textAlign:"center"}}>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr 1fr",gap:8,marginBottom:32}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:8,marginBottom:32}}>
               {SECTION_LABELS.map((l,i)=>(
                 <div key={l} style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:12,padding:"12px 8px",textAlign:"center"}}>
                   <div style={{color:"#FF6B35",fontSize:11,fontWeight:700,marginBottom:4}}>{i+1}</div>
@@ -779,21 +1133,19 @@ function Pathways({ isSignedIn, onSignIn, onSignUp }) {
                 </div>
               ))}
             </div>
-            <p style={{color:"#555",fontSize:14,marginBottom:28}}>~5 minutes · {questions.length} questions · Instant results</p>
+            <p style={{color:"#555",fontSize:14,marginBottom:28}}>~8 minutes · 57 questions · Careers + Opportunities + Roadmap</p>
             <button className="cta-btn" onClick={()=>setQuizStep("quiz")} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"15px 40px",fontSize:16,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>Start the Quiz →</button>
           </div>
         )}
 
-        {quizStep==="quiz" && (
-          <QuizFlow onComplete={handleQuizComplete}/>
-        )}
+        {quizStep==="quiz"&&<QuizFlow onComplete={handleQuizComplete}/>}
 
-        {quizStep==="result" && result && (
+        {quizStep==="result"&&result&&(
           <ResultsView result={result} onRetake={()=>{setQuizStep("intro");setResult(null);}} onChat={handleChatFromResult}/>
         )}
       </section>
 
-      {/* Problem section */}
+      {/* Problem */}
       <section style={{padding:"100px 5%"}}>
         <div style={{maxWidth:900,margin:"0 auto"}}>
           <div style={{color:"#FF6B35",fontSize:11,letterSpacing:3,textTransform:"uppercase",marginBottom:24}}>The Problem We're Solving</div>
