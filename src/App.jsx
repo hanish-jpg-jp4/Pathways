@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { ClerkProvider, SignIn, SignUp, useClerk, useUser, UserButton } from "@clerk/clerk-react";
+import { createClient } from "@supabase/supabase-js";
 
 const CLERK_KEY = "pk_test_c3BlY2lhbC10ZWFsLTg0NTIuY2xlcmsuYWNjb3VudHMuZGV2JA";
+const supabase = createClient(
+  "https://jeulrrupcqwhmghmhcnw.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpldWxycnVwY3F3aG1naG1oY253Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5OTE0OTgsImV4cCI6MjEwMzU2NzQ5OH0.dpJv3tJROqqiYDmvl-6CFb6acA99yz3xSchS5vXSUQQ"
+);
 
 // ============================================================
 // CAREER ENGINE
@@ -645,10 +650,27 @@ function Pathways({ isSignedIn, onSignIn, onSignUp }) {
 
   const scrollTo = id => document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
 
-  function handleQuizComplete(answers) {
+  async function handleQuizComplete(answers) {
     const r = calculatePersonality(answers);
     setResult(r);
     setQuizStep("result");
+    // Save to Supabase if logged in
+    if (isSignedIn) {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        const userId = user?.id ?? "anonymous";
+        await supabase.from("quiz_results").insert({
+          user_id: userId,
+          personality_code: r.code,
+          personality_name: r.name,
+          riasec: r.riasec,
+          top_values: r.topValues,
+          career_matches: r.careerMatches.slice(0, 3),
+        });
+      } catch (e) {
+        console.error("Failed to save quiz results:", e);
+      }
+    }
   }
 
   function handleChatFromResult() {
@@ -695,14 +717,7 @@ function Pathways({ isSignedIn, onSignIn, onSignUp }) {
             <a key={l} className="nav-link" href="#" onClick={e=>{e.preventDefault();l==="Our Story"?setPage("ourstory"):l==="Want Help?"?setPage("talktous"):scrollTo(l==="How It Works"?"howitworks":"quiz");}}
               style={{color:"#888",fontSize:14,textDecoration:"none",transition:"color 0.2s",cursor:"pointer"}}>{l}</a>
           ))}
-          {isSignedIn ? (
-  <UserButton afterSignOutUrl="#" appearance={{ elements: { avatarBox: { width: 36, height: 36 } } }} />
-) : (
-  <div style={{ display: "flex", gap: 10 }}>
-    <button onClick={onSignIn} style={{ background: "transparent", color: "#888", border: "1px solid #333", borderRadius: 999, padding: "9px 22px", fontSize: 14, cursor: "pointer" }}>Log In</button>
-    <button className="cta-btn" onClick={onSignUp} style={{ background: "#FF6B35", color: "#fff", border: "none", borderRadius: 999, padding: "9px 22px", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>Sign Up →</button>
-  </div>
-)}
+          <button className="cta-btn" onClick={()=>scrollTo("quiz")} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"9px 22px",fontSize:14,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>Try It →</button>
         </div>
       </nav>
 
