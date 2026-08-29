@@ -717,7 +717,14 @@ function Pathways({ isSignedIn, onSignIn, onSignUp }) {
             <a key={l} className="nav-link" href="#" onClick={e=>{e.preventDefault();l==="Our Story"?setPage("ourstory"):l==="Want Help?"?setPage("talktous"):scrollTo(l==="How It Works"?"howitworks":"quiz");}}
               style={{color:"#888",fontSize:14,textDecoration:"none",transition:"color 0.2s",cursor:"pointer"}}>{l}</a>
           ))}
-          <button className="cta-btn" onClick={()=>scrollTo("quiz")} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"9px 22px",fontSize:14,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>Try It →</button>
+         {isSignedIn ? (
+  <UserButton afterSignOutUrl="#" appearance={{ elements: { avatarBox: { width: 36, height: 36 } } }} />
+) : (
+  <div style={{ display: "flex", gap: 10 }}>
+    <button onClick={onSignIn} style={{ background: "transparent", color: "#888", border: "1px solid #333", borderRadius: 999, padding: "9px 22px", fontSize: 14, cursor: "pointer" }}>Log In</button>
+    <button className="cta-btn" onClick={onSignUp} style={{ background: "#FF6B35", color: "#fff", border: "none", borderRadius: 999, padding: "9px 22px", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.2s" }}>Sign Up →</button>
+  </div>
+)}
         </div>
       </nav>
 
