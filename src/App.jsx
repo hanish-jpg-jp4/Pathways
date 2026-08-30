@@ -305,14 +305,26 @@ function QuizFlow({onComplete}){
 
           {cq.type==="slider"?(
             <div>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-                <span style={{color:"#333",fontSize:13}}>Strongly disagree</span>
-                <div style={{background:"#FF6B3520",border:"1px solid #FF6B3550",borderRadius:999,padding:"4px 16px"}}>
-                  <span style={{color:"#FF6B35",fontSize:16,fontWeight:700}}>{sv}</span>
-                </div>
-                <span style={{color:"#333",fontSize:13}}>Strongly agree</span>
-              </div>
-              <input type="range" min={0} max={100} value={sv} onChange={e=>setSv(Number(e.target.value))}/>
+             <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
+  <span style={{color:"#333",fontSize:13}}>Strongly disagree</span>
+  <span style={{color:"#333",fontSize:13}}>Strongly agree</span>
+</div>
+<div style={{position:"relative",paddingTop:36}}>
+  <div style={{
+    position:"absolute",
+    top:0,
+    left:`calc(${sv}% - 20px)`,
+    background:"#FF6B3520",
+    border:"1px solid #FF6B3550",
+    borderRadius:999,
+    padding:"4px 16px",
+    transition:"left 0.05s linear",
+    pointerEvents:"none"
+  }}>
+    <span style={{color:"#FF6B35",fontSize:16,fontWeight:700}}>{sv}</span>
+  </div>
+  <input type="range" min={0} max={100} value={sv} onChange={e=>setSv(Number(e.target.value))}/>
+</div>
               <div style={{display:"flex",justifyContent:"center",marginTop:28}}>
                 <Btn onClick={()=>answer(sv)}>Continue →</Btn>
               </div>
