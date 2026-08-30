@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { ClerkProvider, SignIn, SignUp, useUser, UserButton } from "@clerk/clerk-react";
+import { ClerkProvider, SignIn, SignUp, useUser, UserButton, useAuth } from "@clerk/clerk-react";
 import { createClient } from "@supabase/supabase-js";
 
 const CLERK_KEY = "pk_test_c3BlY2lhbC10ZWFsLTg0NTIuY2xlcmsuYWNjb3VudHMuZGV2JA";
@@ -305,26 +305,14 @@ function QuizFlow({onComplete}){
 
           {cq.type==="slider"?(
             <div>
-              <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
-  <span style={{color:"#333",fontSize:13}}>Strongly disagree</span>
-  <span style={{color:"#333",fontSize:13}}>Strongly agree</span>
-</div>
-<div style={{position:"relative",paddingTop:36}}>
-  <div style={{
-    position:"absolute",
-    top:0,
-    left:`calc(${sv}% - 28px)`,
-    background:"#FF6B3520",
-    border:"1px solid #FF6B3550",
-    borderRadius:999,
-    padding:"4px 16px",
-    transition:"left 0.05s linear",
-    pointerEvents:"none"
-  }}>
-    <span style={{color:"#FF6B35",fontSize:16,fontWeight:700}}>{sv}</span>
-  </div>
-  <input type="range" min={0} max={100} value={sv} onChange={e=>setSv(Number(e.target.value))}/>
-</div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+                <span style={{color:"#333",fontSize:13}}>Strongly disagree</span>
+                <div style={{background:"#FF6B3520",border:"1px solid #FF6B3550",borderRadius:999,padding:"4px 16px"}}>
+                  <span style={{color:"#FF6B35",fontSize:16,fontWeight:700}}>{sv}</span>
+                </div>
+                <span style={{color:"#333",fontSize:13}}>Strongly agree</span>
+              </div>
+              <input type="range" min={0} max={100} value={sv} onChange={e=>setSv(Number(e.target.value))}/>
               <div style={{display:"flex",justifyContent:"center",marginTop:28}}>
                 <Btn onClick={()=>answer(sv)}>Continue →</Btn>
               </div>
@@ -612,13 +600,167 @@ function OurStory({onBack}){
 }
 
 // ── AppContent ────────────────────────────────────────────────
+// ── Dashboard ─────────────────────────────────────────────────
+function Dashboard({onBack,onChat}){
+  const{user}=useUser();
+  const[results,setResults]=useState([]);
+  const[loading,setLoading]=useState(true);
+  const[selected,setSelected]=useState(null);
+  const rl={R:"Realistic",I:"Investigative",A:"Artistic",S:"Social",E:"Enterprising",C:"Conventional"};
+
+  useEffect(()=>{
+    async function load(){
+      if(!user)return;
+      try{
+        const{data,error}=await supabase.from("quiz_results").select("*").eq("user_id",user.id).order("created_at",{ascending:false});
+        if(!error)setResults(data||[]);
+      }catch(e){console.error(e);}
+      setLoading(false);
+    }
+    load();
+  },[user]);
+
+  return(
+    <div style={{background:"#080808",minHeight:"100vh",color:"#fff"}}>
+      <style>{G}</style>
+      <nav style={{padding:"0 5%",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid #111"}}>
+        <Logo/>
+        <div style={{display:"flex",gap:10,alignItems:"center"}}>
+          <Btn variant="secondary" onClick={onBack} style={{padding:"8px 18px",fontSize:13}}>← Home</Btn>
+          <UserButton afterSignOutUrl="#" appearance={{elements:{avatarBox:{width:34,height:34}}}}/>
+        </div>
+      </nav>
+
+      <div style={{maxWidth:860,margin:"0 auto",padding:"48px 5%"}}>
+        {/* Header */}
+        <div style={{marginBottom:40}}>
+          <Pill style={{marginBottom:16}}>My Dashboard</Pill>
+          <h1 style={{fontWeight:800,fontSize:"clamp(28px,4vw,44px)",letterSpacing:-2,marginTop:12,marginBottom:8}}>
+            Welcome back{user?.firstName?`, ${user.firstName}`:""}. 👋
+          </h1>
+          <p style={{color:"#444",fontSize:15}}>Here are your past career discovery results.</p>
+        </div>
+
+        {loading&&(
+          <div style={{textAlign:"center",padding:"60px 0",color:"#333",fontSize:15}}>Loading your results...</div>
+        )}
+
+        {!loading&&results.length===0&&(
+          <div style={{background:"#0e0e0e",border:"1px solid #141414",borderRadius:24,padding:"60px 40px",textAlign:"center"}}>
+            <div style={{fontSize:48,marginBottom:16}}>🔍</div>
+            <h3 style={{fontWeight:700,fontSize:22,marginBottom:10}}>No results yet</h3>
+            <p style={{color:"#444",fontSize:15,marginBottom:28}}>Take the career quiz to discover your personality type and top career matches.</p>
+            <Btn onClick={onBack}>Take the Quiz →</Btn>
+          </div>
+        )}
+
+        {!loading&&results.length>0&&(
+          <div style={{display:"flex",flexDirection:"column",gap:16}}>
+            {results.map((r,i)=>{
+              const isOpen=selected===i;
+              const careers=Array.isArray(r.career_matches)?r.career_matches:[];
+              const riasec=r.riasec||{};
+              const topVals=Array.isArray(r.top_values)?r.top_values:[];
+              const date=new Date(r.created_at).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"});
+              return(
+                <div key={r.id} style={{background:"#0e0e0e",border:`1px solid ${isOpen?"#FF6B3544":"#141414"}`,borderRadius:20,overflow:"hidden",transition:"border-color 0.3s"}}>
+                  {/* Row header */}
+                  <button onClick={()=>setSelected(isOpen?null:i)} style={{width:"100%",background:"none",border:"none",cursor:"pointer",padding:"22px 24px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,textAlign:"left"}}>
+                    <div style={{display:"flex",alignItems:"center",gap:16,flex:1,minWidth:0}}>
+                      <div style={{width:48,height:48,borderRadius:14,background:"#FF6B3520",border:"1px solid #FF6B3540",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                        <span style={{color:"#FF6B35",fontWeight:800,fontSize:13}}>{r.personality_code||"?"}</span>
+                      </div>
+                      <div style={{minWidth:0}}>
+                        <div style={{fontWeight:700,fontSize:16,color:"#f0f0f0",marginBottom:3}}>{r.personality_code} — Career Personality</div>
+                        <div style={{color:"#444",fontSize:13}}>{date} · {careers.length} career matches</div>
+                      </div>
+                    </div>
+                    <div style={{display:"flex",gap:8,alignItems:"center",flexShrink:0}}>
+                      {careers.slice(0,2).map(c=><span key={c.name||c.id} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#555",fontSize:11,borderRadius:999,padding:"3px 10px",display:"none"}}>{c.name}</span>)}
+                      <span style={{color:"#444",fontSize:18,transition:"transform 0.3s",transform:isOpen?"rotate(180deg)":"rotate(0deg)"}}>⌄</span>
+                    </div>
+                  </button>
+
+                  {/* Expanded content */}
+                  {isOpen&&(
+                    <div style={{padding:"0 24px 28px",borderTop:"1px solid #141414"}}>
+                      {/* Top values */}
+                      {topVals.length>0&&(
+                        <div style={{marginTop:20,marginBottom:20}}>
+                          <div style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600,marginBottom:10}}>Top Values</div>
+                          <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+                            {topVals.map(v=><span key={v} style={{background:"#FF6B3515",border:"1px solid #FF6B3530",color:"#FF6B35",fontSize:12,borderRadius:999,padding:"4px 12px",fontWeight:500}}>{v}</span>)}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* RIASEC */}
+                      {Object.keys(riasec).length>0&&(
+                        <div style={{marginBottom:20}}>
+                          <div style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600,marginBottom:12}}>Interest Profile</div>
+                          {Object.entries(riasec).map(([c,s])=>(
+                            <div key={c} style={{display:"flex",alignItems:"center",gap:12,marginBottom:8}}>
+                              <span style={{color:"#444",fontSize:12,width:90,flexShrink:0}}>{rl[c]||c}</span>
+                              <div style={{flex:1,height:3,background:"#141414",borderRadius:999,overflow:"hidden"}}>
+                                <div style={{height:"100%",background:s>=70?"#FF6B35":s>=50?"#FF6B3580":"#222",borderRadius:999,width:`${s}%`,transition:"width 1s ease"}}/>
+                              </div>
+                              <span style={{color:"#333",fontSize:12,width:28,textAlign:"right"}}>{s}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Career matches */}
+                      {careers.length>0&&(
+                        <div style={{marginBottom:20}}>
+                          <div style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600,marginBottom:12}}>Top Career Matches</div>
+                          <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                            {careers.map((c,j)=>{
+                              const fullCareer=CAREERS.find(x=>x.id===c.id||x.name===c.name);
+                              return(
+                                <div key={j} style={{background:"#141414",border:"1px solid #1a1a1a",borderRadius:14,padding:"16px 18px",display:"flex",gap:14,alignItems:"flex-start"}}>
+                                  <div style={{flexShrink:0,textAlign:"center",minWidth:52}}>
+                                    <div style={{fontWeight:800,fontSize:18,color:"#FF6B35"}}>{c.score}</div>
+                                    <div style={{color:"#333",fontSize:10}}>/100</div>
+                                  </div>
+                                  <div style={{flex:1}}>
+                                    <div style={{fontWeight:600,fontSize:15,marginBottom:3}}>{c.name}</div>
+                                    {fullCareer&&<p style={{color:"#444",fontSize:13,lineHeight:1.5,marginBottom:6}}>{fullCareer.description}</p>}
+                                    {fullCareer&&<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
+                                      {fullCareer.fields.map(f=><span key={f} style={{background:"#1a1a1a",border:"1px solid #222",color:"#444",fontSize:11,borderRadius:999,padding:"2px 8px"}}>{f}</span>)}
+                                    </div>}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Actions */}
+                      <div style={{display:"flex",gap:10,flexWrap:"wrap",marginTop:8}}>
+                        <Btn onClick={()=>onChat({code:r.personality_code,topCareers:careers.map(c=>c.name).join(", "),topValues:topVals.join(", ")})} style={{padding:"10px 20px",fontSize:13}}>Talk to Aria about this →</Btn>
+                        <Btn variant="secondary" onClick={onBack} style={{padding:"10px 20px",fontSize:13}}>Retake Quiz</Btn>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function AppContent(){
-  const{isSignedIn,isLoaded}=useUser();
+  const{isSignedIn,isLoaded,user}=useUser();
   const[authMode,setAuthMode]=useState(null);
   if(!isLoaded)return(<div style={{background:"#080808",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}><style>{G}</style><div style={{color:"#FF6B35",fontSize:15}}>Loading...</div></div>);
   if(authMode==="sign-in")return<AuthPage mode="sign-in"/>;
   if(authMode==="sign-up")return<AuthPage mode="sign-up"/>;
-  return<Pathways isSignedIn={isSignedIn} onSignIn={()=>setAuthMode("sign-in")} onSignUp={()=>setAuthMode("sign-up")}/>;
+  return<Pathways isSignedIn={isSignedIn} userId={user?.id} onSignIn={()=>setAuthMode("sign-in")} onSignUp={()=>setAuthMode("sign-up")}/>;
 }
 
 export default function App(){
@@ -676,7 +818,7 @@ function CareerPreviewCard({career}){
 }
 
 // ── Main Home ─────────────────────────────────────────────────
-function Pathways({isSignedIn,onSignIn,onSignUp}){
+function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
   const[page,setPage]=useState("home");
   const[step,setStep]=useState("intro");
   const[result,setResult]=useState(null);
@@ -691,14 +833,15 @@ function Pathways({isSignedIn,onSignIn,onSignUp}){
 
   if(page==="ourstory")return<OurStory onBack={()=>setPage("home")}/>;
   if(page==="talktous")return<TalkToUs onBack={()=>setPage("home")} initialContext={ctx}/>;
+  if(page==="dashboard")return<Dashboard onBack={()=>setPage("home")} onChat={(c)=>{setCtx(c);setPage("talktous");}}/>;
 
   const scrollTo=id=>document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
 
   async function handleQuizComplete(answers){
     const r=calculatePersonality(answers);
     setResult(r);setStep("result");
-    if(isSignedIn){
-      try{await supabase.from("quiz_results").insert({user_id:"clerk_user",personality_code:r.code,personality_name:r.code,riasec:r.riasec,top_values:r.topValues,career_matches:r.careerMatches.slice(0,3).map(c=>({id:c.id,name:c.name,score:c.score}))});}
+    if(isSignedIn&&userId){
+      try{await supabase.from("quiz_results").insert({user_id:userId,personality_code:r.code,personality_name:r.code,riasec:r.riasec,top_values:r.topValues,career_matches:r.careerMatches.slice(0,3).map(c=>({id:c.id,name:c.name,score:c.score}))});}
       catch(e){console.error("Save failed:",e);}
     }
   }
@@ -724,7 +867,10 @@ function Pathways({isSignedIn,onSignIn,onSignUp}){
               onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="#555"}>{l}</a>
           ))}
           {isSignedIn?(
-            <UserButton afterSignOutUrl="#" appearance={{elements:{avatarBox:{width:34,height:34}}}}/>
+            <div style={{display:"flex",gap:10,alignItems:"center"}}>
+              <Btn variant="ghost" onClick={()=>setPage("dashboard")} style={{padding:"8px 16px",fontSize:13,color:"#555"}}>My Results</Btn>
+              <UserButton afterSignOutUrl="#" appearance={{elements:{avatarBox:{width:34,height:34}}}}/>
+            </div>
           ):(
             <div style={{display:"flex",gap:8}}>
               <Btn variant="secondary" onClick={onSignIn} style={{padding:"8px 18px",fontSize:13}}>Log In</Btn>
