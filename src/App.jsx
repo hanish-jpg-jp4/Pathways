@@ -305,7 +305,7 @@ function QuizFlow({onComplete}){
 
           {cq.type==="slider"?(
             <div>
-             <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:8}}>
   <span style={{color:"#333",fontSize:13}}>Strongly disagree</span>
   <span style={{color:"#333",fontSize:13}}>Strongly agree</span>
 </div>
@@ -313,7 +313,7 @@ function QuizFlow({onComplete}){
   <div style={{
     position:"absolute",
     top:0,
-    left:`calc(${sv}% - 20px)`,
+    left:`calc(${sv}% - 28px)`,
     background:"#FF6B3520",
     border:"1px solid #FF6B3550",
     borderRadius:999,
