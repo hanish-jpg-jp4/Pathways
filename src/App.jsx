@@ -11,665 +11,335 @@ const supabase = createClient(
 // ============================================================
 // PATHWAYS CAREER DATABASE
 // ============================================================
-
 const CAREERS = [
-  {
-    id: "career_software_engineer",
-    name: "Software Engineer",
-    fields: ["technology", "computer science"],
-    description: "Designs, builds, and maintains software systems and applications.",
-    riasec: { R:55, I:95, A:65, S:40, E:55, C:65 },
-    reality: { academicDifficulty:75, competition:70, workPressure:60, computerTime:95, teamwork:65, independentWork:80, routine:40, creativity:70 },
-    workEnvironment: { handsOn:30, peopleInteraction:45, computerBased:95, remotePotential:90 },
-    explorationActivities: ["Build a simple app or website", "Learn Python or JavaScript online", "Contribute to an open source project", "Create a personal project to solve a problem you have"],
-    relatedCareers: ["career_data_scientist", "career_cybersecurity_analyst", "career_ux_designer"],
-    tags: ["tech", "coding", "remote-friendly", "high-salary"]
-  },
-  {
-    id: "career_data_scientist",
-    name: "Data Scientist",
-    fields: ["technology", "mathematics", "research"],
-    description: "Uses statistics, programming, and analytical methods to extract insights from data.",
-    riasec: { R:25, I:100, A:45, S:35, E:45, C:80 },
-    reality: { academicDifficulty:85, competition:75, workPressure:55, computerTime:95, teamwork:55, independentWork:85, routine:40, creativity:55 },
-    workEnvironment: { handsOn:20, peopleInteraction:40, computerBased:95, remotePotential:85 },
-    explorationActivities: ["Analyze a dataset using Excel or Google Sheets", "Take a free statistics course online", "Explore Kaggle beginner datasets", "Build a simple chart or visualization from real data"],
-    relatedCareers: ["career_software_engineer", "career_research_scientist", "career_financial_analyst"],
-    tags: ["tech", "math", "research", "high-salary"]
-  },
-  {
-    id: "career_physician",
-    name: "Physician",
-    fields: ["healthcare", "medicine"],
-    description: "Diagnoses and treats patients, helping manage their overall health.",
-    riasec: { R:35, I:95, A:30, S:90, E:55, C:65 },
-    reality: { academicDifficulty:95, competition:85, workPressure:95, computerTime:55, teamwork:80, independentWork:60, routine:35, creativity:45 },
-    workEnvironment: { handsOn:75, peopleInteraction:95, computerBased:45, remotePotential:15 },
-    explorationActivities: ["Shadow a doctor at a clinic or hospital", "Volunteer at a healthcare facility", "Take a first aid or CPR course", "Interview a physician about their daily routine"],
-    relatedCareers: ["career_nurse", "career_biomedical_researcher", "career_psychologist"],
-    tags: ["healthcare", "helping", "high-salary", "long-training"]
-  },
-  {
-    id: "career_nurse",
-    name: "Registered Nurse",
-    fields: ["healthcare", "medicine"],
-    description: "Provides patient care, administers treatments, and coordinates with medical teams.",
-    riasec: { R:45, I:65, A:35, S:95, E:45, C:60 },
-    reality: { academicDifficulty:70, competition:55, workPressure:85, computerTime:45, teamwork:90, independentWork:50, routine:55, creativity:35 },
-    workEnvironment: { handsOn:85, peopleInteraction:95, computerBased:40, remotePotential:10 },
-    explorationActivities: ["Volunteer at a hospital or nursing home", "Shadow a nurse for a day", "Take a CNA (Certified Nursing Assistant) course", "Join a health-related club at school"],
-    relatedCareers: ["career_physician", "career_psychologist", "career_physical_therapist"],
-    tags: ["healthcare", "helping", "hands-on", "stable"]
-  },
-  {
-    id: "career_psychologist",
-    name: "Psychologist",
-    fields: ["healthcare", "social sciences"],
-    description: "Studies human behavior and mental processes and helps people address challenges.",
-    riasec: { R:15, I:85, A:50, S:100, E:45, C:45 },
-    reality: { academicDifficulty:80, competition:65, workPressure:70, computerTime:45, teamwork:55, independentWork:70, routine:45, creativity:55 },
-    workEnvironment: { handsOn:25, peopleInteraction:90, computerBased:40, remotePotential:60 },
-    explorationActivities: ["Read an introductory psychology book", "Take a free psychology course online", "Volunteer at a mental health awareness event", "Interview a counselor or therapist about their work"],
-    relatedCareers: ["career_social_worker", "career_physician", "career_teacher"],
-    tags: ["helping", "research", "social", "graduate-degree"]
-  },
-  {
-    id: "career_mechanical_engineer",
-    name: "Mechanical Engineer",
-    fields: ["engineering", "manufacturing"],
-    description: "Designs, develops, and tests mechanical systems and products.",
-    riasec: { R:90, I:85, A:55, S:35, E:55, C:65 },
-    reality: { academicDifficulty:80, competition:60, workPressure:65, computerTime:70, teamwork:65, independentWork:70, routine:45, creativity:70 },
-    workEnvironment: { handsOn:80, peopleInteraction:50, computerBased:65, remotePotential:40 },
-    explorationActivities: ["Build something with basic materials", "Take a free CAD (computer-aided design) course", "Join a robotics or engineering club", "Shadow an engineer at a local company"],
-    relatedCareers: ["career_civil_engineer", "career_robotics_engineer", "career_software_engineer"],
-    tags: ["engineering", "hands-on", "building", "stable"]
-  },
-  {
-    id: "career_civil_engineer",
-    name: "Civil Engineer",
-    fields: ["engineering", "construction"],
-    description: "Designs and oversees construction of infrastructure like bridges, roads, and buildings.",
-    riasec: { R:85, I:80, A:50, S:40, E:60, C:70 },
-    reality: { academicDifficulty:75, competition:55, workPressure:70, computerTime:65, teamwork:70, independentWork:65, routine:50, creativity:60 },
-    workEnvironment: { handsOn:75, peopleInteraction:55, computerBased:60, remotePotential:25 },
-    explorationActivities: ["Visit a construction site with a professional", "Research how local bridges or buildings were designed", "Take a free structural engineering course online", "Build a bridge using household materials and test its strength"],
-    relatedCareers: ["career_mechanical_engineer", "career_architect", "career_environmental_scientist"],
-    tags: ["engineering", "building", "stable", "hands-on"]
-  },
-  {
-    id: "career_architect",
-    name: "Architect",
-    fields: ["design", "engineering", "arts"],
-    description: "Designs buildings and spaces, balancing aesthetics, function, and engineering.",
-    riasec: { R:80, I:60, A:100, S:40, E:50, C:70 },
-    reality: { academicDifficulty:75, competition:70, workPressure:75, computerTime:80, teamwork:60, independentWork:75, routine:30, creativity:100 },
-    workEnvironment: { handsOn:55, peopleInteraction:55, computerBased:80, remotePotential:55 },
-    explorationActivities: ["Sketch designs of buildings or spaces you'd want to create", "Take a free architectural drawing course", "Visit a local architecture firm or studio", "Design a room layout using a free tool like Planner 5D"],
-    relatedCareers: ["career_civil_engineer", "career_ux_designer", "career_mechanical_engineer"],
-    tags: ["creative", "design", "building", "art"]
-  },
-  {
-    id: "career_ux_designer",
-    name: "UX Designer",
-    fields: ["technology", "design", "arts"],
-    description: "Designs user interfaces and experiences for apps, websites, and digital products.",
-    riasec: { R:40, I:65, A:95, S:65, E:55, C:55 },
-    reality: { academicDifficulty:60, competition:70, workPressure:65, computerTime:90, teamwork:70, independentWork:70, routine:30, creativity:95 },
-    workEnvironment: { handsOn:30, peopleInteraction:65, computerBased:90, remotePotential:85 },
-    explorationActivities: ["Download Figma (free) and design a simple app screen", "Analyze the UX of an app you use daily", "Take a free UX design course on Google or Coursera", "Interview 3 people about how they use an app"],
-    relatedCareers: ["career_software_engineer", "career_graphic_designer", "career_marketing_manager"],
-    tags: ["creative", "tech", "design", "remote-friendly"]
-  },
-  {
-    id: "career_graphic_designer",
-    name: "Graphic Designer",
-    fields: ["design", "arts", "media"],
-    description: "Creates visual content for brands, media, marketing, and digital platforms.",
-    riasec: { R:30, I:45, A:100, S:50, E:55, C:50 },
-    reality: { academicDifficulty:55, competition:75, workPressure:60, computerTime:85, teamwork:55, independentWork:75, routine:25, creativity:100 },
-    workEnvironment: { handsOn:35, peopleInteraction:50, computerBased:85, remotePotential:80 },
-    explorationActivities: ["Create a logo or poster using Canva or Adobe Express (free)", "Redesign the logo of a brand you like", "Follow graphic designers on Behance or Dribbble", "Take a free graphic design course online"],
-    relatedCareers: ["career_ux_designer", "career_marketing_manager", "career_architect"],
-    tags: ["creative", "art", "design", "freelance-friendly"]
-  },
-  {
-    id: "career_marketing_manager",
-    name: "Marketing Manager",
-    fields: ["business", "communications", "media"],
-    description: "Develops strategies to promote products, services, and brands.",
-    riasec: { R:15, I:50, A:90, S:75, E:95, C:55 },
-    reality: { academicDifficulty:60, competition:70, workPressure:75, computerTime:70, teamwork:80, independentWork:60, routine:25, creativity:90 },
-    workEnvironment: { handsOn:25, peopleInteraction:80, computerBased:70, remotePotential:70 },
-    explorationActivities: ["Create a social media campaign for a cause you care about", "Analyze the marketing strategy of a brand you like", "Run a small promotion for a school club or event", "Take a free digital marketing course from Google"],
-    relatedCareers: ["career_entrepreneur", "career_ux_designer", "career_journalist"],
-    tags: ["business", "creative", "leadership", "social"]
-  },
-  {
-    id: "career_entrepreneur",
-    name: "Entrepreneur",
-    fields: ["business", "leadership"],
-    description: "Creates and grows businesses, products, or services from the ground up.",
-    riasec: { R:45, I:60, A:70, S:70, E:100, C:45 },
-    reality: { academicDifficulty:55, competition:90, workPressure:90, computerTime:60, teamwork:70, independentWork:90, routine:10, creativity:90 },
-    workEnvironment: { handsOn:50, peopleInteraction:75, computerBased:60, remotePotential:70 },
-    explorationActivities: ["Start a small side hustle (sell something, offer a service)", "Read about a founder you admire", "Participate in a startup or business competition", "Develop a business plan for an idea you have"],
-    relatedCareers: ["career_marketing_manager", "career_software_engineer", "career_financial_analyst"],
-    tags: ["leadership", "business", "risk", "freedom"]
-  },
-  {
-    id: "career_teacher",
-    name: "Teacher",
-    fields: ["education", "social sciences"],
-    description: "Educates students, develops curriculum, and fosters learning and growth.",
-    riasec: { R:15, I:55, A:55, S:100, E:60, C:55 },
-    reality: { academicDifficulty:60, competition:40, workPressure:75, computerTime:40, teamwork:75, independentWork:55, routine:65, creativity:70 },
-    workEnvironment: { handsOn:50, peopleInteraction:100, computerBased:35, remotePotential:40 },
-    explorationActivities: ["Tutor a younger student in a subject you're good at", "Volunteer at a local school or after-school program", "Teach a skill to a friend or family member", "Create a short lesson on something you know well"],
-    relatedCareers: ["career_psychologist", "career_social_worker", "career_curriculum_designer"],
-    tags: ["helping", "social", "stable", "impact"]
-  },
-  {
-    id: "career_social_worker",
-    name: "Social Worker",
-    fields: ["social sciences", "healthcare"],
-    description: "Helps individuals and families navigate challenges and access support services.",
-    riasec: { R:15, I:55, A:40, S:100, E:55, C:50 },
-    reality: { academicDifficulty:65, competition:40, workPressure:80, computerTime:40, teamwork:80, independentWork:60, routine:40, creativity:45 },
-    workEnvironment: { handsOn:40, peopleInteraction:100, computerBased:35, remotePotential:35 },
-    explorationActivities: ["Volunteer at a community center or shelter", "Shadow a social worker or case manager", "Research social issues in your community", "Interview someone who works in social services"],
-    relatedCareers: ["career_psychologist", "career_teacher", "career_nurse"],
-    tags: ["helping", "impact", "social", "community"]
-  },
-  {
-    id: "career_financial_analyst",
-    name: "Financial Analyst",
-    fields: ["business", "finance", "mathematics"],
-    description: "Analyzes financial data to guide investment decisions and business strategy.",
-    riasec: { R:20, I:85, A:35, S:40, E:70, C:90 },
-    reality: { academicDifficulty:75, competition:75, workPressure:80, computerTime:85, teamwork:55, independentWork:75, routine:55, creativity:40 },
-    workEnvironment: { handsOn:15, peopleInteraction:55, computerBased:90, remotePotential:65 },
-    explorationActivities: ["Track a stock portfolio (use a simulator — no real money)", "Read a book on personal finance", "Analyze the financials of a company you know", "Take a free accounting or finance course online"],
-    relatedCareers: ["career_data_scientist", "career_entrepreneur", "career_economist"],
-    tags: ["business", "math", "high-salary", "analytical"]
-  },
-  {
-    id: "career_cybersecurity_analyst",
-    name: "Cybersecurity Analyst",
-    fields: ["technology", "computer science"],
-    description: "Protects computer systems and networks from digital threats and attacks.",
-    riasec: { R:60, I:90, A:40, S:35, E:45, C:80 },
-    reality: { academicDifficulty:75, competition:70, workPressure:75, computerTime:90, teamwork:55, independentWork:80, routine:40, creativity:55 },
-    workEnvironment: { handsOn:50, peopleInteraction:40, computerBased:90, remotePotential:80 },
-    explorationActivities: ["Try a free cybersecurity challenge on Hack The Box or TryHackMe", "Learn what phishing attacks look like", "Take a free cybersecurity course on Coursera", "Research a famous cyberattack and how it happened"],
-    relatedCareers: ["career_software_engineer", "career_data_scientist", "career_network_engineer"],
-    tags: ["tech", "security", "high-salary", "remote-friendly"]
-  },
-  {
-    id: "career_biomedical_researcher",
-    name: "Biomedical Researcher",
-    fields: ["science", "healthcare", "research"],
-    description: "Conducts research to advance medicine and develop new treatments and technologies.",
-    riasec: { R:50, I:100, A:40, S:55, E:40, C:65 },
-    reality: { academicDifficulty:90, competition:85, workPressure:65, computerTime:70, teamwork:65, independentWork:80, routine:40, creativity:65 },
-    workEnvironment: { handsOn:75, peopleInteraction:50, computerBased:65, remotePotential:30 },
-    explorationActivities: ["Apply for a summer research program at a university", "Read a scientific paper about a topic you find interesting", "Shadow a researcher at a lab", "Enter a science fair with original research"],
-    relatedCareers: ["career_physician", "career_research_scientist", "career_data_scientist"],
-    tags: ["science", "research", "healthcare", "graduate-degree"]
-  },
-  {
-    id: "career_research_scientist",
-    name: "Research Scientist",
-    fields: ["science", "research", "academia"],
-    description: "Conducts original research to expand knowledge in a scientific field.",
-    riasec: { R:45, I:100, A:50, S:45, E:40, C:70 },
-    reality: { academicDifficulty:90, competition:80, workPressure:60, computerTime:75, teamwork:60, independentWork:85, routine:35, creativity:70 },
-    workEnvironment: { handsOn:65, peopleInteraction:45, computerBased:70, remotePotential:45 },
-    explorationActivities: ["Enter a science fair or research competition", "Find a university lab that accepts high school volunteers", "Read about a scientist whose work interests you", "Take an advanced science course or online seminar"],
-    relatedCareers: ["career_biomedical_researcher", "career_data_scientist", "career_environmental_scientist"],
-    tags: ["science", "research", "discovery", "graduate-degree"]
-  },
-  {
-    id: "career_environmental_scientist",
-    name: "Environmental Scientist",
-    fields: ["science", "environment", "policy"],
-    description: "Studies the environment and develops solutions to environmental problems.",
-    riasec: { R:70, I:85, A:45, S:60, E:50, C:60 },
-    reality: { academicDifficulty:70, competition:60, workPressure:55, computerTime:60, teamwork:65, independentWork:70, routine:40, creativity:60 },
-    workEnvironment: { handsOn:75, peopleInteraction:55, computerBased:55, remotePotential:35 },
-    explorationActivities: ["Volunteer for a local environmental cleanup", "Monitor air or water quality data in your area", "Read about a current environmental challenge", "Join or start an environmental club at school"],
-    relatedCareers: ["career_research_scientist", "career_civil_engineer", "career_biomedical_researcher"],
-    tags: ["science", "environment", "impact", "outdoor"]
-  },
-  {
-    id: "career_journalist",
-    name: "Journalist",
-    fields: ["media", "communications", "writing"],
-    description: "Investigates and reports on news, events, and stories for public audiences.",
-    riasec: { R:20, I:70, A:85, S:75, E:70, C:45 },
-    reality: { academicDifficulty:60, competition:75, workPressure:80, computerTime:70, teamwork:55, independentWork:70, routine:15, creativity:85 },
-    workEnvironment: { handsOn:40, peopleInteraction:80, computerBased:65, remotePotential:65 },
-    explorationActivities: ["Write an article about something happening at your school", "Start a blog or newsletter on a topic you care about", "Interview someone in your community", "Shadow a journalist or editor for a day"],
-    relatedCareers: ["career_marketing_manager", "career_graphic_designer", "career_social_worker"],
-    tags: ["creative", "writing", "social", "media"]
-  },
-  {
-    id: "career_attorney",
-    name: "Attorney",
-    fields: ["law", "policy"],
-    description: "Represents clients in legal matters, provides legal advice, and argues cases.",
-    riasec: { R:20, I:80, A:55, S:70, E:90, C:65 },
-    reality: { academicDifficulty:85, competition:80, workPressure:85, computerTime:70, teamwork:60, independentWork:70, routine:30, creativity:60 },
-    workEnvironment: { handsOn:25, peopleInteraction:85, computerBased:65, remotePotential:50 },
-    explorationActivities: ["Attend a mock trial or debate competition", "Watch a real court case (many are public)", "Read about a famous legal case", "Volunteer with a legal aid organization"],
-    relatedCareers: ["career_policy_analyst", "career_journalist", "career_entrepreneur"],
-    tags: ["law", "leadership", "high-salary", "long-training"]
-  },
-  {
-    id: "career_policy_analyst",
-    name: "Policy Analyst",
-    fields: ["policy", "government", "social sciences"],
-    description: "Researches and evaluates policies to help governments and organizations make better decisions.",
-    riasec: { R:15, I:85, A:50, S:65, E:70, C:70 },
-    reality: { academicDifficulty:75, competition:65, workPressure:65, computerTime:75, teamwork:65, independentWork:75, routine:40, creativity:55 },
-    workEnvironment: { handsOn:20, peopleInteraction:60, computerBased:75, remotePotential:65 },
-    explorationActivities: ["Research a local policy issue you care about", "Write an opinion piece on a policy topic", "Attend a town hall or city council meeting", "Intern with a local government office or nonprofit"],
-    relatedCareers: ["career_attorney", "career_journalist", "career_social_worker"],
-    tags: ["policy", "research", "impact", "government"]
-  },
-  {
-    id: "career_physical_therapist",
-    name: "Physical Therapist",
-    fields: ["healthcare", "sports", "rehabilitation"],
-    description: "Helps patients recover from injuries and improve physical function through exercise and treatment.",
-    riasec: { R:65, I:65, A:40, S:90, E:55, C:55 },
-    reality: { academicDifficulty:70, competition:55, workPressure:65, computerTime:35, teamwork:75, independentWork:55, routine:55, creativity:50 },
-    workEnvironment: { handsOn:90, peopleInteraction:90, computerBased:30, remotePotential:15 },
-    explorationActivities: ["Shadow a physical therapist at a clinic or hospital", "Volunteer at a sports medicine or rehabilitation center", "Take a sports first aid course", "Research what a PT does differently from a doctor"],
-    relatedCareers: ["career_nurse", "career_physician", "career_social_worker"],
-    tags: ["healthcare", "hands-on", "helping", "sports"]
-  },
-  {
-    id: "career_robotics_engineer",
-    name: "Robotics Engineer",
-    fields: ["engineering", "technology", "computer science"],
-    description: "Designs and builds robotic systems for manufacturing, medicine, exploration, and more.",
-    riasec: { R:90, I:90, A:60, S:35, E:50, C:65 },
-    reality: { academicDifficulty:85, competition:70, workPressure:65, computerTime:80, teamwork:65, independentWork:75, routine:35, creativity:80 },
-    workEnvironment: { handsOn:85, peopleInteraction:40, computerBased:75, remotePotential:40 },
-    explorationActivities: ["Join a robotics team or competition", "Build a simple robot with a kit (like LEGO Mindstorms or Arduino)", "Watch videos about robotic systems in industry", "Take a free intro to robotics course online"],
-    relatedCareers: ["career_mechanical_engineer", "career_software_engineer", "career_research_scientist"],
-    tags: ["engineering", "tech", "hands-on", "building"]
-  },
-  {
-    id: "career_curriculum_designer",
-    name: "Curriculum Designer",
-    fields: ["education", "instructional design"],
-    description: "Develops educational programs, courses, and learning materials for schools and organizations.",
-    riasec: { R:20, I:65, A:75, S:80, E:55, C:70 },
-    reality: { academicDifficulty:60, competition:45, workPressure:55, computerTime:70, teamwork:65, independentWork:70, routine:50, creativity:80 },
-    workEnvironment: { handsOn:30, peopleInteraction:65, computerBased:70, remotePotential:75 },
-    explorationActivities: ["Design a short lesson plan on a topic you love", "Critique a textbook chapter and suggest improvements", "Volunteer to help teach or run a workshop", "Take a course on instructional design principles"],
-    relatedCareers: ["career_teacher", "career_ux_designer", "career_journalist"],
-    tags: ["education", "creative", "design", "remote-friendly"]
-  },
-  {
-    id: "career_economist",
-    name: "Economist",
-    fields: ["economics", "policy", "research"],
-    description: "Studies how people, businesses, and governments allocate resources and make decisions.",
-    riasec: { R:20, I:95, A:40, S:50, E:65, C:80 },
-    reality: { academicDifficulty:85, competition:70, workPressure:60, computerTime:80, teamwork:50, independentWork:85, routine:45, creativity:50 },
-    workEnvironment: { handsOn:15, peopleInteraction:50, computerBased:85, remotePotential:70 },
-    explorationActivities: ["Read about a current economic issue in the news", "Take a free introductory economics course", "Analyze the economy of a country that interests you", "Model a simple supply and demand scenario"],
-    relatedCareers: ["career_financial_analyst", "career_policy_analyst", "career_data_scientist"],
-    tags: ["research", "math", "policy", "analytical"]
-  }
+  { id:"career_software_engineer",name:"Software Engineer",fields:["Technology","Computer Science"],description:"Designs, builds, and maintains software systems and applications.",riasec:{R:55,I:95,A:65,S:40,E:55,C:65},reality:{academicDifficulty:75,competition:70,workPressure:60,computerTime:95,teamwork:65,independentWork:80,routine:40,creativity:70},workEnvironment:{handsOn:30,peopleInteraction:45,computerBased:95,remotePotential:90},skills:["Programming","Problem-Solving","System Design","Collaboration"],education:{common:["Computer Science degree","Coding bootcamp"],alternative:["Self-taught","Online certifications"]},explorationActivities:["Build a simple app or website","Learn Python or JavaScript online","Contribute to an open source project","Create a project to solve a daily problem"],relatedCareers:["career_data_scientist","career_cybersecurity_analyst","career_ux_designer"],tags:["tech","coding","remote-friendly","high-salary"] },
+  { id:"career_data_scientist",name:"Data Scientist",fields:["Technology","Mathematics"],description:"Uses statistics, programming, and analytics to extract insights from data.",riasec:{R:25,I:100,A:45,S:35,E:45,C:80},reality:{academicDifficulty:85,competition:75,workPressure:55,computerTime:95,teamwork:55,independentWork:85,routine:40,creativity:55},workEnvironment:{handsOn:20,peopleInteraction:40,computerBased:95,remotePotential:85},skills:["Statistics","Python/R","Data Visualization","Machine Learning"],education:{common:["Statistics or CS degree","Data Science bootcamp"],alternative:["Self-taught with portfolio","Online certifications"]},explorationActivities:["Analyze a dataset using Excel","Take a free statistics course","Explore Kaggle beginner datasets","Build a simple chart from real data"],relatedCareers:["career_software_engineer","career_research_scientist","career_financial_analyst"],tags:["tech","math","research","high-salary"] },
+  { id:"career_physician",name:"Physician",fields:["Healthcare","Medicine"],description:"Diagnoses and treats patients, helping manage their overall health.",riasec:{R:35,I:95,A:30,S:90,E:55,C:65},reality:{academicDifficulty:95,competition:85,workPressure:95,computerTime:55,teamwork:80,independentWork:60,routine:35,creativity:45},workEnvironment:{handsOn:75,peopleInteraction:95,computerBased:45,remotePotential:15},skills:["Clinical Diagnosis","Patient Care","Communication","Decision Making"],education:{common:["Medical degree (MD/DO)","Residency program"],alternative:[]},explorationActivities:["Shadow a doctor","Volunteer at a clinic","Take a first aid course","Interview a physician"],relatedCareers:["career_nurse","career_biomedical_researcher","career_psychologist"],tags:["healthcare","helping","high-salary","long-training"] },
+  { id:"career_ux_designer",name:"UX Designer",fields:["Technology","Design"],description:"Designs user interfaces and experiences for apps, websites, and digital products.",riasec:{R:40,I:65,A:95,S:65,E:55,C:55},reality:{academicDifficulty:60,competition:70,workPressure:65,computerTime:90,teamwork:70,independentWork:70,routine:30,creativity:95},workEnvironment:{handsOn:30,peopleInteraction:65,computerBased:90,remotePotential:85},skills:["Figma","User Research","Prototyping","Visual Design"],education:{common:["Design degree","UX bootcamp"],alternative:["Self-taught with portfolio","Online certifications"]},explorationActivities:["Download Figma and design an app screen","Analyze the UX of an app you use","Take a free UX course","Interview 3 people about an app"],relatedCareers:["career_software_engineer","career_graphic_designer","career_marketing_manager"],tags:["creative","tech","design","remote-friendly"] },
+  { id:"career_mechanical_engineer",name:"Mechanical Engineer",fields:["Engineering","Manufacturing"],description:"Designs, develops, and tests mechanical systems and products.",riasec:{R:90,I:85,A:55,S:35,E:55,C:65},reality:{academicDifficulty:80,competition:60,workPressure:65,computerTime:70,teamwork:65,independentWork:70,routine:45,creativity:70},workEnvironment:{handsOn:80,peopleInteraction:50,computerBased:65,remotePotential:40},skills:["CAD Software","Physics","Problem-Solving","Materials Science"],education:{common:["Mechanical Engineering degree"],alternative:["Technical certifications","Community college pathway"]},explorationActivities:["Build something with basic materials","Take a free CAD course","Join a robotics club","Shadow an engineer"],relatedCareers:["career_civil_engineer","career_robotics_engineer","career_software_engineer"],tags:["engineering","hands-on","building","stable"] },
+  { id:"career_psychologist",name:"Psychologist",fields:["Healthcare","Social Sciences"],description:"Studies human behavior and mental processes and helps people address challenges.",riasec:{R:15,I:85,A:50,S:100,E:45,C:45},reality:{academicDifficulty:80,competition:65,workPressure:70,computerTime:45,teamwork:55,independentWork:70,routine:45,creativity:55},workEnvironment:{handsOn:25,peopleInteraction:90,computerBased:40,remotePotential:60},skills:["Active Listening","Research","Empathy","Assessment"],education:{common:["Psychology degree","Doctoral program"],alternative:["Counseling degree","Social work pathway"]},explorationActivities:["Read intro psychology","Take a free psych course","Volunteer at a mental health event","Interview a counselor"],relatedCareers:["career_social_worker","career_physician","career_teacher"],tags:["helping","research","social","graduate-degree"] },
+  { id:"career_entrepreneur",name:"Entrepreneur",fields:["Business","Leadership"],description:"Creates and grows businesses, products, or services from the ground up.",riasec:{R:45,I:60,A:70,S:70,E:100,C:45},reality:{academicDifficulty:55,competition:90,workPressure:90,computerTime:60,teamwork:70,independentWork:90,routine:10,creativity:90},workEnvironment:{handsOn:50,peopleInteraction:75,computerBased:60,remotePotential:70},skills:["Leadership","Sales","Product Development","Resilience"],education:{common:["Business degree","No formal requirement"],alternative:["Self-taught","Accelerators and bootcamps"]},explorationActivities:["Start a small side hustle","Read about a founder you admire","Enter a business competition","Develop a business plan"],relatedCareers:["career_marketing_manager","career_software_engineer","career_financial_analyst"],tags:["leadership","business","risk","freedom"] },
+  { id:"career_teacher",name:"Teacher",fields:["Education","Social Sciences"],description:"Educates students, develops curriculum, and fosters learning and growth.",riasec:{R:15,I:55,A:55,S:100,E:60,C:55},reality:{academicDifficulty:60,competition:40,workPressure:75,computerTime:40,teamwork:75,independentWork:55,routine:65,creativity:70},workEnvironment:{handsOn:50,peopleInteraction:100,computerBased:35,remotePotential:40},skills:["Communication","Patience","Curriculum Design","Leadership"],education:{common:["Education degree","Teaching credential"],alternative:["Alternative certification","Charter school pathways"]},explorationActivities:["Tutor a younger student","Volunteer at a school","Teach a skill to a friend","Create a short lesson"],relatedCareers:["career_psychologist","career_social_worker","career_curriculum_designer"],tags:["helping","social","stable","impact"] },
+  { id:"career_environmental_scientist",name:"Environmental Scientist",fields:["Science","Environment"],description:"Studies the environment and develops solutions to environmental problems.",riasec:{R:70,I:85,A:45,S:60,E:50,C:60},reality:{academicDifficulty:70,competition:60,workPressure:55,computerTime:60,teamwork:65,independentWork:70,routine:40,creativity:60},workEnvironment:{handsOn:75,peopleInteraction:55,computerBased:55,remotePotential:35},skills:["Field Research","Data Analysis","Environmental Policy","Lab Skills"],education:{common:["Environmental Science degree","Biology degree"],alternative:["GIS certifications","Ecology programs"]},explorationActivities:["Volunteer for an environmental cleanup","Monitor local air/water quality","Research an environmental challenge","Join an environmental club"],relatedCareers:["career_research_scientist","career_civil_engineer","career_biomedical_researcher"],tags:["science","environment","impact","outdoor"] },
+  { id:"career_marketing_manager",name:"Marketing Manager",fields:["Business","Communications"],description:"Develops strategies to promote products, services, and brands.",riasec:{R:15,I:50,A:90,S:75,E:95,C:55},reality:{academicDifficulty:60,competition:70,workPressure:75,computerTime:70,teamwork:80,independentWork:60,routine:25,creativity:90},workEnvironment:{handsOn:25,peopleInteraction:80,computerBased:70,remotePotential:70},skills:["Strategy","Creative Thinking","Analytics","Communication"],education:{common:["Marketing degree","Communications degree"],alternative:["Digital marketing certifications","Portfolio-based hiring"]},explorationActivities:["Create a campaign for a cause you care about","Analyze a brand strategy","Run a school event promotion","Take a Google marketing course"],relatedCareers:["career_entrepreneur","career_ux_designer","career_journalist"],tags:["business","creative","leadership","social"] },
+  { id:"career_attorney",name:"Attorney",fields:["Law","Policy"],description:"Represents clients in legal matters, provides legal advice, and argues cases.",riasec:{R:20,I:80,A:55,S:70,E:90,C:65},reality:{academicDifficulty:85,competition:80,workPressure:85,computerTime:70,teamwork:60,independentWork:70,routine:30,creativity:60},workEnvironment:{handsOn:25,peopleInteraction:85,computerBased:65,remotePotential:50},skills:["Legal Research","Writing","Argumentation","Client Relations"],education:{common:["Law degree (JD)","Bar exam"],alternative:[]},explorationActivities:["Attend a mock trial","Watch a real court case","Read about a famous legal case","Volunteer with legal aid"],relatedCareers:["career_policy_analyst","career_journalist","career_entrepreneur"],tags:["law","leadership","high-salary","long-training"] },
+  { id:"career_biomedical_researcher",name:"Biomedical Researcher",fields:["Science","Healthcare"],description:"Conducts research to advance medicine and develop new treatments.",riasec:{R:50,I:100,A:40,S:55,E:40,C:65},reality:{academicDifficulty:90,competition:85,workPressure:65,computerTime:70,teamwork:65,independentWork:80,routine:40,creativity:65},workEnvironment:{handsOn:75,peopleInteraction:50,computerBased:65,remotePotential:30},skills:["Lab Techniques","Data Analysis","Scientific Writing","Critical Thinking"],education:{common:["Biology/Chemistry degree","PhD or MD program"],alternative:["Research technician pathway"]},explorationActivities:["Apply for a summer research program","Read a scientific paper","Shadow a researcher","Enter a science fair"],relatedCareers:["career_physician","career_research_scientist","career_data_scientist"],tags:["science","research","healthcare","graduate-degree"] },
+  { id:"career_financial_analyst",name:"Financial Analyst",fields:["Business","Finance"],description:"Analyzes financial data to guide investment decisions and business strategy.",riasec:{R:20,I:85,A:35,S:40,E:70,C:90},reality:{academicDifficulty:75,competition:75,workPressure:80,computerTime:85,teamwork:55,independentWork:75,routine:55,creativity:40},workEnvironment:{handsOn:15,peopleInteraction:55,computerBased:90,remotePotential:65},skills:["Financial Modeling","Excel","Valuation","Communication"],education:{common:["Finance or Economics degree","CFA certification"],alternative:["Accounting pathway","Business analytics"]},explorationActivities:["Track a stock portfolio simulator","Read a personal finance book","Analyze a company's financials","Take a free finance course"],relatedCareers:["career_data_scientist","career_entrepreneur","career_economist"],tags:["business","math","high-salary","analytical"] },
+  { id:"career_cybersecurity_analyst",name:"Cybersecurity Analyst",fields:["Technology","Computer Science"],description:"Protects computer systems and networks from digital threats and attacks.",riasec:{R:60,I:90,A:40,S:35,E:45,C:80},reality:{academicDifficulty:75,competition:70,workPressure:75,computerTime:90,teamwork:55,independentWork:80,routine:40,creativity:55},workEnvironment:{handsOn:50,peopleInteraction:40,computerBased:90,remotePotential:80},skills:["Network Security","Ethical Hacking","Risk Assessment","Problem-Solving"],education:{common:["Cybersecurity or CS degree","Security certifications"],alternative:["Self-taught with certs","Bootcamps"]},explorationActivities:["Try TryHackMe or Hack The Box","Learn about phishing attacks","Take a free cybersecurity course","Research a famous cyberattack"],relatedCareers:["career_software_engineer","career_data_scientist","career_robotics_engineer"],tags:["tech","security","high-salary","remote-friendly"] },
+  { id:"career_social_worker",name:"Social Worker",fields:["Social Sciences","Healthcare"],description:"Helps individuals and families navigate challenges and access support services.",riasec:{R:15,I:55,A:40,S:100,E:55,C:50},reality:{academicDifficulty:65,competition:40,workPressure:80,computerTime:40,teamwork:80,independentWork:60,routine:40,creativity:45},workEnvironment:{handsOn:40,peopleInteraction:100,computerBased:35,remotePotential:35},skills:["Empathy","Case Management","Communication","Crisis Intervention"],education:{common:["Social Work degree (BSW/MSW)"],alternative:["Psychology degree","Community college pathway"]},explorationActivities:["Volunteer at a community center","Shadow a social worker","Research social issues locally","Interview someone in social services"],relatedCareers:["career_psychologist","career_teacher","career_nurse"],tags:["helping","impact","social","community"] },
+  { id:"career_policy_analyst",name:"Policy Analyst",fields:["Policy","Government"],description:"Researches and evaluates policies to help governments make better decisions.",riasec:{R:15,I:85,A:50,S:65,E:70,C:70},reality:{academicDifficulty:75,competition:65,workPressure:65,computerTime:75,teamwork:65,independentWork:75,routine:40,creativity:55},workEnvironment:{handsOn:20,peopleInteraction:60,computerBased:75,remotePotential:65},skills:["Research","Data Analysis","Writing","Policy Evaluation"],education:{common:["Political Science degree","Public Policy degree"],alternative:["Economics degree","Law pathway"]},explorationActivities:["Research a local policy issue","Write an opinion piece","Attend a city council meeting","Intern with a government office"],relatedCareers:["career_attorney","career_journalist","career_social_worker"],tags:["policy","research","impact","government"] },
+  { id:"career_robotics_engineer",name:"Robotics Engineer",fields:["Engineering","Technology"],description:"Designs and builds robotic systems for manufacturing, medicine, exploration, and more.",riasec:{R:90,I:90,A:60,S:35,E:50,C:65},reality:{academicDifficulty:85,competition:70,workPressure:65,computerTime:80,teamwork:65,independentWork:75,routine:35,creativity:80},workEnvironment:{handsOn:85,peopleInteraction:40,computerBased:75,remotePotential:40},skills:["Robotics Programming","Mechanical Design","Electronics","Problem-Solving"],education:{common:["Robotics or Mechanical Engineering degree"],alternative:["CS degree","Self-taught with projects"]},explorationActivities:["Join a robotics team","Build an Arduino or LEGO robot","Watch robotics industry videos","Take a free intro robotics course"],relatedCareers:["career_mechanical_engineer","career_software_engineer","career_research_scientist"],tags:["engineering","tech","hands-on","building"] },
+  { id:"career_journalist",name:"Journalist",fields:["Media","Communications"],description:"Investigates and reports on news, events, and stories for public audiences.",riasec:{R:20,I:70,A:85,S:75,E:70,C:45},reality:{academicDifficulty:60,competition:75,workPressure:80,computerTime:70,teamwork:55,independentWork:70,routine:15,creativity:85},workEnvironment:{handsOn:40,peopleInteraction:80,computerBased:65,remotePotential:65},skills:["Writing","Research","Interviewing","Storytelling"],education:{common:["Journalism degree","Communications degree"],alternative:["English degree","Self-taught with portfolio"]},explorationActivities:["Write an article about your school","Start a blog or newsletter","Interview someone in your community","Shadow a journalist"],relatedCareers:["career_marketing_manager","career_policy_analyst","career_social_worker"],tags:["creative","writing","social","media"] },
+  { id:"career_research_scientist",name:"Research Scientist",fields:["Science","Academia"],description:"Conducts original research to expand knowledge in a scientific field.",riasec:{R:45,I:100,A:50,S:45,E:40,C:70},reality:{academicDifficulty:90,competition:80,workPressure:60,computerTime:75,teamwork:60,independentWork:85,routine:35,creativity:70},workEnvironment:{handsOn:65,peopleInteraction:45,computerBased:70,remotePotential:45},skills:["Experimental Design","Data Analysis","Scientific Writing","Critical Thinking"],education:{common:["Science degree","PhD program"],alternative:["Research technician","Master's pathway"]},explorationActivities:["Enter a science fair","Find a university lab","Read about a scientist you admire","Take an advanced science seminar"],relatedCareers:["career_biomedical_researcher","career_data_scientist","career_environmental_scientist"],tags:["science","research","discovery","graduate-degree"] },
+  { id:"career_graphic_designer",name:"Graphic Designer",fields:["Design","Arts"],description:"Creates visual content for brands, media, marketing, and digital platforms.",riasec:{R:30,I:45,A:100,S:50,E:55,C:50},reality:{academicDifficulty:55,competition:75,workPressure:60,computerTime:85,teamwork:55,independentWork:75,routine:25,creativity:100},workEnvironment:{handsOn:35,peopleInteraction:50,computerBased:85,remotePotential:80},skills:["Adobe Creative Suite","Typography","Color Theory","Visual Storytelling"],education:{common:["Graphic Design degree"],alternative:["Self-taught with portfolio","Online courses"]},explorationActivities:["Create a logo using Canva","Redesign a brand logo","Follow designers on Behance","Take a free design course"],relatedCareers:["career_ux_designer","career_marketing_manager","career_journalist"],tags:["creative","art","design","freelance-friendly"] },
+  { id:"career_civil_engineer",name:"Civil Engineer",fields:["Engineering","Construction"],description:"Designs and oversees construction of infrastructure like bridges, roads, and buildings.",riasec:{R:85,I:80,A:50,S:40,E:60,C:70},reality:{academicDifficulty:75,competition:55,workPressure:70,computerTime:65,teamwork:70,independentWork:65,routine:50,creativity:60},workEnvironment:{handsOn:75,peopleInteraction:55,computerBased:60,remotePotential:25},skills:["Structural Analysis","CAD","Project Management","Problem-Solving"],education:{common:["Civil Engineering degree","PE license"],alternative:["Construction management pathway"]},explorationActivities:["Visit a construction site","Research how local infrastructure was built","Take a free structural engineering course","Build a bridge with household materials"],relatedCareers:["career_mechanical_engineer","career_architect","career_environmental_scientist"],tags:["engineering","building","stable","hands-on"] },
+  { id:"career_architect",name:"Architect",fields:["Design","Engineering"],description:"Designs buildings and spaces, balancing aesthetics, function, and engineering.",riasec:{R:80,I:60,A:100,S:40,E:50,C:70},reality:{academicDifficulty:75,competition:70,workPressure:75,computerTime:80,teamwork:60,independentWork:75,routine:30,creativity:100},workEnvironment:{handsOn:55,peopleInteraction:55,computerBased:80,remotePotential:55},skills:["Architectural Drawing","3D Modeling","Building Codes","Spatial Thinking"],education:{common:["Architecture degree (B.Arch/M.Arch)","Licensure"],alternative:[]},explorationActivities:["Sketch building designs","Take a free architectural drawing course","Visit an architecture firm","Design a room with Planner 5D"],relatedCareers:["career_civil_engineer","career_ux_designer","career_mechanical_engineer"],tags:["creative","design","building","art"] },
+  { id:"career_nurse",name:"Registered Nurse",fields:["Healthcare","Medicine"],description:"Provides patient care, administers treatments, and coordinates with medical teams.",riasec:{R:45,I:65,A:35,S:95,E:45,C:60},reality:{academicDifficulty:70,competition:55,workPressure:85,computerTime:45,teamwork:90,independentWork:50,routine:55,creativity:35},workEnvironment:{handsOn:85,peopleInteraction:95,computerBased:40,remotePotential:10},skills:["Patient Care","Clinical Assessment","Medication Administration","Communication"],education:{common:["Nursing degree (BSN/ADN)","NCLEX license"],alternative:["LPN to RN pathway","Accelerated BSN"]},explorationActivities:["Volunteer at a hospital","Shadow a nurse","Take a CNA course","Join a health club at school"],relatedCareers:["career_physician","career_psychologist","career_physical_therapist"],tags:["healthcare","helping","hands-on","stable"] },
+  { id:"career_physical_therapist",name:"Physical Therapist",fields:["Healthcare","Sports"],description:"Helps patients recover from injuries and improve physical function through treatment.",riasec:{R:65,I:65,A:40,S:90,E:55,C:55},reality:{academicDifficulty:70,competition:55,workPressure:65,computerTime:35,teamwork:75,independentWork:55,routine:55,creativity:50},workEnvironment:{handsOn:90,peopleInteraction:90,computerBased:30,remotePotential:15},skills:["Exercise Therapy","Anatomy","Patient Education","Assessment"],education:{common:["Physical Therapy degree (DPT)"],alternative:["Occupational therapy pathway","Athletic training"]},explorationActivities:["Shadow a PT at a clinic","Volunteer at a sports medicine center","Take a sports first aid course","Research PT vs OT differences"],relatedCareers:["career_nurse","career_physician","career_social_worker"],tags:["healthcare","hands-on","helping","sports"] },
+  { id:"career_economist",name:"Economist",fields:["Economics","Policy"],description:"Studies how people, businesses, and governments allocate resources and make decisions.",riasec:{R:20,I:95,A:40,S:50,E:65,C:80},reality:{academicDifficulty:85,competition:70,workPressure:60,computerTime:80,teamwork:50,independentWork:85,routine:45,creativity:50},workEnvironment:{handsOn:15,peopleInteraction:50,computerBased:85,remotePotential:70},skills:["Statistical Analysis","Economic Modeling","Research","Writing"],education:{common:["Economics degree","Graduate degree"],alternative:["Finance pathway","Data analytics pathway"]},explorationActivities:["Read about a current economic issue","Take a free economics course","Analyze a country's economy","Model a supply/demand scenario"],relatedCareers:["career_financial_analyst","career_policy_analyst","career_data_scientist"],tags:["research","math","policy","analytical"] },
+  { id:"career_curriculum_designer",name:"Curriculum Designer",fields:["Education","Instructional Design"],description:"Develops educational programs, courses, and learning materials for schools and organizations.",riasec:{R:20,I:65,A:75,S:80,E:55,C:70},reality:{academicDifficulty:60,competition:45,workPressure:55,computerTime:70,teamwork:65,independentWork:70,routine:50,creativity:80},workEnvironment:{handsOn:30,peopleInteraction:65,computerBased:70,remotePotential:75},skills:["Instructional Design","Curriculum Writing","Education Technology","Assessment Design"],education:{common:["Education degree","Instructional Design degree"],alternative:["Online certifications","Teaching experience pathway"]},explorationActivities:["Design a lesson plan on a topic you love","Critique a textbook chapter","Volunteer to run a workshop","Take an instructional design course"],relatedCareers:["career_teacher","career_ux_designer","career_journalist"],tags:["education","creative","design","remote-friendly"] },
 ];
-
-// ============================================================
-// OPPORTUNITIES DATABASE
-// ============================================================
 
 const OPPORTUNITIES = [
-  { id: "opp_nasa", name: "NASA OSTEM Internships", organization: "NASA", type: "internship", description: "Student internships across engineering, science, technology, and business.", fields: ["engineering","science","technology","math"], interestCodes: ["R","I","C","E"], difficulty: "highly_competitive", url: "https://www.nasa.gov/learning-resources/internship-programs/", educationLevels: ["college"] },
-  { id: "opp_nsf_reu", name: "NSF Research Experiences for Undergraduates", organization: "National Science Foundation", type: "research", description: "Paid research at NSF-funded institutions across science and engineering.", fields: ["science","engineering","math","research"], interestCodes: ["I","R","C"], difficulty: "competitive", url: "https://www.nsf.gov/funding/initiatives/reu/students", educationLevels: ["college"] },
-  { id: "opp_smithsonian", name: "Smithsonian Internships", organization: "Smithsonian Institution", type: "internship", description: "Internships spanning science, arts, education, research, and communications.", fields: ["science","arts","education","research"], interestCodes: ["I","A","S","C"], difficulty: "competitive", url: "https://www.si.edu/support/internships", educationLevels: ["high_school","college"] },
-  { id: "opp_nih", name: "NIH Summer Internship Program", organization: "National Institutes of Health", type: "research", description: "Research experience at NIH laboratories for students interested in biomedical sciences.", fields: ["healthcare","science","research"], interestCodes: ["I","R","S"], difficulty: "competitive", url: "https://www.training.nih.gov/programs/sip", educationLevels: ["high_school","college"] },
-  { id: "opp_google_step", name: "Google STEP Internship", organization: "Google", type: "internship", description: "Software engineering internship for first and second year college students.", fields: ["technology","computer science"], interestCodes: ["I","R","C"], difficulty: "highly_competitive", url: "https://buildyourfuture.withgoogle.com/programs/step", educationLevels: ["college"] },
-  { id: "opp_microsoft_explore", name: "Microsoft Explore Internship", organization: "Microsoft", type: "internship", description: "Software engineering and program management internship for first and second year students.", fields: ["technology","computer science"], interestCodes: ["I","R","E","C"], difficulty: "highly_competitive", url: "https://careers.microsoft.com/students/", educationLevels: ["college"] },
-  { id: "opp_legal_aid", name: "Legal Aid Clinic Volunteer", organization: "Local Legal Aid", type: "volunteering", description: "Help provide legal assistance to underserved communities alongside attorneys.", fields: ["law","policy","social sciences"], interestCodes: ["S","E","C"], difficulty: "accessible", url: "", educationLevels: ["high_school","college"] },
-  { id: "opp_teach_america", name: "Teach For America", organization: "Teach For America", type: "internship", description: "Teaching fellows program placing graduates in under-resourced schools.", fields: ["education"], interestCodes: ["S","E","A"], difficulty: "competitive", url: "https://www.teachforamerica.org", educationLevels: ["college"] },
-  { id: "opp_robotics", name: "FIRST Robotics Competition", organization: "FIRST", type: "competition", description: "Hands-on robotics competition involving engineering, programming, and teamwork.", fields: ["engineering","computer science","robotics"], interestCodes: ["R","I","C"], difficulty: "accessible", url: "https://www.firstinspires.org", educationLevels: ["high_school"] },
-  { id: "opp_science_fair", name: "Science Fair / Research Competition", organization: "Various", type: "competition", description: "Present original research at regional, state, or national competitions.", fields: ["science","research","engineering"], interestCodes: ["I","R"], difficulty: "moderate", url: "", educationLevels: ["high_school"] },
-  { id: "opp_job_shadow", name: "Professional Job Shadow", organization: "Local Employer", type: "job_shadow", description: "Spend a day with a professional to see what their job actually looks like.", fields: ["all"], interestCodes: ["R","I","A","S","E","C"], difficulty: "accessible", url: "", educationLevels: ["high_school","college"] },
-  { id: "opp_mentor", name: "Career Mentor", organization: "Local Network", type: "mentorship", description: "Connect with a professional in a field you're exploring for guidance and insight.", fields: ["all"], interestCodes: ["R","I","A","S","E","C"], difficulty: "accessible", url: "", educationLevels: ["high_school","college"] },
-  { id: "opp_goldman", name: "Goldman Sachs Freshman Summit", organization: "Goldman Sachs", type: "internship", description: "Early career exposure to finance, business, and professional development.", fields: ["finance","business"], interestCodes: ["E","C","I"], difficulty: "highly_competitive", url: "https://www.goldmansachs.com/careers/students/programs/", educationLevels: ["college"] },
-  { id: "opp_city_year", name: "City Year", organization: "City Year", type: "volunteering", description: "Year of service supporting students in under-resourced schools.", fields: ["education","social sciences"], interestCodes: ["S","E"], difficulty: "moderate", url: "https://www.cityyear.org", educationLevels: ["college"] },
-  { id: "opp_hackathon", name: "Hackathon", organization: "Various", type: "competition", description: "Time-limited coding and design challenge to build a product or solve a problem.", fields: ["technology","design","business"], interestCodes: ["I","R","A","E"], difficulty: "accessible", url: "https://devpost.com", educationLevels: ["high_school","college"] },
+  {id:"opp_nasa",name:"NASA OSTEM Internships",organization:"NASA",type:"Internship",description:"Student internships across engineering, science, technology, and business.",fields:["engineering","science","technology"],interestCodes:["R","I","C","E"],difficulty:"Highly Competitive",url:"https://www.nasa.gov/learning-resources/internship-programs/"},
+  {id:"opp_nsf_reu",name:"NSF Research Experiences for Undergraduates",organization:"National Science Foundation",type:"Research",description:"Paid research at NSF-funded institutions across science and engineering.",fields:["science","engineering","math"],interestCodes:["I","R","C"],difficulty:"Competitive",url:"https://www.nsf.gov/funding/initiatives/reu/students"},
+  {id:"opp_smithsonian",name:"Smithsonian Internships",organization:"Smithsonian Institution",type:"Internship",description:"Internships spanning science, arts, education, research, and communications.",fields:["science","arts","education"],interestCodes:["I","A","S","C"],difficulty:"Competitive",url:"https://www.si.edu/support/internships"},
+  {id:"opp_nih",name:"NIH Summer Internship Program",organization:"National Institutes of Health",type:"Research",description:"Research experience at NIH laboratories for biomedical sciences.",fields:["healthcare","science","research"],interestCodes:["I","R","S"],difficulty:"Competitive",url:"https://www.training.nih.gov/programs/sip"},
+  {id:"opp_google_step",name:"Google STEP Internship",organization:"Google",type:"Internship",description:"Software engineering internship for first and second year college students.",fields:["technology","computer science"],interestCodes:["I","R","C"],difficulty:"Highly Competitive",url:"https://buildyourfuture.withgoogle.com/programs/step"},
+  {id:"opp_microsoft_explore",name:"Microsoft Explore Internship",organization:"Microsoft",type:"Internship",description:"Software engineering and program management for first and second year students.",fields:["technology","computer science"],interestCodes:["I","R","E","C"],difficulty:"Highly Competitive",url:"https://careers.microsoft.com/students/"},
+  {id:"opp_robotics",name:"FIRST Robotics Competition",organization:"FIRST",type:"Competition",description:"Hands-on robotics competition involving engineering, programming, and teamwork.",fields:["engineering","computer science"],interestCodes:["R","I","C"],difficulty:"Accessible",url:"https://www.firstinspires.org"},
+  {id:"opp_science_fair",name:"Science Fair / Research Competition",organization:"Various",type:"Competition",description:"Present original research at regional, state, or national competitions.",fields:["science","research","engineering"],interestCodes:["I","R"],difficulty:"Moderate",url:""},
+  {id:"opp_job_shadow",name:"Professional Job Shadow",organization:"Local Employer",type:"Job Shadow",description:"Spend a day with a professional to see what their job actually looks like.",fields:["all"],interestCodes:["R","I","A","S","E","C"],difficulty:"Accessible",url:""},
+  {id:"opp_mentor",name:"Career Mentor",organization:"Local Network",type:"Mentorship",description:"Connect with a professional in a field you're exploring for guidance.",fields:["all"],interestCodes:["R","I","A","S","E","C"],difficulty:"Accessible",url:""},
+  {id:"opp_hackathon",name:"Hackathon",organization:"Various",type:"Competition",description:"Time-limited coding and design challenge to build a product or solve a problem.",fields:["technology","design","business"],interestCodes:["I","R","A","E"],difficulty:"Accessible",url:"https://devpost.com"},
+  {id:"opp_teach_america",name:"Teach For America",organization:"Teach For America",type:"Fellowship",description:"Teaching fellows program placing graduates in under-resourced schools.",fields:["education"],interestCodes:["S","E","A"],difficulty:"Competitive",url:"https://www.teachforamerica.org"},
+  {id:"opp_goldman",name:"Goldman Sachs Freshman Summit",organization:"Goldman Sachs",type:"Internship",description:"Early career exposure to finance, business, and professional development.",fields:["finance","business"],interestCodes:["E","C","I"],difficulty:"Highly Competitive",url:"https://www.goldmansachs.com/careers/students/programs/"},
+  {id:"opp_legal_aid",name:"Legal Aid Clinic Volunteer",organization:"Local Legal Aid",type:"Volunteering",description:"Help provide legal assistance to underserved communities alongside attorneys.",fields:["law","policy"],interestCodes:["S","E","C"],difficulty:"Accessible",url:""},
 ];
 
 // ============================================================
-// CAREER ENGINE
+// QUIZ QUESTIONS
 // ============================================================
-
 const questions = [
-  { id:"R1",section:1,type:"slider",text:"I enjoy figuring out how things work.",cat:"R" },
-  { id:"R2",section:1,type:"slider",text:"I like building or fixing things.",cat:"R" },
-  { id:"R3",section:1,type:"slider",text:"I would enjoy creating something that solves a real problem.",cat:"R" },
-  { id:"R4",section:1,type:"slider",text:"I like working with technology.",cat:"R" },
-  { id:"R5",section:1,type:"slider",text:"I would rather learn by doing something than only reading about it.",cat:"R" },
-  { id:"I1",section:1,type:"slider",text:"I enjoy solving difficult problems.",cat:"I" },
-  { id:"I2",section:1,type:"slider",text:"I get curious about how or why something works.",cat:"I" },
-  { id:"I3",section:1,type:"slider",text:"I enjoy researching things I am interested in.",cat:"I" },
-  { id:"I4",section:1,type:"slider",text:"I like finding answers to questions that don't have an obvious solution.",cat:"I" },
-  { id:"I5",section:1,type:"slider",text:"I enjoy subjects that challenge me to think deeply.",cat:"I" },
-  { id:"A1",section:1,type:"slider",text:"I enjoy creating things that other people can see or experience.",cat:"A" },
-  { id:"A2",section:1,type:"slider",text:"I often think of different ways to solve the same problem.",cat:"A" },
-  { id:"A3",section:1,type:"slider",text:"I care about how something looks, feels, or is presented.",cat:"A" },
-  { id:"A4",section:1,type:"slider",text:"I would enjoy turning an idea into something original.",cat:"A" },
-  { id:"S1",section:1,type:"slider",text:"I feel good when I help someone solve a problem.",cat:"S" },
-  { id:"S2",section:1,type:"slider",text:"I would enjoy teaching someone something I know.",cat:"S" },
-  { id:"S3",section:1,type:"slider",text:"I care about making a positive difference in people's lives.",cat:"S" },
-  { id:"S4",section:1,type:"slider",text:"I enjoy understanding why people think or act differently.",cat:"S" },
-  { id:"E1",section:1,type:"slider",text:"I enjoy taking charge when a group needs direction.",cat:"E" },
-  { id:"E2",section:1,type:"slider",text:"I would like to start my own project, organization, or business.",cat:"E" },
-  { id:"E3",section:1,type:"slider",text:"I enjoy convincing people to support an idea.",cat:"E" },
-  { id:"E4",section:1,type:"slider",text:"I like turning an idea into something successful.",cat:"E" },
-  { id:"C1",section:1,type:"slider",text:"I like organizing messy information.",cat:"C" },
-  { id:"C2",section:1,type:"slider",text:"I enjoy making plans.",cat:"C" },
-  { id:"C3",section:1,type:"slider",text:"I notice when a process could be improved.",cat:"C" },
-  { id:"C4",section:1,type:"slider",text:"I like knowing that things are accurate and organized.",cat:"C" },
-  { id:"EXP1",section:2,type:"choice",text:"Have you ever built something outside of a school assignment?" },
-  { id:"EXP2",section:2,type:"choice",text:"Have you ever joined a club because you were genuinely interested in it?" },
-  { id:"EXP3",section:2,type:"choice",text:"Have you ever led a group or project?" },
-  { id:"EXP4",section:2,type:"choice",text:"Have you ever started your own project?" },
-  { id:"EXP5",section:2,type:"choice",text:"Have you ever helped someone learn something?" },
-  { id:"EXP6",section:2,type:"choice",text:"Have you ever volunteered?" },
-  { id:"EXP7",section:2,type:"choice",text:"Have you ever participated in a competition?" },
-  { id:"EXP8",section:2,type:"choice",text:"Have you ever shadowed someone at their job?" },
-  { id:"EXP9",section:2,type:"choice",text:"Have you ever talked to someone about their career?" },
-  { id:"EXP10",section:2,type:"choice",text:"Have you ever taken an online course just because you were interested?" },
-  { id:"EXP11",section:2,type:"choice",text:"Have you ever made money from something you created or did?" },
-  { id:"P1",section:3,type:"slider",text:"I would be comfortable spending several years learning or training for a career." },
-  { id:"P2",section:3,type:"slider",text:"Having a high salary is important to me." },
-  { id:"P3",section:3,type:"slider",text:"Having free time outside of work is important to me." },
-  { id:"P4",section:3,type:"slider",text:"I would rather have a stable career than take big risks for greater rewards." },
-  { id:"P5",section:3,type:"slider",text:"I would enjoy working with people every day." },
-  { id:"P6",section:3,type:"slider",text:"I would enjoy spending a large amount of time solving problems independently." },
-  { id:"P7",section:3,type:"slider",text:"I want my work to make a noticeable difference in people's lives." },
-  { id:"RL1",section:4,type:"slider",text:"I would be okay with a job where I sometimes work long hours." },
-  { id:"RL2",section:4,type:"slider",text:"I would be comfortable speaking in front of groups." },
-  { id:"RL3",section:4,type:"slider",text:"I would enjoy sitting at a computer for several hours a day." },
-  { id:"RL4",section:4,type:"slider",text:"I would be comfortable making important decisions under pressure." },
-  { id:"RL5",section:4,type:"slider",text:"I would enjoy working with the same type of problem repeatedly and becoming an expert." },
-  { id:"RL6",section:4,type:"slider",text:"I would rather have a predictable routine than a job where every day is different." },
-  { id:"TRY1",section:5,type:"explore",text:"Would you try designing a robot to complete a challenge?" },
-  { id:"TRY2",section:5,type:"explore",text:"Would you try helping diagnose why something isn't working?" },
-  { id:"TRY3",section:5,type:"explore",text:"Would you try creating an app that solves a problem?" },
-  { id:"TRY4",section:5,type:"explore",text:"Would you try teaching younger students?" },
-  { id:"TRY5",section:5,type:"explore",text:"Would you try running a business for a month?" },
-  { id:"TRY6",section:5,type:"explore",text:"Would you try designing a social media campaign?" },
-  { id:"TRY7",section:5,type:"explore",text:"Would you try analyzing evidence to solve a mystery?" },
-  { id:"TRY8",section:5,type:"explore",text:"Would you try interviewing someone about their life?" },
-  { id:"TRY9",section:5,type:"explore",text:"Would you try designing a building?" },
-  { id:"TRY10",section:5,type:"explore",text:"Would you try conducting a science experiment?" },
-  { id:"TRY11",section:5,type:"explore",text:"Would you try organizing an event for hundreds of people?" },
+  {id:"R1",section:1,type:"slider",text:"I enjoy figuring out how things work.",cat:"R"},
+  {id:"R2",section:1,type:"slider",text:"I like building or fixing things.",cat:"R"},
+  {id:"R3",section:1,type:"slider",text:"I would enjoy creating something that solves a real problem.",cat:"R"},
+  {id:"R4",section:1,type:"slider",text:"I like working with technology.",cat:"R"},
+  {id:"R5",section:1,type:"slider",text:"I would rather learn by doing than only reading about it.",cat:"R"},
+  {id:"I1",section:1,type:"slider",text:"I enjoy solving difficult problems.",cat:"I"},
+  {id:"I2",section:1,type:"slider",text:"I get curious about how or why something works.",cat:"I"},
+  {id:"I3",section:1,type:"slider",text:"I enjoy researching things I'm interested in.",cat:"I"},
+  {id:"I4",section:1,type:"slider",text:"I like finding answers to questions without obvious solutions.",cat:"I"},
+  {id:"I5",section:1,type:"slider",text:"I enjoy subjects that challenge me to think deeply.",cat:"I"},
+  {id:"A1",section:1,type:"slider",text:"I enjoy creating things other people can see or experience.",cat:"A"},
+  {id:"A2",section:1,type:"slider",text:"I often think of different ways to solve the same problem.",cat:"A"},
+  {id:"A3",section:1,type:"slider",text:"I care about how something looks, feels, or is presented.",cat:"A"},
+  {id:"A4",section:1,type:"slider",text:"I would enjoy turning an idea into something original.",cat:"A"},
+  {id:"S1",section:1,type:"slider",text:"I feel good when I help someone solve a problem.",cat:"S"},
+  {id:"S2",section:1,type:"slider",text:"I would enjoy teaching someone something I know.",cat:"S"},
+  {id:"S3",section:1,type:"slider",text:"I care about making a positive difference in people's lives.",cat:"S"},
+  {id:"S4",section:1,type:"slider",text:"I enjoy understanding why people think or act differently.",cat:"S"},
+  {id:"E1",section:1,type:"slider",text:"I enjoy taking charge when a group needs direction.",cat:"E"},
+  {id:"E2",section:1,type:"slider",text:"I would like to start my own project, organization, or business.",cat:"E"},
+  {id:"E3",section:1,type:"slider",text:"I enjoy convincing people to support an idea.",cat:"E"},
+  {id:"E4",section:1,type:"slider",text:"I like turning an idea into something successful.",cat:"E"},
+  {id:"C1",section:1,type:"slider",text:"I like organizing messy information.",cat:"C"},
+  {id:"C2",section:1,type:"slider",text:"I enjoy making plans.",cat:"C"},
+  {id:"C3",section:1,type:"slider",text:"I notice when a process could be improved.",cat:"C"},
+  {id:"C4",section:1,type:"slider",text:"I like knowing that things are accurate and organized.",cat:"C"},
+  {id:"EXP1",section:2,type:"choice",text:"Have you ever built something outside of a school assignment?"},
+  {id:"EXP2",section:2,type:"choice",text:"Have you ever joined a club because you were genuinely interested in it?"},
+  {id:"EXP3",section:2,type:"choice",text:"Have you ever led a group or project?"},
+  {id:"EXP4",section:2,type:"choice",text:"Have you ever started your own project?"},
+  {id:"EXP5",section:2,type:"choice",text:"Have you ever helped someone learn something?"},
+  {id:"EXP6",section:2,type:"choice",text:"Have you ever volunteered?"},
+  {id:"EXP7",section:2,type:"choice",text:"Have you ever participated in a competition?"},
+  {id:"EXP8",section:2,type:"choice",text:"Have you ever shadowed someone at their job?"},
+  {id:"EXP9",section:2,type:"choice",text:"Have you ever talked to someone about their career?"},
+  {id:"EXP10",section:2,type:"choice",text:"Have you ever taken an online course just because you were interested?"},
+  {id:"EXP11",section:2,type:"choice",text:"Have you ever made money from something you created or did?"},
+  {id:"P1",section:3,type:"slider",text:"I'd be comfortable spending years training for a career I love."},
+  {id:"P2",section:3,type:"slider",text:"Having a high salary is important to me."},
+  {id:"P3",section:3,type:"slider",text:"Having free time outside of work is important to me."},
+  {id:"P4",section:3,type:"slider",text:"I'd rather have a stable career than take big risks for greater rewards."},
+  {id:"P5",section:3,type:"slider",text:"I'd enjoy working with people every day."},
+  {id:"P6",section:3,type:"slider",text:"I'd enjoy spending a lot of time solving problems independently."},
+  {id:"P7",section:3,type:"slider",text:"I want my work to make a noticeable difference in people's lives."},
+  {id:"RL1",section:4,type:"slider",text:"I'd be okay with a job where I sometimes work long hours."},
+  {id:"RL2",section:4,type:"slider",text:"I'd be comfortable speaking in front of groups."},
+  {id:"RL3",section:4,type:"slider",text:"I'd enjoy sitting at a computer for several hours a day."},
+  {id:"RL4",section:4,type:"slider",text:"I'd be comfortable making important decisions under pressure."},
+  {id:"RL5",section:4,type:"slider",text:"I'd enjoy becoming an expert at one type of problem."},
+  {id:"RL6",section:4,type:"slider",text:"I'd rather have a predictable routine than a job where every day is different."},
+  {id:"TRY1",section:5,type:"explore",text:"Would you try designing a robot to complete a challenge?"},
+  {id:"TRY2",section:5,type:"explore",text:"Would you try helping diagnose why something isn't working?"},
+  {id:"TRY3",section:5,type:"explore",text:"Would you try creating an app that solves a problem?"},
+  {id:"TRY4",section:5,type:"explore",text:"Would you try teaching younger students?"},
+  {id:"TRY5",section:5,type:"explore",text:"Would you try running a business for a month?"},
+  {id:"TRY6",section:5,type:"explore",text:"Would you try designing a social media campaign?"},
+  {id:"TRY7",section:5,type:"explore",text:"Would you try analyzing evidence to solve a mystery?"},
+  {id:"TRY8",section:5,type:"explore",text:"Would you try interviewing someone about their life?"},
+  {id:"TRY9",section:5,type:"explore",text:"Would you try designing a building?"},
+  {id:"TRY10",section:5,type:"explore",text:"Would you try conducting a science experiment?"},
+  {id:"TRY11",section:5,type:"explore",text:"Would you try organizing an event for hundreds of people?"},
 ];
 
-const SECTION_LABELS = ["Interests","Experience","Preferences","Career Reality","Exploration"];
-const SECTION_DESCS = [
-  "Rate how much each statement applies to you (0 = strongly disagree, 100 = strongly agree).",
-  "Tell us about your past experiences.",
-  "What matters to you in a career?",
-  "How do you feel about real-world job realities?",
-  "Would you try any of these activities?",
-];
+const SECTION_LABELS=["Interests","Experience","Preferences","Career Reality","Exploration"];
+const SECTION_DESCS=["Rate how much each statement applies to you.","Tell us about your past experiences.","What matters to you in a career?","How do you feel about real-world job realities?","Would you try any of these activities?"];
 
+// ============================================================
+// ENGINE
+// ============================================================
 function clamp(v,min=0,max=100){return Math.max(min,Math.min(max,v));}
 function avg(vals){return vals.length===0?0:vals.reduce((s,v)=>s+v,0)/vals.length;}
 
-function calcRiasec(answers) {
-  const totals={R:0,I:0,A:0,S:0,E:0,C:0}, counts={R:0,I:0,A:0,S:0,E:0,C:0};
-  for (const q of questions) {
-    if (q.section!==1||!q.cat) continue;
-    const a=answers[q.id];
-    if (typeof a!=="number") continue;
-    totals[q.cat]+=clamp(a); counts[q.cat]++;
-  }
-  return {
-    R:counts.R?Math.round(totals.R/counts.R):0,
-    I:counts.I?Math.round(totals.I/counts.I):0,
-    A:counts.A?Math.round(totals.A/counts.A):0,
-    S:counts.S?Math.round(totals.S/counts.S):0,
-    E:counts.E?Math.round(totals.E/counts.E):0,
-    C:counts.C?Math.round(totals.C/counts.C):0,
+function calcRiasec(answers){
+  const t={R:0,I:0,A:0,S:0,E:0,C:0},c={R:0,I:0,A:0,S:0,E:0,C:0};
+  for(const q of questions){if(q.section!==1||!q.cat)continue;const a=answers[q.id];if(typeof a!=="number")continue;t[q.cat]+=clamp(a);c[q.cat]++;}
+  return{R:c.R?Math.round(t.R/c.R):0,I:c.I?Math.round(t.I/c.I):0,A:c.A?Math.round(t.A/c.A):0,S:c.S?Math.round(t.S/c.S):0,E:c.E?Math.round(t.E/c.E):0,C:c.C?Math.round(t.C/c.C):0};
+}
+function top3(s){return Object.entries(s).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([c])=>c).join("");}
+function calcConf(answers){const ids=questions.filter(q=>q.section===2).map(q=>q.id);const tried=ids.filter(id=>answers[id]==="yes");return tried.length===0?10:Math.round(clamp((tried.length/ids.length)*100));}
+function simScore(u,c){const k=["R","I","A","S","E","C"];const d=k.reduce((s,k)=>s+Math.abs((u[k]??50)-(c[k]??50)),0);return clamp(100-(d/k.length));}
+function mLevel(s){if(s>=85)return{label:"Excellent Match",color:"#4ade80"};if(s>=72)return{label:"Strong Match",color:"#FF6B35"};if(s>=55)return{label:"Possible Match",color:"#FFE66D"};return{label:"Explore",color:"#888"};}
+
+function buildRoadmap(career){
+  return{
+    next30Days:[`Learn the basics of ${career.name}.`,`Try this: ${career.explorationActivities[0]}.`,"Talk to someone working in or near this field.","Research three real opportunities related to this career."],
+    next90Days:[`Complete a larger ${career.name}-related project.`,"Join a club, competition, or group connected to the field.","Apply to at least two relevant opportunities.",`Compare ${career.name} with related careers.`],
+    beforeChoosing:["Talk to someone currently working in the career.","Find out what a normal Tuesday looks like in this field.","Research education and training required.","Research salary ranges for entry-level and experienced workers.","Try the work yourself before making a major education decision."],
   };
 }
 
-function topThree(scores) {
-  return Object.entries(scores).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([c])=>c).join("");
-}
-
-function calcExplorationConfidence(answers) {
-  const expIds = questions.filter(q=>q.section===2).map(q=>q.id);
-  const tried = expIds.filter(id=>answers[id]==="yes");
-  if (tried.length===0) return 10;
-  return Math.round(clamp((tried.length/expIds.length)*100));
-}
-
-function similarityScore(userRiasec, careerRiasec) {
-  const keys=["R","I","A","S","E","C"];
-  const diff=keys.reduce((s,k)=>s+Math.abs((userRiasec[k]??50)-(careerRiasec[k]??50)),0);
-  return clamp(100-(diff/keys.length));
-}
-
-function matchLevel(score) {
-  if (score>=85) return "Excellent Match";
-  if (score>=72) return "Strong Match";
-  if (score>=55) return "Possible Match";
-  return "Explore";
-}
-
-function matchLevelColor(score) {
-  if (score>=85) return "#4ade80";
-  if (score>=72) return "#FF6B35";
-  if (score>=55) return "#FFE66D";
-  return "#888";
-}
-
-function buildRoadmap(career) {
-  return {
-    next30Days: [
-      `Learn the basics of ${career.name}.`,
-      `Complete one small activity: ${career.explorationActivities[0]}.`,
-      `Talk to at least one person working in or near ${career.name}.`,
-      `Research three real opportunities related to ${career.name}.`,
-    ],
-    next90Days: [
-      `Complete a larger ${career.name}-related project or experience.`,
-      "Join a club, competition, or volunteer group connected to the field.",
-      "Apply to at least two relevant opportunities.",
-      `Compare ${career.name} with at least two related careers: ${career.relatedCareers.slice(0,2).map(id=>CAREERS.find(c=>c.id===id)?.name||id).join(" and ")}.`,
-    ],
-    beforeChoosing: [
-      "Talk to someone currently working in the career.",
-      "Find out what a normal Tuesday actually looks like in this field.",
-      "Research the education and training required.",
-      "Research salary ranges for entry-level and experienced workers.",
-      "Identify the parts of the job that are less exciting.",
-      "Try the work yourself before making a major education decision.",
-    ],
-  };
-}
-
-function matchOpportunities(riasec, career) {
-  const code = topThree(riasec);
-  return OPPORTUNITIES.map(opp => {
-    const interestMatch = opp.interestCodes.filter(c=>code.includes(c)).length/Math.max(opp.interestCodes.length,1)*100;
-    const fieldMatch = opp.fields.includes("all")||opp.fields.some(f=>career.fields.includes(f))?80:40;
-    const score = Math.round(interestMatch*0.4+fieldMatch*0.6);
-    return {...opp, score};
+function matchOpps(riasec,career){
+  const code=top3(riasec);
+  return OPPORTUNITIES.map(o=>{
+    const im=o.interestCodes.filter(c=>code.includes(c)).length/Math.max(o.interestCodes.length,1)*100;
+    const fm=o.fields.includes("all")||o.fields.some(f=>career.fields.map(x=>x.toLowerCase()).includes(f))?80:40;
+    return{...o,score:Math.round(im*0.4+fm*0.6)};
   }).sort((a,b)=>b.score-a.score).slice(0,6);
 }
 
-function calculatePersonality(answers) {
-  const riasec = calcRiasec(answers);
-  const code = topThree(riasec);
-  const explorationConfidence = calcExplorationConfidence(answers);
-
-  const careerMatches = CAREERS.map(career => {
-    const score = Math.round(similarityScore(riasec, career.riasec));
-    return { ...career, score, matchLevel: matchLevel(score) };
-  }).sort((a,b)=>b.score-a.score);
-
-  const topCareer = careerMatches[0];
-  const roadmap = topCareer ? buildRoadmap(topCareer) : null;
-  const opportunities = topCareer ? matchOpportunities(riasec, topCareer) : [];
-
-  const topValues = [];
-  if ((answers.P7||0)>60) topValues.push("Impact");
-  if ((answers.P2||0)>60) topValues.push("Income");
-  if ((answers.P3||0)>60) topValues.push("Balance");
-  if ((answers.P6||0)>60) topValues.push("Independence");
-  if ((answers.P4||0)>60) topValues.push("Stability");
-  if (topValues.length===0) topValues.push("Growth","Discovery");
-
-  return { code, riasec, explorationConfidence, careerMatches, topValues, roadmap, opportunities };
+function calculatePersonality(answers){
+  const riasec=calcRiasec(answers);
+  const code=top3(riasec);
+  const explorationConfidence=calcConf(answers);
+  const careerMatches=CAREERS.map(c=>({...c,score:Math.round(simScore(riasec,c.riasec)),...mLevel(Math.round(simScore(riasec,c.riasec)))})).sort((a,b)=>b.score-a.score);
+  const topCareer=careerMatches[0];
+  const roadmap=topCareer?buildRoadmap(topCareer):null;
+  const opportunities=topCareer?matchOpps(riasec,topCareer):[];
+  const topValues=[];
+  if((answers.P7||0)>60)topValues.push("Impact");
+  if((answers.P2||0)>60)topValues.push("Income");
+  if((answers.P3||0)>60)topValues.push("Balance");
+  if((answers.P6||0)>60)topValues.push("Independence");
+  if((answers.P4||0)>60)topValues.push("Stability");
+  if(topValues.length===0)topValues.push("Growth","Discovery");
+  return{code,riasec,explorationConfidence,careerMatches,topValues,roadmap,opportunities};
 }
 
 // ============================================================
 // HOOKS
 // ============================================================
-
-function useInView(threshold=0.15) {
-  const ref=useRef(null); const [inView,setInView]=useState(false);
-  useEffect(()=>{
-    const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting)setInView(true);},{threshold});
-    if(ref.current)obs.observe(ref.current);
-    return()=>obs.disconnect();
-  },[]);
+function useInView(threshold=0.1){
+  const ref=useRef(null);const[inView,setInView]=useState(false);
+  useEffect(()=>{const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting)setInView(true);},{threshold});if(ref.current)obs.observe(ref.current);return()=>obs.disconnect();},[]);
   return[ref,inView];
 }
+
+// ============================================================
+// GLOBAL STYLES
+// ============================================================
+const G = `
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',system-ui,sans-serif;background:#080808;color:#fff;overflow-x:hidden;}
+  ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:#080808;}::-webkit-scrollbar-thumb{background:#FF6B35;border-radius:4px;}
+  ::selection{background:#FF6B3544;color:#fff;}
+  .fade-in{opacity:0;transform:translateY(24px);transition:opacity 0.7s ease,transform 0.7s ease;}
+  .fade-in.visible{opacity:1;transform:translateY(0);}
+  .slide-left{opacity:0;transform:translateX(-30px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .slide-left.visible{opacity:1;transform:translateX(0);}
+  input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;width:100%;}
+  input[type=range]::-webkit-slider-runnable-track{height:4px;background:#1e1e1e;border-radius:999px;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#FF6B35;margin-top:-9px;cursor:pointer;box-shadow:0 0 12px #FF6B3566;transition:transform 0.15s;}
+  input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.15);}
+  @keyframes pulse-slow{0%,100%{opacity:0.4;transform:scale(1);}50%{opacity:0.7;transform:scale(1.05);}}
+  @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+  @keyframes spin-slow{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+  @keyframes dot-pulse{0%,100%{opacity:0.3;}50%{opacity:1;}}
+  @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+`;
 
 // ============================================================
 // COMPONENTS
 // ============================================================
 
-function FeatureRow({f,i}) {
-  const[ref,inView]=useInView();
+function Logo(){
   return(
-    <div ref={ref} style={{display:"grid",gridTemplateColumns:"80px 1fr 1fr",gap:40,padding:"52px 0",borderBottom:"1px solid #141414",opacity:inView?1:0,transform:inView?"translateX(0)":"translateX(-30px)",transition:`all 0.7s cubic-bezier(.4,0,.2,1) ${i*0.15}s`}}>
-      <div style={{fontWeight:800,fontSize:14,color:"#333",paddingTop:6}}>{f.num}</div>
-      <div>
-        <div style={{color:"#FF6B35",fontSize:13,marginBottom:8}}>{f.sub}</div>
-        <h3 style={{fontWeight:700,fontSize:30,letterSpacing:-0.8,marginBottom:16}}>{f.title}</h3>
-        <p style={{color:"#666",lineHeight:1.7,fontSize:15,maxWidth:420}}>{f.desc}</p>
+    <div style={{display:"flex",alignItems:"center",gap:10,cursor:"pointer"}}>
+      <div style={{width:32,height:32,borderRadius:10,background:"linear-gradient(135deg,#FF6B35,#ff9a6c)",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px #FF6B3540"}}>
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M7 1L13 7L7 13M1 7H13" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
       </div>
-      <div style={{display:"flex",flexDirection:"column",gap:10,justifyContent:"center"}}>
-        {f.tags.map(t=>(
-          <div key={t} style={{display:"flex",alignItems:"center",gap:12}}>
-            <div style={{width:20,height:1,background:"#FF6B35"}}/>
-            <span style={{color:"#555",fontSize:14}}>{t}</span>
-          </div>
-        ))}
-      </div>
+      <span style={{fontWeight:800,fontSize:19,letterSpacing:-0.5,color:"#fff"}}>Pathways</span>
     </div>
   );
 }
 
-function TeamCard({name,role,desc}) {
-  const[hovered,setHovered]=useState(false);
+function Pill({children,color="#FF6B35"}){
   return(
-    <div onMouseEnter={()=>setHovered(true)} onMouseLeave={()=>setHovered(false)}
-      style={{flex:1,background:"#0d0d0d",border:`1px solid ${hovered?"#FF6B35":"#191919"}`,borderRadius:16,padding:"24px 20px",textAlign:"center",transition:"all 0.3s ease",cursor:"pointer"}}>
-      <div style={{width:52,height:52,borderRadius:"50%",background:"#1a1a1a",border:"1px solid #333",margin:"0 auto 14px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>👤</div>
-      <div style={{fontWeight:600,fontSize:15,marginBottom:4}}>{name}</div>
-      <div style={{color:"#555",fontSize:13,marginBottom:hovered?12:0,transition:"margin 0.3s"}}>{role}</div>
-      <div style={{overflow:"hidden",maxHeight:hovered?"80px":"0px",opacity:hovered?1:0,transition:"all 0.3s ease"}}>
-        <p style={{color:"#666",fontSize:13,lineHeight:1.6}}>{desc}</p>
-      </div>
+    <span style={{display:"inline-flex",alignItems:"center",gap:6,background:`${color}18`,border:`1px solid ${color}44`,borderRadius:999,padding:"5px 14px",color,fontSize:12,fontWeight:600,letterSpacing:0.5,textTransform:"uppercase"}}>
+      <span style={{width:5,height:5,borderRadius:"50%",background:color,display:"inline-block"}}/>
+      {children}
+    </span>
+  );
+}
+
+function Btn({children,onClick,variant="primary",style={}}){
+  const[hov,setHov]=useState(false);
+  const base={display:"inline-flex",alignItems:"center",gap:8,borderRadius:999,padding:"13px 28px",fontSize:15,fontWeight:600,cursor:"pointer",border:"none",transition:"all 0.25s ease",outline:"none",...style};
+  const styles={
+    primary:{...base,background:"#FF6B35",color:"#fff",boxShadow:hov?"0 8px 32px #FF6B3560":"0 4px 16px #FF6B3530",transform:hov?"translateY(-2px) scale(1.02)":"translateY(0) scale(1)"},
+    secondary:{...base,background:"transparent",color:"#888",border:"1px solid #222",transform:hov?"translateY(-1px)":"translateY(0)",color:hov?"#fff":"#888",borderColor:hov?"#444":"#222"},
+    ghost:{...base,background:"transparent",color:"#FF6B35",padding:"10px 20px",fontSize:14},
+  };
+  return<button style={styles[variant]||styles.primary} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={onClick}>{children}</button>;
+}
+
+// ── Auth ──────────────────────────────────────────────────────
+function AuthPage({mode}){
+  return(
+    <div style={{background:"#080808",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center"}}>
+      <style>{G}</style>
+      <div style={{marginBottom:40}}><Logo/></div>
+      {mode==="sign-in"?<SignIn routing="hash"/>:<SignUp routing="hash"/>}
     </div>
   );
 }
 
 // ── Quiz ──────────────────────────────────────────────────────
-function QuizFlow({onComplete}) {
-  const sectionQs=[1,2,3,4,5].map(s=>questions.filter(q=>q.section===s));
-  const[section,setSection]=useState(0);
-  const[qIndex,setQIndex]=useState(0);
-  const[answers,setAnswers]=useState({});
-  const[sliderVal,setSliderVal]=useState(50);
-  const[visible,setVisible]=useState(true);
+function QuizFlow({onComplete}){
+  const sQs=[1,2,3,4,5].map(s=>questions.filter(q=>q.section===s));
+  const[sec,setSec]=useState(0);
+  const[qi,setQi]=useState(0);
+  const[ans,setAns]=useState({});
+  const[sv,setSv]=useState(50);
+  const[vis,setVis]=useState(true);
 
-  const currentQ=sectionQs[section][qIndex];
-  const overallDone=[0,1,2,3,4].slice(0,section).reduce((s,i)=>s+sectionQs[i].length,0)+qIndex;
-  const progress=Math.round((overallDone/questions.length)*100);
+  const cq=sQs[sec][qi];
+  const done=[0,1,2,3,4].slice(0,sec).reduce((s,i)=>s+sQs[i].length,0)+qi;
+  const prog=Math.round((done/questions.length)*100);
 
-  function transition(fn){setVisible(false);setTimeout(()=>{fn();setVisible(true);},250);}
-
+  function go(fn){setVis(false);setTimeout(()=>{fn();setVis(true);},220);}
   function answer(val){
-    const newAnswers={...answers,[currentQ.id]:val};
-    setAnswers(newAnswers);
-    if(currentQ.type==="slider")setSliderVal(50);
-    transition(()=>{
-      if(qIndex<sectionQs[section].length-1){setQIndex(q=>q+1);}
-      else if(section<4){setSection(s=>s+1);setQIndex(0);}
-      else{onComplete(newAnswers);}
-    });
+    const na={...ans,[cq.id]:val};setAns(na);
+    if(cq.type==="slider")setSv(50);
+    go(()=>{if(qi<sQs[sec].length-1)setQi(q=>q+1);else if(sec<4){setSec(s=>s+1);setQi(0);}else onComplete(na);});
   }
-
-  function goBack(){
-    transition(()=>{
-      if(qIndex>0)setQIndex(q=>q-1);
-      else if(section>0){setSection(s=>s-1);setQIndex(sectionQs[section-1].length-1);}
-    });
-  }
+  function back(){go(()=>{if(qi>0)setQi(q=>q-1);else if(sec>0){setSec(s=>s-1);setQi(sQs[sec-1].length-1);}});}
 
   return(
-    <div style={{maxWidth:680,margin:"0 auto",padding:"0 0 40px"}}>
-      <div style={{marginBottom:36}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-          <span style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase"}}>Section {section+1} of 5 — {SECTION_LABELS[section]}</span>
-          <span style={{color:"#444",fontSize:13}}>{progress}% complete</span>
+    <div style={{maxWidth:640,margin:"0 auto",padding:"0 20px 60px"}}>
+      <style>{G}</style>
+      {/* Progress */}
+      <div style={{marginBottom:40}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
+          <span style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600}}>{SECTION_LABELS[sec]} · Section {sec+1} of 5</span>
+          <span style={{color:"#444",fontSize:13,fontWeight:500}}>{prog}%</span>
         </div>
-        <div style={{height:3,background:"#1a1a1a",borderRadius:999}}>
-          <div style={{height:"100%",background:"#FF6B35",borderRadius:999,width:`${progress}%`,transition:"width 0.4s ease"}}/>
+        <div style={{height:2,background:"#111",borderRadius:999,overflow:"hidden"}}>
+          <div style={{height:"100%",background:"linear-gradient(90deg,#FF6B35,#ff9a6c)",width:`${prog}%`,transition:"width 0.5s ease",borderRadius:999}}/>
         </div>
-        <p style={{color:"#444",fontSize:13,marginTop:10}}>{SECTION_DESCS[section]}</p>
+        <p style={{color:"#333",fontSize:13,marginTop:10}}>{SECTION_DESCS[sec]}</p>
       </div>
 
-      <div style={{opacity:visible?1:0,transform:visible?"translateY(0)":"translateY(16px)",transition:"all 0.25s ease"}}>
-        <div style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:24,padding:"36px 32px",marginBottom:24}}>
-          <div style={{color:"#444",fontSize:12,marginBottom:16}}>Q{qIndex+1} of {sectionQs[section].length}</div>
-          <p style={{fontSize:20,fontWeight:600,lineHeight:1.5,marginBottom:32,color:"#fff"}}>{currentQ.text}</p>
+      <div style={{opacity:vis?1:0,transform:vis?"translateY(0)":"translateY(12px)",transition:"all 0.22s ease"}}>
+        <div style={{background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:24,padding:"40px 36px",marginBottom:20,boxShadow:"0 20px 60px #00000060"}}>
+          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
+            <div style={{width:28,height:28,borderRadius:8,background:"#FF6B3520",border:"1px solid #FF6B3540",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#FF6B35",fontWeight:700}}>{qi+1}</div>
+            <span style={{color:"#333",fontSize:13}}>of {sQs[sec].length}</span>
+          </div>
+          <p style={{fontSize:21,fontWeight:600,lineHeight:1.5,marginBottom:36,color:"#f0f0f0",letterSpacing:-0.3}}>{cq.text}</p>
 
-          {currentQ.type==="slider"?(
+          {cq.type==="slider"?(
             <div>
-              <div style={{display:"flex",justifyContent:"space-between",marginBottom:12}}>
-                <span style={{color:"#555",fontSize:13}}>Strongly disagree</span>
-                <span style={{color:"#FF6B35",fontSize:15,fontWeight:700}}>{sliderVal}</span>
-                <span style={{color:"#555",fontSize:13}}>Strongly agree</span>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+                <span style={{color:"#333",fontSize:13}}>Strongly disagree</span>
+                <div style={{background:"#FF6B3520",border:"1px solid #FF6B3550",borderRadius:999,padding:"4px 16px"}}>
+                  <span style={{color:"#FF6B35",fontSize:16,fontWeight:700}}>{sv}</span>
+                </div>
+                <span style={{color:"#333",fontSize:13}}>Strongly agree</span>
               </div>
-              <input type="range" min={0} max={100} value={sliderVal} onChange={e=>setSliderVal(Number(e.target.value))}
-                style={{width:"100%",accentColor:"#FF6B35",cursor:"pointer",height:6}}/>
-              <div style={{display:"flex",justifyContent:"center",marginTop:24}}>
-                <button onClick={()=>answer(sliderVal)} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"13px 40px",fontSize:15,fontWeight:600,cursor:"pointer"}}>Next →</button>
+              <input type="range" min={0} max={100} value={sv} onChange={e=>setSv(Number(e.target.value))}/>
+              <div style={{display:"flex",justifyContent:"center",marginTop:28}}>
+                <Btn onClick={()=>answer(sv)}>Continue →</Btn>
               </div>
             </div>
           ):(
-            <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
-              {(currentQ.type==="explore"?["yes","no","maybe"]:["yes","no"]).map(opt=>(
-                <button key={opt} onClick={()=>answer(opt)}
-                  style={{flex:1,minWidth:100,background:"#0d0d0d",border:"1px solid #2a2a2a",color:"#ccc",borderRadius:14,padding:"14px 20px",fontSize:15,fontWeight:500,cursor:"pointer",textTransform:"capitalize"}}>
-                  {opt==="yes"?"✅ Yes":opt==="no"?"❌ No":"🤔 Maybe"}
-                </button>
-              ))}
+            <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
+              {(cq.type==="explore"?["yes","no","maybe"]:["yes","no"]).map(opt=>{
+                const icons={yes:"✓",no:"✗",maybe:"?"};
+                const colors={yes:"#4ade80",no:"#f87171",maybe:"#FFE66D"};
+                return(
+                  <button key={opt} onClick={()=>answer(opt)}
+                    style={{flex:1,minWidth:120,background:"#141414",border:"1px solid #222",color:"#ccc",borderRadius:16,padding:"16px 20px",fontSize:15,fontWeight:500,cursor:"pointer",transition:"all 0.2s",display:"flex",alignItems:"center",justifyContent:"center",gap:8}}
+                    onMouseEnter={e=>{e.currentTarget.style.borderColor=colors[opt];e.currentTarget.style.color=colors[opt];e.currentTarget.style.background=`${colors[opt]}18`;}}
+                    onMouseLeave={e=>{e.currentTarget.style.borderColor="#222";e.currentTarget.style.color="#ccc";e.currentTarget.style.background="#141414";}}>
+                    <span style={{fontSize:13,fontWeight:700}}>{icons[opt]}</span>
+                    <span style={{textTransform:"capitalize"}}>{opt==="yes"?"Yes":opt==="no"?"No":"Maybe"}</span>
+                  </button>
+                );
+              })}
             </div>
           )}
         </div>
-        {(section>0||qIndex>0)&&(
-          <button onClick={goBack} style={{background:"transparent",color:"#555",border:"1px solid #222",borderRadius:999,padding:"8px 20px",fontSize:13,cursor:"pointer"}}>← Back</button>
+        {(sec>0||qi>0)&&(
+          <button onClick={back} style={{background:"transparent",color:"#444",border:"none",fontSize:13,cursor:"pointer",padding:"8px 0",display:"flex",alignItems:"center",gap:6}}
+            onMouseEnter={e=>e.currentTarget.style.color="#888"} onMouseLeave={e=>e.currentTarget.style.color="#444"}>
+            ← Back
+          </button>
         )}
       </div>
     </div>
@@ -677,117 +347,125 @@ function QuizFlow({onComplete}) {
 }
 
 // ── Results ───────────────────────────────────────────────────
-function RatingRing({value,size=80,strokeWidth=5}) {
-  const r=(size/2)-strokeWidth, circ=2*Math.PI*r, dash=(value/100)*circ;
+function RatingRing({value,size=80,sw=5}){
+  const r=(size/2)-sw,circ=2*Math.PI*r,dash=(value/100)*circ;
+  const col=value>=85?"#4ade80":value>=72?"#FF6B35":value>=55?"#FFE66D":"#666";
   return(
     <div style={{position:"relative",width:size,height:size,flexShrink:0}}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{transform:"rotate(-90deg)"}}>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#2a2a2a" strokeWidth={strokeWidth}/>
-        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#FF6B35" strokeWidth={strokeWidth} strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" style={{transition:"stroke-dasharray 1.2s cubic-bezier(.4,0,.2,1)"}}/>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="#1a1a1a" strokeWidth={sw}/>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={col} strokeWidth={sw} strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" style={{transition:"stroke-dasharray 1.2s cubic-bezier(.4,0,.2,1)"}}/>
       </svg>
       <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column"}}>
         <span style={{fontSize:size*0.22,fontWeight:800,color:"#fff"}}>{value}</span>
-        <span style={{fontSize:size*0.1,color:"#888"}}>/100</span>
+        <span style={{fontSize:size*0.1,color:"#444"}}>/100</span>
       </div>
     </div>
   );
 }
 
-function ResultsView({result,onRetake,onChat}) {
+function ResultsView({result,onRetake,onChat}){
   const[tab,setTab]=useState("careers");
-  const[ref,inView]=useInView(0.05);
-  const riasecLabels={R:"Realistic",I:"Investigative",A:"Artistic",S:"Social",E:"Enterprising",C:"Conventional"};
+  const[ref,inView]=useInView();
+  const rl={R:"Realistic",I:"Investigative",A:"Artistic",S:"Social",E:"Enterprising",C:"Conventional"};
+  const[hovCard,setHovCard]=useState(null);
 
   return(
-    <div ref={ref} style={{maxWidth:780,margin:"0 auto",opacity:inView?1:0,transform:inView?"translateY(0)":"translateY(30px)",transition:"all 0.7s ease"}}>
+    <div ref={ref} style={{maxWidth:800,margin:"0 auto",opacity:inView?1:0,transform:inView?"translateY(0)":"translateY(30px)",transition:"all 0.8s ease",padding:"0 20px"}}>
+      <style>{G}</style>
       {/* Header */}
-      <div style={{textAlign:"center",marginBottom:32}}>
-        <div style={{display:"inline-block",background:"#FF6B3522",border:"1px solid #FF6B3566",borderRadius:999,padding:"6px 20px",marginBottom:12}}>
-          <span style={{color:"#FF6B35",fontWeight:700,fontSize:13,letterSpacing:1}}>{result.code}</span>
+      <div style={{textAlign:"center",marginBottom:36}}>
+        <div style={{display:"inline-flex",gap:8,marginBottom:16}}>
+          <Pill>{result.code} · Career Personality</Pill>
+          <Pill color="#4ade80">Confidence: {result.explorationConfidence}%</Pill>
         </div>
-        <h2 style={{fontWeight:800,fontSize:"clamp(24px,4vw,42px)",letterSpacing:-2,marginBottom:8}}>Your Career Personality</h2>
-        <p style={{color:"#555",fontSize:14}}>Top values: {result.topValues.join(" · ")} · Exploration confidence: {result.explorationConfidence}%</p>
+        <h2 style={{fontWeight:800,fontSize:"clamp(28px,4vw,48px)",letterSpacing:-2,marginBottom:10,lineHeight:1.1}}>Your Career Profile</h2>
+        <p style={{color:"#555",fontSize:15}}>Top values: {result.topValues.join(" · ")}</p>
       </div>
 
       {/* RIASEC */}
-      <div style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:20,padding:24,marginBottom:16}}>
-        <div style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",marginBottom:14}}>Interest Profile</div>
-        {Object.entries(result.riasec).map(([code,score])=>(
-          <div key={code} style={{display:"flex",alignItems:"center",gap:12,marginBottom:10}}>
-            <span style={{color:"#666",fontSize:13,width:100,flexShrink:0}}>{riasecLabels[code]}</span>
-            <div style={{flex:1,height:6,background:"#1a1a1a",borderRadius:999}}>
-              <div style={{height:"100%",background:"#FF6B35",borderRadius:999,width:`${score}%`,transition:"width 1s ease"}}/>
+      <div style={{background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:20,padding:"24px 28px",marginBottom:16,boxShadow:"0 8px 40px #00000040"}}>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:18}}>
+          <span style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600}}>Interest Profile · RIASEC</span>
+          <span style={{color:"#333",fontSize:12}}>Based on your answers</span>
+        </div>
+        {Object.entries(result.riasec).map(([c,s])=>(
+          <div key={c} style={{display:"flex",alignItems:"center",gap:14,marginBottom:11}}>
+            <span style={{color:"#444",fontSize:13,width:110,flexShrink:0}}>{rl[c]}</span>
+            <div style={{flex:1,height:4,background:"#141414",borderRadius:999,overflow:"hidden"}}>
+              <div style={{height:"100%",background:s>=70?"#FF6B35":s>=50?"#FF6B3580":"#333",borderRadius:999,width:`${s}%`,transition:"width 1.2s cubic-bezier(.4,0,.2,1)"}}/>
             </div>
-            <span style={{color:"#555",fontSize:13,width:36,textAlign:"right"}}>{score}</span>
+            <span style={{color:"#444",fontSize:13,width:30,textAlign:"right",fontWeight:600}}>{s}</span>
           </div>
         ))}
       </div>
 
       {/* Tabs */}
-      <div style={{display:"flex",gap:8,marginBottom:20}}>
-        {["careers","opportunities","roadmap"].map(t=>(
-          <button key={t} onClick={()=>setTab(t)}
-            style={{background:tab===t?"#FF6B35":"#111",color:tab===t?"#fff":"#555",border:`1px solid ${tab===t?"#FF6B35":"#222"}`,borderRadius:999,padding:"8px 20px",fontSize:13,fontWeight:600,cursor:"pointer",textTransform:"capitalize"}}>
-            {t==="careers"?"🎯 Careers":t==="opportunities"?"🚀 Opportunities":"🗺️ Roadmap"}
-          </button>
+      <div style={{display:"flex",gap:6,marginBottom:16,background:"#0a0a0a",border:"1px solid #141414",borderRadius:16,padding:6}}>
+        {[["careers","🎯 Careers"],["opportunities","🚀 Opportunities"],["roadmap","🗺️ Roadmap"]].map(([t,l])=>(
+          <button key={t} onClick={()=>setTab(t)} style={{flex:1,background:tab===t?"#FF6B35":"transparent",color:tab===t?"#fff":"#555",border:"none",borderRadius:12,padding:"10px 0",fontSize:13,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>{l}</button>
         ))}
       </div>
 
-      {/* Careers Tab */}
+      {/* Careers */}
       {tab==="careers"&&(
-        <div style={{display:"flex",flexDirection:"column",gap:14}}>
-          {result.careerMatches.slice(0,5).map((c,i)=>(
-            <div key={c.id} style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:20,padding:22,display:"flex",gap:18,alignItems:"flex-start"}}>
-              <RatingRing value={c.score}/>
-              <div style={{flex:1}}>
-                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:6,flexWrap:"wrap"}}>
-                  <span style={{fontWeight:700,fontSize:17}}>{c.name}</span>
-                  <span style={{background:matchLevelColor(c.score)+"22",color:matchLevelColor(c.score),fontSize:11,fontWeight:700,borderRadius:999,padding:"2px 10px"}}>{c.matchLevel}</span>
-                  {i===0&&<span style={{background:"#FF6B3522",color:"#FF6B35",fontSize:11,fontWeight:700,borderRadius:999,padding:"2px 10px"}}>Best Match</span>}
-                </div>
-                <p style={{color:"#666",fontSize:13,lineHeight:1.6,marginBottom:10}}>{c.description}</p>
-                <div style={{color:"#FF6B35",fontSize:11,letterSpacing:1,textTransform:"uppercase",marginBottom:6}}>Try This</div>
-                <p style={{color:"#888",fontSize:13}}>{c.explorationActivities[0]}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Opportunities Tab */}
-      {tab==="opportunities"&&(
         <div style={{display:"flex",flexDirection:"column",gap:12}}>
-          {result.opportunities.map(opp=>(
-            <div key={opp.id} style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:16,padding:20}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:8}}>
-                <div>
-                  <div style={{fontWeight:700,fontSize:15,marginBottom:2}}>{opp.name}</div>
-                  <div style={{color:"#555",fontSize:12}}>{opp.organization} · {opp.type} · {opp.difficulty}</div>
+          {result.careerMatches.slice(0,6).map((c,i)=>(
+            <div key={c.id} onMouseEnter={()=>setHovCard(i)} onMouseLeave={()=>setHovCard(null)}
+              style={{background:"#0e0e0e",border:`1px solid ${hovCard===i?"#FF6B3544":"#1a1a1a"}`,borderRadius:20,padding:"22px 24px",display:"flex",gap:18,alignItems:"flex-start",transform:hovCard===i?"translateY(-2px)":"translateY(0)",transition:"all 0.25s ease",cursor:"default",boxShadow:hovCard===i?"0 8px 40px #00000060":"none"}}>
+              <RatingRing value={c.score}/>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6,flexWrap:"wrap"}}>
+                  <span style={{fontWeight:700,fontSize:17,color:"#f0f0f0"}}>{c.name}</span>
+                  <span style={{background:`${c.color}18`,color:c.color,fontSize:11,fontWeight:700,borderRadius:999,padding:"2px 10px",border:`1px solid ${c.color}44`}}>{c.label}</span>
+                  {i===0&&<span style={{background:"#FF6B3520",color:"#FF6B35",fontSize:11,fontWeight:700,borderRadius:999,padding:"2px 10px",border:"1px solid #FF6B3544"}}>⭐ Best Match</span>}
                 </div>
-                <div style={{background:"#FF6B3522",color:"#FF6B35",fontSize:12,fontWeight:700,borderRadius:999,padding:"3px 12px",flexShrink:0}}>{opp.score}%</div>
+                <p style={{color:"#555",fontSize:13,lineHeight:1.6,marginBottom:10}}>{c.description}</p>
+                <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
+                  {c.fields.map(f=><span key={f} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#555",fontSize:11,borderRadius:999,padding:"3px 10px"}}>{f}</span>)}
+                  {c.tags?.slice(0,2).map(t=><span key={t} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#555",fontSize:11,borderRadius:999,padding:"3px 10px"}}>#{t}</span>)}
+                </div>
+                {c.explorationActivities&&<p style={{color:"#FF6B35",fontSize:13}}><span style={{color:"#444"}}>Try: </span>{c.explorationActivities[0]}</p>}
               </div>
-              <p style={{color:"#666",fontSize:13,lineHeight:1.6,marginBottom:10}}>{opp.description}</p>
-              {opp.url&&<a href={opp.url} target="_blank" rel="noopener noreferrer" style={{color:"#FF6B35",fontSize:13,textDecoration:"none"}}>Learn more →</a>}
-              {!opp.url&&<span style={{color:"#444",fontSize:13}}>Search online to find current openings</span>}
             </div>
           ))}
         </div>
       )}
 
-      {/* Roadmap Tab */}
+      {/* Opportunities */}
+      {tab==="opportunities"&&(
+        <div style={{display:"flex",flexDirection:"column",gap:10}}>
+          {result.opportunities.map(o=>(
+            <div key={o.id} style={{background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:16,padding:"20px 22px",display:"flex",gap:16,alignItems:"flex-start"}}>
+              <div style={{flexShrink:0,background:"#FF6B3515",border:"1px solid #FF6B3530",borderRadius:12,padding:"8px 12px",textAlign:"center",minWidth:52}}>
+                <div style={{color:"#FF6B35",fontSize:14,fontWeight:700}}>{o.score}%</div>
+                <div style={{color:"#444",fontSize:10}}>match</div>
+              </div>
+              <div style={{flex:1}}>
+                <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,flexWrap:"wrap"}}>
+                  <span style={{fontWeight:600,fontSize:15,color:"#f0f0f0"}}>{o.name}</span>
+                  <span style={{background:"#141414",border:"1px solid #222",color:"#555",fontSize:11,borderRadius:999,padding:"2px 8px"}}>{o.type}</span>
+                  <span style={{background:"#141414",border:"1px solid #222",color:"#555",fontSize:11,borderRadius:999,padding:"2px 8px"}}>{o.difficulty}</span>
+                </div>
+                <p style={{color:"#444",fontSize:12,marginBottom:4}}>{o.organization}</p>
+                <p style={{color:"#555",fontSize:13,lineHeight:1.5,marginBottom:8}}>{o.description}</p>
+                {o.url?<a href={o.url} target="_blank" rel="noopener noreferrer" style={{color:"#FF6B35",fontSize:13,textDecoration:"none",fontWeight:500}}>Learn more →</a>:<span style={{color:"#333",fontSize:13}}>Search online for current openings</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Roadmap */}
       {tab==="roadmap"&&result.roadmap&&(
-        <div style={{display:"flex",flexDirection:"column",gap:16}}>
-          {[
-            {label:"📅 Next 30 Days",items:result.roadmap.next30Days,color:"#4ade80"},
-            {label:"🗓️ Next 90 Days",items:result.roadmap.next90Days,color:"#FF6B35"},
-            {label:"✅ Before You Commit",items:result.roadmap.beforeChoosing,color:"#FFE66D"},
-          ].map(section=>(
-            <div key={section.label} style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:16,padding:22}}>
-              <div style={{color:section.color,fontSize:13,fontWeight:700,marginBottom:14}}>{section.label}</div>
-              {section.items.map((item,i)=>(
-                <div key={i} style={{display:"flex",gap:10,marginBottom:10,alignItems:"flex-start"}}>
-                  <div style={{width:6,height:6,borderRadius:"50%",background:section.color,flexShrink:0,marginTop:6}}/>
-                  <span style={{color:"#aaa",fontSize:14,lineHeight:1.6}}>{item}</span>
+        <div style={{display:"flex",flexDirection:"column",gap:12}}>
+          {[{label:"📅 Next 30 Days",items:result.roadmap.next30Days,col:"#4ade80"},{label:"🗓️ Next 90 Days",items:result.roadmap.next90Days,col:"#FF6B35"},{label:"✅ Before You Commit",items:result.roadmap.beforeChoosing,col:"#FFE66D"}].map(s=>(
+            <div key={s.label} style={{background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:16,padding:"22px 24px"}}>
+              <div style={{color:s.col,fontSize:13,fontWeight:700,marginBottom:14,display:"flex",alignItems:"center",gap:8}}>{s.label}</div>
+              {s.items.map((item,i)=>(
+                <div key={i} style={{display:"flex",gap:12,marginBottom:12,alignItems:"flex-start"}}>
+                  <div style={{width:20,height:20,borderRadius:6,background:`${s.col}20`,border:`1px solid ${s.col}40`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,fontSize:10,color:s.col,fontWeight:700}}>{i+1}</div>
+                  <span style={{color:"#888",fontSize:14,lineHeight:1.6}}>{item}</span>
                 </div>
               ))}
             </div>
@@ -795,386 +473,461 @@ function ResultsView({result,onRetake,onChat}) {
         </div>
       )}
 
-      <div style={{display:"flex",gap:12,flexWrap:"wrap",marginTop:24}}>
-        <button onClick={onRetake} style={{background:"transparent",color:"#555",border:"1px solid #222",borderRadius:999,padding:"12px 28px",fontSize:14,cursor:"pointer"}}>← Retake Quiz</button>
-        <button onClick={onChat} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"12px 28px",fontSize:14,fontWeight:600,cursor:"pointer"}}>Talk to Aria about your results →</button>
+      <div style={{display:"flex",gap:10,flexWrap:"wrap",marginTop:24}}>
+        <Btn variant="secondary" onClick={onRetake}>← Retake Quiz</Btn>
+        <Btn onClick={onChat}>Talk to Aria about your results →</Btn>
       </div>
     </div>
   );
 }
 
 // ── Aria Chat ─────────────────────────────────────────────────
-function TalkToUs({onBack,initialContext}) {
-  const greeting=initialContext
-    ?`Hi! I'm Aria 👋 I can see you got the **${initialContext.code}** personality type with top careers in ${initialContext.topCareers}. What would you like to explore?`
-    :"Hi! I'm Aria, your Pathways career counselor 👋 What personality code did you get from the quiz?";
-
-  const[messages,setMessages]=useState([{role:"assistant",text:greeting}]);
-  const[input,setInput]=useState("");
-  const[loading,setLoading]=useState(false);
-  const bottomRef=useRef(null);
-
-  useEffect(()=>{bottomRef.current?.scrollIntoView({behavior:"smooth"});},[messages,loading]);
+function TalkToUs({onBack,initialContext}){
+  const g=initialContext?`Hi! I'm Aria 👋 I can see you got the **${initialContext.code}** personality type with top careers in ${initialContext.topCareers}. What would you like to explore?`:"Hi! I'm Aria, your Pathways career counselor 👋 What personality code did you get from the quiz?";
+  const[msgs,setMsgs]=useState([{role:"assistant",text:g}]);
+  const[inp,setInp]=useState("");
+  const[load,setLoad]=useState(false);
+  const btm=useRef(null);
+  useEffect(()=>{btm.current?.scrollIntoView({behavior:"smooth"});},[msgs,load]);
 
   const send=async()=>{
-    const text=input.trim();
-    if(!text||loading)return;
-    setInput("");
-    const newMessages=[...messages,{role:"user",text}];
-    setMessages(newMessages);
-    setLoading(true);
+    const text=inp.trim();if(!text||load)return;
+    setInp("");const nm=[...msgs,{role:"user",text}];setMsgs(nm);setLoad(true);
     try{
-      const res=await fetch("https://pathways-backend-production.up.railway.app/api/chat",{
-        method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          messages:newMessages.map(m=>({role:m.role,content:m.text})),
-          pathway:initialContext?.code??null,
-          personalityName:initialContext?.code??null,
-          topCareers:initialContext?.topCareers??null,
-          topValues:initialContext?.topValues??null,
-        })
-      });
+      const res=await fetch("https://pathways-backend-production.up.railway.app/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({messages:nm.map(m=>({role:m.role,content:m.text})),pathway:initialContext?.code??null,personalityName:initialContext?.code??null,topCareers:initialContext?.topCareers??null,topValues:initialContext?.topValues??null})});
       const data=await res.json();
-      const reply=data.reply||"Sorry, something went wrong. Try again!";
-      setMessages(prev=>[...prev,{role:"assistant",text:reply}]);
-    }catch{
-      setMessages(prev=>[...prev,{role:"assistant",text:"Hmm, something went wrong. Give it another try!"}]);
-    }
-    setLoading(false);
+      setMsgs(prev=>[...prev,{role:"assistant",text:data.reply||"Sorry, something went wrong."}]);
+    }catch{setMsgs(prev=>[...prev,{role:"assistant",text:"Hmm, something went wrong. Give it another try!"}]);}
+    setLoad(false);
   };
 
-  const onKey=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}};
-
   return(
-    <div style={{background:"#0a0a0a",minHeight:"100vh",fontFamily:"system-ui,sans-serif",color:"#fff",display:"flex",flexDirection:"column"}}>
-      <nav style={{padding:"0 5%",height:68,display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid #1a1a1a",flexShrink:0}}>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <div style={{width:28,height:28,borderRadius:8,background:"#FF6B35",display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L13 7L7 13M1 7H13" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </div>
-          <span style={{fontWeight:800,fontSize:18}}>Pathways</span>
-        </div>
-        <button onClick={onBack} style={{background:"transparent",color:"#888",border:"1px solid #222",borderRadius:999,padding:"8px 20px",fontSize:14,cursor:"pointer"}}>← Back to Home</button>
+    <div style={{background:"#080808",minHeight:"100vh",display:"flex",flexDirection:"column"}}>
+      <style>{G}</style>
+      <nav style={{padding:"0 5%",height:68,display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid #111",flexShrink:0}}>
+        <Logo/>
+        <Btn variant="secondary" onClick={onBack} style={{padding:"8px 20px",fontSize:13}}>← Back</Btn>
       </nav>
-      <div style={{padding:"24px 5% 20px",borderBottom:"1px solid #111",flexShrink:0}}>
-        <div style={{maxWidth:720,margin:"0 auto",display:"flex",alignItems:"center",gap:16}}>
-          <div style={{width:48,height:48,borderRadius:"50%",background:"linear-gradient(135deg,#FF6B35,#ff9a6c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:22,flexShrink:0}}>✨</div>
+      <div style={{padding:"20px 5% 16px",borderBottom:"1px solid #0e0e0e",flexShrink:0}}>
+        <div style={{maxWidth:720,margin:"0 auto",display:"flex",alignItems:"center",gap:14}}>
+          <div style={{width:44,height:44,borderRadius:"50%",background:"linear-gradient(135deg,#FF6B35,#ff9a6c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0,boxShadow:"0 4px 20px #FF6B3540"}}>✨</div>
           <div>
-            <div style={{fontWeight:700,fontSize:18}}>Aria <span style={{color:"#FF6B35",fontSize:12,fontWeight:500,background:"#FF6B3522",border:"1px solid #FF6B3544",borderRadius:999,padding:"2px 10px",marginLeft:6}}>AI Counselor</span></div>
-            <div style={{color:"#555",fontSize:13,marginTop:2}}>Ask me anything about careers, internships, or your future path.</div>
+            <div style={{fontWeight:700,fontSize:17}}>Aria <span style={{color:"#FF6B35",fontSize:11,fontWeight:600,background:"#FF6B3518",border:"1px solid #FF6B3540",borderRadius:999,padding:"2px 10px",marginLeft:8}}>AI Counselor</span></div>
+            <div style={{color:"#444",fontSize:13}}>Ask about careers, internships, or your next step.</div>
           </div>
           <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:6}}>
-            <div style={{width:7,height:7,borderRadius:"50%",background:"#4ade80"}}/>
-            <span style={{color:"#555",fontSize:12}}>Online</span>
+            <div style={{width:7,height:7,borderRadius:"50%",background:"#4ade80",animation:"pulse-slow 2s infinite"}}/>
+            <span style={{color:"#444",fontSize:12}}>Online</span>
           </div>
         </div>
       </div>
       <div style={{flex:1,overflowY:"auto",padding:"28px 5%"}}>
-        <div style={{maxWidth:720,margin:"0 auto",display:"flex",flexDirection:"column",gap:20}}>
-          {messages.map((m,i)=>(
-            <div key={i} style={{display:"flex",gap:12,flexDirection:m.role==="user"?"row-reverse":"row",alignItems:"flex-end"}}>
-              {m.role==="assistant"&&<div style={{width:32,height:32,borderRadius:"50%",background:"linear-gradient(135deg,#FF6B35,#ff9a6c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,flexShrink:0}}>✨</div>}
-              <div style={{maxWidth:"75%",background:m.role==="user"?"#FF6B35":"#111",border:m.role==="user"?"none":"1px solid #1e1e1e",borderRadius:m.role==="user"?"18px 18px 4px 18px":"18px 18px 18px 4px",padding:"12px 16px",fontSize:14,lineHeight:1.6,color:"#fff",whiteSpace:"pre-wrap"}}>{m.text}</div>
+        <div style={{maxWidth:720,margin:"0 auto",display:"flex",flexDirection:"column",gap:18}}>
+          {msgs.map((m,i)=>(
+            <div key={i} style={{display:"flex",gap:10,flexDirection:m.role==="user"?"row-reverse":"row",alignItems:"flex-end"}}>
+              {m.role==="assistant"&&<div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#FF6B35,#ff9a6c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,flexShrink:0}}>✨</div>}
+              <div style={{maxWidth:"78%",background:m.role==="user"?"#FF6B35":"#0e0e0e",border:m.role==="user"?"none":"1px solid #1a1a1a",borderRadius:m.role==="user"?"18px 18px 4px 18px":"18px 18px 18px 4px",padding:"12px 16px",fontSize:14,lineHeight:1.65,color:"#f0f0f0",whiteSpace:"pre-wrap"}}>{m.text}</div>
             </div>
           ))}
-          {loading&&(
-            <div style={{display:"flex",gap:12,alignItems:"flex-end"}}>
-              <div style={{width:32,height:32,borderRadius:"50%",background:"linear-gradient(135deg,#FF6B35,#ff9a6c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:14,flexShrink:0}}>✨</div>
-              <div style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:"18px 18px 18px 4px",padding:"14px 18px",display:"flex",gap:5}}>
-                {[0,1,2].map(i=><div key={i} style={{width:7,height:7,borderRadius:"50%",background:"#FF6B35",animation:`pulse 1.2s ease-in-out ${i*0.2}s infinite`}}/>)}
-              </div>
-            </div>
-          )}
-          <div ref={bottomRef}/>
+          {load&&<div style={{display:"flex",gap:10,alignItems:"flex-end"}}><div style={{width:30,height:30,borderRadius:"50%",background:"linear-gradient(135deg,#FF6B35,#ff9a6c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,flexShrink:0}}>✨</div><div style={{background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:"18px 18px 18px 4px",padding:"14px 18px",display:"flex",gap:5}}>{[0,1,2].map(i=><div key={i} style={{width:6,height:6,borderRadius:"50%",background:"#FF6B35",animation:`dot-pulse 1.2s ease-in-out ${i*0.2}s infinite`}}/>)}</div></div>}
+          <div ref={btm}/>
         </div>
       </div>
-      <div style={{padding:"16px 5% 24px",borderTop:"1px solid #111",flexShrink:0}}>
+      <div style={{padding:"14px 5% 22px",borderTop:"1px solid #0e0e0e",flexShrink:0}}>
         <div style={{maxWidth:720,margin:"0 auto",display:"flex",gap:10,alignItems:"flex-end"}}>
-          <textarea value={input} onChange={e=>setInput(e.target.value)} onKeyDown={onKey} placeholder="Ask Aria anything..." rows={1}
-            style={{flex:1,background:"#0d0d0d",border:"1px solid #222",borderRadius:14,padding:"13px 16px",color:"#fff",fontSize:14,outline:"none",resize:"none",fontFamily:"system-ui,sans-serif",lineHeight:1.5}}/>
-          <button onClick={send} disabled={!input.trim()||loading}
-            style={{background:input.trim()&&!loading?"#FF6B35":"#1a1a1a",color:input.trim()&&!loading?"#fff":"#444",border:"none",borderRadius:12,width:46,height:46,fontSize:18,cursor:input.trim()&&!loading?"pointer":"default",transition:"all 0.2s",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center"}}>→</button>
+          <textarea value={inp} onChange={e=>setInp(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}} placeholder="Ask Aria anything..." rows={1}
+            style={{flex:1,background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:14,padding:"13px 16px",color:"#f0f0f0",fontSize:14,outline:"none",resize:"none",fontFamily:"inherit",lineHeight:1.5}}/>
+          <button onClick={send} disabled={!inp.trim()||load}
+            style={{background:inp.trim()&&!load?"#FF6B35":"#111",color:inp.trim()&&!load?"#fff":"#333",border:"none",borderRadius:12,width:46,height:46,fontSize:16,cursor:inp.trim()&&!load?"pointer":"default",transition:"all 0.2s",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:inp.trim()&&!load?"0 4px 16px #FF6B3540":"none"}}>→</button>
         </div>
-        <div style={{maxWidth:720,margin:"8px auto 0",color:"#333",fontSize:12,textAlign:"center"}}>Press Enter to send · Shift+Enter for new line</div>
+        <div style={{maxWidth:720,margin:"8px auto 0",color:"#222",fontSize:12,textAlign:"center"}}>Enter to send · Shift+Enter for new line</div>
       </div>
     </div>
   );
 }
 
-function OurStory({onBack}) {
+// ── Our Story ─────────────────────────────────────────────────
+function OurStory({onBack}){
   return(
-    <div style={{background:"#0a0a0a",minHeight:"100vh",fontFamily:"system-ui,sans-serif",color:"#fff"}}>
-      <nav style={{padding:"0 5%",height:68,display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid #1a1a1a"}}>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <div style={{width:28,height:28,borderRadius:8,background:"#FF6B35",display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L13 7L7 13M1 7H13" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </div>
-          <span style={{fontWeight:800,fontSize:18}}>Pathways</span>
-        </div>
-        <button onClick={onBack} style={{background:"transparent",color:"#888",border:"1px solid #222",borderRadius:999,padding:"8px 20px",fontSize:14,cursor:"pointer"}}>← Back to Home</button>
+    <div style={{background:"#080808",minHeight:"100vh",color:"#fff"}}>
+      <style>{G}</style>
+      <nav style={{padding:"0 5%",height:68,display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid #111"}}>
+        <Logo/><Btn variant="secondary" onClick={onBack} style={{padding:"8px 20px",fontSize:13}}>← Back</Btn>
       </nav>
-      <section style={{padding:"80px 5% 60px",maxWidth:900,margin:"0 auto"}}>
-        <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"#141414",border:"1px solid #222",borderRadius:999,padding:"6px 16px",marginBottom:28}}>
-          <div style={{width:6,height:6,borderRadius:"50%",background:"#FF6B35"}}/>
-          <span style={{color:"#888",fontSize:13}}>Who we are</span>
-        </div>
-        <h1 style={{fontWeight:800,fontSize:"clamp(48px,7vw,86px)",lineHeight:1.0,letterSpacing:-3,marginBottom:24}}>Built by students,<br/>for <span style={{color:"#FF6B35"}}>students.</span></h1>
-        <p style={{color:"#666",fontSize:18,lineHeight:1.8,maxWidth:580,fontWeight:300}}>We got tired of watching our peers pick careers based on salary charts and parental pressure — with no real sense of what their future actually looked like day-to-day. So we built Pathways.</p>
+      <section style={{padding:"80px 5% 60px",maxWidth:860,margin:"0 auto"}}>
+        <Pill style={{marginBottom:28}}>Who we are</Pill>
+        <h1 style={{fontWeight:800,fontSize:"clamp(44px,7vw,80px)",lineHeight:1.0,letterSpacing:-3,marginBottom:24,marginTop:20}}>Built by students,<br/>for <span style={{color:"#FF6B35"}}>students.</span></h1>
+        <p style={{color:"#555",fontSize:18,lineHeight:1.8,maxWidth:560,fontWeight:300}}>We got tired of watching our peers pick careers based on salary charts and parental pressure — with no real sense of what their future actually looked like day-to-day. So we built Pathways.</p>
       </section>
-      <section style={{padding:"20px 5% 80px",maxWidth:900,margin:"0 auto"}}>
-        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20,marginBottom:48}}>
-          {[{year:"2023",title:"The Problem",desc:"We watched our peers pick majors based on salary charts and parental pressure — with no real sense of what the day-to-day looked like.",icon:"🔍"},{year:"2024",title:"The Idea",desc:"We started building a simple quiz. It turned into a full platform — matching interests to careers, internships, and real field experiences.",icon:"💡"},{year:"2025",title:"First Students",desc:"We launched a beta with 200 students across 12 schools. 97% said they found clearer direction within a single session.",icon:"🚀"},{year:"2026",title:"Today",desc:"Pathways is growing. We're expanding our internship network, adding AI-powered guidance, and partnering with schools nationwide.",icon:"🌍"}].map(item=>(
-            <div key={item.year} style={{background:"#0d0d0d",border:"1px solid #191919",borderRadius:20,padding:"32px 28px"}}>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16}}>
-                <div style={{color:"#FF6B35",fontSize:12,letterSpacing:2,textTransform:"uppercase"}}>{item.year}</div>
-                <span style={{fontSize:22}}>{item.icon}</span>
+      <section style={{padding:"0 5% 80px",maxWidth:860,margin:"0 auto"}}>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:40}}>
+          {[{year:"2023",title:"The Problem",desc:"Students were picking majors based on salary charts and parental pressure — with no real sense of what the day-to-day looked like.",icon:"🔍"},{year:"2024",title:"The Idea",desc:"A simple quiz turned into a full platform — matching interests to careers, internships, and real field experiences.",icon:"💡"},{year:"2025",title:"First Students",desc:"We launched a beta with 200 students across 12 schools. 97% said they found clearer direction within a single session.",icon:"🚀"},{year:"2026",title:"Today",desc:"Pathways is growing. We're expanding our career database, refining our AI counselor, and partnering with schools nationwide.",icon:"🌍"}].map(item=>(
+            <div key={item.year} style={{background:"#0e0e0e",border:"1px solid #161616",borderRadius:20,padding:"28px 24px"}}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
+                <span style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600}}>{item.year}</span>
+                <span style={{fontSize:20}}>{item.icon}</span>
               </div>
-              <h3 style={{fontWeight:700,fontSize:22,marginBottom:12}}>{item.title}</h3>
-              <p style={{color:"#555",fontSize:14,lineHeight:1.8}}>{item.desc}</p>
+              <h3 style={{fontWeight:700,fontSize:20,marginBottom:10}}>{item.title}</h3>
+              <p style={{color:"#444",fontSize:14,lineHeight:1.7}}>{item.desc}</p>
             </div>
           ))}
         </div>
-        <div style={{background:"#FF6B35",borderRadius:24,padding:"40px 44px",display:"flex",gap:28,alignItems:"center",marginBottom:48}}>
-          <div style={{fontSize:40,flexShrink:0}}>🎯</div>
+        <div style={{background:"linear-gradient(135deg,#FF6B35,#e05a28)",borderRadius:24,padding:"36px 40px",display:"flex",gap:24,alignItems:"center",marginBottom:40,boxShadow:"0 20px 60px #FF6B3530"}}>
+          <div style={{fontSize:36,flexShrink:0}}>🎯</div>
           <div>
-            <div style={{fontWeight:800,fontSize:22,marginBottom:10}}>Our Mission</div>
-            <p style={{color:"rgba(255,255,255,0.8)",fontSize:15,lineHeight:1.7}}>Every student deserves to explore their future before committing to it. Pathways exists to make that possible — regardless of background, school, or zip code.</p>
+            <div style={{fontWeight:800,fontSize:20,marginBottom:8}}>Our Mission</div>
+            <p style={{color:"rgba(255,255,255,0.85)",fontSize:15,lineHeight:1.7}}>Every student deserves to explore their future before committing to it. Pathways exists to make that possible — regardless of background, school, or zip code.</p>
           </div>
         </div>
         <div>
-          <div style={{color:"#FF6B35",fontSize:11,letterSpacing:3,textTransform:"uppercase",marginBottom:20}}>The Team</div>
-          <div style={{display:"flex",gap:16}}>
-            {[{name:"Coming Soon",role:"Founder",desc:"Placeholder description for the Founder."},{name:"Coming Soon",role:"Co-Founder",desc:"Placeholder description for the Co-Founder."}].map(p=>(
-              <TeamCard key={p.role} {...p}/>
+          <div style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600,marginBottom:16}}>The Team</div>
+          <div style={{display:"flex",gap:14}}>
+            {[{name:"Coming Soon",role:"Founder"},{name:"Coming Soon",role:"Co-Founder"}].map(p=>(
+              <div key={p.role} style={{flex:1,background:"#0e0e0e",border:"1px solid #161616",borderRadius:16,padding:"22px 18px",textAlign:"center"}}>
+                <div style={{width:48,height:48,borderRadius:"50%",background:"#141414",border:"1px solid #222",margin:"0 auto 12px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>👤</div>
+                <div style={{fontWeight:600,fontSize:14,marginBottom:3}}>{p.name}</div>
+                <div style={{color:"#444",fontSize:13}}>{p.role}</div>
+              </div>
             ))}
           </div>
         </div>
       </section>
-      <footer style={{borderTop:"1px solid #111",padding:"32px 5%",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-        <span style={{fontWeight:700,fontSize:15}}>Pathways</span>
-        <span style={{color:"#333",fontSize:13}}>Helping the next generation find their direction.</span>
+      <footer style={{borderTop:"1px solid #0e0e0e",padding:"28px 5%",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+        <Logo/><span style={{color:"#222",fontSize:13}}>Helping the next generation find their direction.</span>
       </footer>
     </div>
   );
 }
 
-// ── Auth ──────────────────────────────────────────────────────
-function AuthPage({mode}) {
-  return(
-    <div style={{background:"#0a0a0a",minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",fontFamily:"system-ui,sans-serif"}}>
-      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:40}}>
-        <div style={{width:28,height:28,borderRadius:8,background:"#FF6B35",display:"flex",alignItems:"center",justifyContent:"center"}}>
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L13 7L7 13M1 7H13" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-        </div>
-        <span style={{fontWeight:800,fontSize:20,color:"#fff"}}>Pathways</span>
-      </div>
-      {mode==="sign-in"?<SignIn routing="hash"/>:<SignUp routing="hash"/>}
-    </div>
-  );
-}
-
-function AppContent() {
+// ── AppContent ────────────────────────────────────────────────
+function AppContent(){
   const{isSignedIn,isLoaded}=useUser();
   const[authMode,setAuthMode]=useState(null);
-  if(!isLoaded)return(<div style={{background:"#0a0a0a",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}><div style={{color:"#FF6B35",fontSize:16}}>Loading...</div></div>);
+  if(!isLoaded)return(<div style={{background:"#080808",minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center"}}><style>{G}</style><div style={{color:"#FF6B35",fontSize:15}}>Loading...</div></div>);
   if(authMode==="sign-in")return<AuthPage mode="sign-in"/>;
   if(authMode==="sign-up")return<AuthPage mode="sign-up"/>;
   return<Pathways isSignedIn={isSignedIn} onSignIn={()=>setAuthMode("sign-in")} onSignUp={()=>setAuthMode("sign-up")}/>;
 }
 
-export default function App() {
+export default function App(){
+  return<ClerkProvider publishableKey={CLERK_KEY}><AppContent/></ClerkProvider>;
+}
+
+// ── Pathway Visualization SVG ─────────────────────────────────
+function PathwayViz(){
+  const nodes=[
+    {x:50,y:50,label:"YOU",size:14,main:true},
+    {x:20,y:20,label:"Tech",size:8},{x:80,y:20,label:"Health",size:8},
+    {x:10,y:50,label:"Law",size:8},{x:90,y:50,label:"Science",size:8},
+    {x:20,y:80,label:"Arts",size:8},{x:80,y:80,label:"Business",size:8},
+  ];
   return(
-    <ClerkProvider publishableKey={CLERK_KEY}>
-      <AppContent/>
-    </ClerkProvider>
+    <svg viewBox="0 0 100 100" style={{width:"100%",height:"100%",opacity:0.35}} preserveAspectRatio="xMidYMid meet">
+      {nodes.slice(1).map((n,i)=>(
+        <line key={i} x1="50" y1="50" x2={n.x} y2={n.y} stroke="#FF6B35" strokeWidth="0.3" strokeDasharray="1,2" opacity="0.5"/>
+      ))}
+      {nodes.map((n,i)=>(
+        <g key={i}>
+          <circle cx={n.x} cy={n.y} r={n.size} fill={n.main?"#FF6B35":"#FF6B3520"} stroke={n.main?"#FF6B35":"#FF6B3560"} strokeWidth="0.5"
+            style={{animation:`pulse-slow ${2+i*0.3}s ease-in-out infinite`,transformOrigin:`${n.x}px ${n.y}px`}}/>
+          {!n.main&&<text x={n.x} y={n.y+0.5} textAnchor="middle" dominantBaseline="middle" fill="#FF6B35" fontSize="3.5" fontWeight="600" opacity="0.8">{n.label}</text>}
+          {n.main&&<text x={n.x} y={n.y+0.5} textAnchor="middle" dominantBaseline="middle" fill="#fff" fontSize="4" fontWeight="800">YOU</text>}
+        </g>
+      ))}
+    </svg>
   );
 }
 
-// ── Main App ──────────────────────────────────────────────────
-function Pathways({isSignedIn,onSignIn,onSignUp}) {
-  const[page,setPage]=useState("home");
-  const[quizStep,setQuizStep]=useState("intro");
-  const[result,setResult]=useState(null);
-  const[ariaContext,setAriaContext]=useState(null);
-  const[scrollY,setScrollY]=useState(0);
-  const[featRef,featInView]=useInView(0.1);
+// ── Career Preview Cards ──────────────────────────────────────
+function CareerPreviewCard({career}){
+  const[hov,setHov]=useState(false);
+  return(
+    <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)}
+      style={{background:"#0e0e0e",border:`1px solid ${hov?"#FF6B3544":"#141414"}`,borderRadius:20,padding:"24px 22px",transition:"all 0.3s ease",transform:hov?"translateY(-4px)":"translateY(0)",boxShadow:hov?"0 16px 48px #00000060":"none",cursor:"default",flex:1,minWidth:220}}>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
+        <div>
+          <div style={{fontWeight:700,fontSize:16,color:"#f0f0f0",marginBottom:4}}>{career.name}</div>
+          <div style={{color:"#444",fontSize:12}}>{career.fields[0]}</div>
+        </div>
+        <span style={{color:"#FF6B35",fontSize:18,transition:"transform 0.3s",transform:hov?"translateX(3px)":"translateX(0)"}}>→</span>
+      </div>
+      <p style={{color:"#444",fontSize:13,lineHeight:1.6,marginBottom:14}}>{career.description}</p>
+      <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
+        {career.skills?.slice(0,3).map(s=><span key={s} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#555",fontSize:11,borderRadius:999,padding:"3px 10px"}}>{s}</span>)}
+      </div>
+      {hov&&<div style={{marginTop:14,paddingTop:14,borderTop:"1px solid #1a1a1a"}}>
+        <div style={{color:"#FF6B35",fontSize:11,fontWeight:600,letterSpacing:0.5,textTransform:"uppercase",marginBottom:6}}>Try This</div>
+        <p style={{color:"#555",fontSize:12,lineHeight:1.5}}>{career.explorationActivities[0]}</p>
+      </div>}
+    </div>
+  );
+}
 
-  useEffect(()=>{
-    const onScroll=()=>setScrollY(window.scrollY);
-    window.addEventListener("scroll",onScroll);
-    return()=>window.removeEventListener("scroll",onScroll);
-  },[]);
+// ── Main Home ─────────────────────────────────────────────────
+function Pathways({isSignedIn,onSignIn,onSignUp}){
+  const[page,setPage]=useState("home");
+  const[step,setStep]=useState("intro");
+  const[result,setResult]=useState(null);
+  const[ctx,setCtx]=useState(null);
+  const[scrollY,setScrollY]=useState(0);
+  const[heroRef,heroInView]=useInView(0.1);
+  const[howRef,howInView]=useInView(0.1);
+  const[prevRef,prevInView]=useInView(0.1);
+  const[ctaRef,ctaInView]=useInView(0.1);
+
+  useEffect(()=>{const s=()=>setScrollY(window.scrollY);window.addEventListener("scroll",s);return()=>window.removeEventListener("scroll",s);},[]);
 
   if(page==="ourstory")return<OurStory onBack={()=>setPage("home")}/>;
-  if(page==="talktous")return<TalkToUs onBack={()=>setPage("home")} initialContext={ariaContext}/>;
+  if(page==="talktous")return<TalkToUs onBack={()=>setPage("home")} initialContext={ctx}/>;
 
   const scrollTo=id=>document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
 
-  async function handleQuizComplete(answers) {
+  async function handleQuizComplete(answers){
     const r=calculatePersonality(answers);
-    setResult(r);
-    setQuizStep("result");
+    setResult(r);setStep("result");
     if(isSignedIn){
-      try{
-        await supabase.from("quiz_results").insert({
-          user_id:"clerk_user",
-          personality_code:r.code,
-          personality_name:r.code,
-          riasec:r.riasec,
-          top_values:r.topValues,
-          career_matches:r.careerMatches.slice(0,3).map(c=>({id:c.id,name:c.name,score:c.score})),
-        });
-      }catch(e){console.error("Save failed:",e);}
+      try{await supabase.from("quiz_results").insert({user_id:"clerk_user",personality_code:r.code,personality_name:r.code,riasec:r.riasec,top_values:r.topValues,career_matches:r.careerMatches.slice(0,3).map(c=>({id:c.id,name:c.name,score:c.score}))});}
+      catch(e){console.error("Save failed:",e);}
     }
   }
 
-  function handleChatFromResult(){
-    if(result){
-      setAriaContext({
-        code:result.code,
-        topCareers:result.careerMatches.slice(0,3).map(c=>c.name).join(", "),
-        topValues:result.topValues.join(", "),
-      });
-    }
+  function handleChat(){
+    if(result)setCtx({code:result.code,topCareers:result.careerMatches.slice(0,3).map(c=>c.name).join(", "),topValues:result.topValues.join(", ")});
     setPage("talktous");
   }
 
-  const stats=[{num:"25+",label:"Career Paths Mapped"},{num:"97%",label:"Find Clearer Direction"},{num:"15+",label:"Opportunities Matched"}];
-  const features=[
-    {num:"01",title:"Career Discovery",sub:"Know yourself first.",desc:"Answer 57 questions across 5 sections. We score your RIASEC personality type and match you to careers that actually fit — not just the ones that pay well.",tags:["RIASEC scoring","Personality fit","25+ careers"]},
-    {num:"02",title:"Opportunity Matching",sub:"Connections, made for you.",desc:"Get matched to real internships, research programs, competitions, and job shadows based on your results.",tags:["Internships","Research programs","Competitions"]},
-    {num:"03",title:"Your Roadmap",sub:"A plan, not just a result.",desc:"Walk away with a 30-day and 90-day action plan specific to your top career match — with real next steps.",tags:["30-day plan","90-day plan","Before you commit"]},
-  ];
+  const previewCareers=["career_software_engineer","career_ux_designer","career_biomedical_researcher","career_entrepreneur"].map(id=>CAREERS.find(c=>c.id===id)).filter(Boolean);
 
   return(
-    <div style={{background:"#0a0a0a",minHeight:"100vh",fontFamily:"system-ui,sans-serif",color:"#fff",overflowX:"hidden"}}>
-      <style>{`
-        *{box-sizing:border-box;margin:0;padding:0;}
-        ::-webkit-scrollbar{width:4px;}::-webkit-scrollbar-track{background:#0a0a0a;}::-webkit-scrollbar-thumb{background:#FF6B35;border-radius:4px;}
-        .nav-link:hover{color:#FF6B35!important;}
-        .cta-btn:hover{background:#e05a28!important;transform:translateY(-1px);}
-        input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;}
-        input[type=range]::-webkit-slider-runnable-track{height:6px;background:#2a2a2a;border-radius:999px;}
-        input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:#FF6B35;margin-top:-7px;cursor:pointer;}
-        @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
-      `}</style>
+    <div style={{background:"#080808",minHeight:"100vh",color:"#fff",overflowX:"hidden"}}>
+      <style>{G}</style>
 
-      <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:100,padding:"0 5%",background:scrollY>40?"rgba(10,10,10,0.92)":"transparent",backdropFilter:scrollY>40?"blur(16px)":"none",borderBottom:scrollY>40?"1px solid #1a1a1a":"none",transition:"all 0.4s ease",display:"flex",alignItems:"center",justifyContent:"space-between",height:68}}>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <div style={{width:28,height:28,borderRadius:8,background:"#FF6B35",display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1L13 7L7 13M1 7H13" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-          </div>
-          <span style={{fontWeight:800,fontSize:18,letterSpacing:-0.5}}>Pathways</span>
-        </div>
-        <div style={{display:"flex",gap:32,alignItems:"center"}}>
-          {["How It Works","Our Story","Want Help?"].map(l=>(
-            <a key={l} className="nav-link" href="#" onClick={e=>{e.preventDefault();l==="Our Story"?setPage("ourstory"):l==="Want Help?"?setPage("talktous"):scrollTo(l==="How It Works"?"howitworks":"quiz");}}
-              style={{color:"#888",fontSize:14,textDecoration:"none",transition:"color 0.2s",cursor:"pointer"}}>{l}</a>
+      {/* NAV */}
+      <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:100,padding:"0 5%",height:64,display:"flex",alignItems:"center",justifyContent:"space-between",background:scrollY>40?"rgba(8,8,8,0.92)":"transparent",backdropFilter:scrollY>40?"blur(20px)":"none",borderBottom:scrollY>40?"1px solid #111":"none",transition:"all 0.4s ease"}}>
+        <Logo/>
+        <div style={{display:"flex",gap:28,alignItems:"center"}}>
+          {[["How It Works","howitworks"],["Our Story","ourstory"],["Want Help?","talktous"]].map(([l,t])=>(
+            <a key={l} href="#" onClick={e=>{e.preventDefault();t==="ourstory"?setPage("ourstory"):t==="talktous"?setPage("talktous"):scrollTo(t);}}
+              style={{color:"#555",fontSize:14,fontWeight:500,textDecoration:"none",transition:"color 0.2s"}}
+              onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="#555"}>{l}</a>
           ))}
           {isSignedIn?(
-            <UserButton afterSignOutUrl="#" appearance={{elements:{avatarBox:{width:36,height:36}}}}/>
+            <UserButton afterSignOutUrl="#" appearance={{elements:{avatarBox:{width:34,height:34}}}}/>
           ):(
-            <div style={{display:"flex",gap:10}}>
-              <button onClick={onSignIn} style={{background:"transparent",color:"#888",border:"1px solid #333",borderRadius:999,padding:"9px 22px",fontSize:14,cursor:"pointer"}}>Log In</button>
-              <button className="cta-btn" onClick={onSignUp} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"9px 22px",fontSize:14,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>Sign Up →</button>
+            <div style={{display:"flex",gap:8}}>
+              <Btn variant="secondary" onClick={onSignIn} style={{padding:"8px 18px",fontSize:13}}>Log In</Btn>
+              <Btn onClick={onSignUp} style={{padding:"8px 18px",fontSize:13}}>Sign Up →</Btn>
             </div>
           )}
         </div>
       </nav>
 
-      {/* Hero */}
-      <section style={{minHeight:"100vh",display:"flex",flexDirection:"column",justifyContent:"center",padding:"100px 5% 60px",position:"relative",overflow:"hidden"}}>
-        <div style={{position:"absolute",top:"20%",right:"5%",width:500,height:500,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,107,53,0.08) 0%,transparent 70%)",pointerEvents:"none"}}/>
-        <div style={{maxWidth:900}}>
-          <div style={{display:"inline-flex",alignItems:"center",gap:8,background:"#141414",border:"1px solid #222",borderRadius:999,padding:"6px 16px",marginBottom:32}}>
-            <div style={{width:6,height:6,borderRadius:"50%",background:"#FF6B35",animation:"pulse 2s infinite"}}/>
-            <span style={{color:"#888",fontSize:13}}>Built for your generation, not your parents'</span>
-          </div>
-          <h1 style={{fontWeight:800,fontSize:"clamp(52px,8vw,96px)",lineHeight:1.0,letterSpacing:-3,marginBottom:28}}>Stop picking<br/><span style={{color:"#FF6B35"}}>careers</span><br/>in the dark.</h1>
-          <p style={{color:"#888",fontSize:"clamp(16px,2vw,20px)",lineHeight:1.7,maxWidth:560,marginBottom:44,fontWeight:300}}>Most students choose their future based on salary or parent advice — without ever living a day in that field. Pathways changes that.</p>
-          <button className="cta-btn" onClick={()=>scrollTo("quiz")} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"15px 36px",fontSize:16,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>Find My Path →</button>
-        </div>
-        <div style={{display:"flex",gap:0,marginTop:80,borderTop:"1px solid #1a1a1a",paddingTop:40,flexWrap:"wrap"}}>
-          {stats.map((s,i)=>(
-            <div key={s.label} style={{flex:1,minWidth:160,paddingRight:40,borderRight:i<stats.length-1?"1px solid #1a1a1a":"none",paddingLeft:i>0?40:0}}>
-              <div style={{fontWeight:800,fontSize:36,letterSpacing:-1}}>{s.num}</div>
-              <div style={{color:"#555",fontSize:13,marginTop:4}}>{s.label}</div>
+      {/* HERO */}
+      <section style={{minHeight:"100vh",display:"flex",alignItems:"center",padding:"100px 5% 60px",position:"relative",overflow:"hidden"}}>
+        {/* Background glow */}
+        <div style={{position:"absolute",top:"30%",left:"50%",transform:"translate(-50%,-50%)",width:600,height:600,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,107,53,0.06) 0%,transparent 70%)",pointerEvents:"none"}}/>
+        {/* Animated dots */}
+        {[...Array(6)].map((_,i)=>(
+          <div key={i} style={{position:"absolute",width:2,height:2,borderRadius:"50%",background:"#FF6B35",opacity:0.3,left:`${15+i*14}%`,top:`${20+Math.sin(i)*30}%`,animation:`float ${3+i*0.5}s ease-in-out infinite`,animationDelay:`${i*0.4}s`,pointerEvents:"none"}}/>
+        ))}
+
+        <div style={{display:"flex",alignItems:"center",width:"100%",gap:60,maxWidth:1200,margin:"0 auto"}}>
+          {/* Left: text */}
+          <div style={{flex:"0 0 55%",maxWidth:"55%"}} ref={heroRef}>
+            <div style={{marginBottom:24,opacity:heroInView?1:0,transform:heroInView?"translateY(0)":"translateY(20px)",transition:"all 0.7s ease 0.1s"}}>
+              <Pill>Career discovery built for your generation</Pill>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="howitworks" style={{padding:"100px 5%",borderTop:"1px solid #111"}}>
-        <div ref={featRef} style={{opacity:featInView?1:0,transform:featInView?"translateY(0)":"translateY(30px)",transition:"all 0.8s ease",marginBottom:64}}>
-          <div style={{color:"#FF6B35",fontSize:11,letterSpacing:3,textTransform:"uppercase",marginBottom:16}}>What We Do</div>
-          <h2 style={{fontWeight:800,fontSize:"clamp(36px,5vw,60px)",letterSpacing:-2,lineHeight:1.1,maxWidth:700}}>Three tools.<br/>One clear direction.</h2>
-        </div>
-        <div style={{display:"flex",flexDirection:"column",gap:2}}>
-          {features.map((f,i)=><FeatureRow key={f.num} f={f} i={i}/>)}
-        </div>
-      </section>
-
-      {/* Quiz */}
-      <section id="quiz" style={{padding:"100px 5%",background:"#050505"}}>
-        <div style={{textAlign:"center",marginBottom:56}}>
-          <div style={{color:"#FF6B35",fontSize:11,letterSpacing:3,textTransform:"uppercase",marginBottom:16}}>Try It Now</div>
-          <h2 style={{fontWeight:800,fontSize:"clamp(32px,5vw,54px)",letterSpacing:-2}}>Discover your career personality.</h2>
-          <p style={{color:"#555",marginTop:16,fontSize:15}}>57 questions · 5 sections · Instant results with roadmap and opportunities.</p>
-        </div>
-
-        {quizStep==="intro"&&(
-          <div style={{maxWidth:560,margin:"0 auto",textAlign:"center"}}>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:8,marginBottom:32}}>
-              {SECTION_LABELS.map((l,i)=>(
-                <div key={l} style={{background:"#111",border:"1px solid #1e1e1e",borderRadius:12,padding:"12px 8px",textAlign:"center"}}>
-                  <div style={{color:"#FF6B35",fontSize:11,fontWeight:700,marginBottom:4}}>{i+1}</div>
-                  <div style={{color:"#666",fontSize:11}}>{l}</div>
+            <h1 style={{fontWeight:900,fontSize:"clamp(48px,6.5vw,88px)",lineHeight:0.95,letterSpacing:-3,marginBottom:24,opacity:heroInView?1:0,transform:heroInView?"translateY(0)":"translateY(30px)",transition:"all 0.7s ease 0.2s"}}>
+              Stop picking<br/><span style={{color:"#FF6B35",display:"inline-block"}}>careers</span><br/>in the dark.
+            </h1>
+            <p style={{color:"#555",fontSize:"clamp(15px,1.8vw,18px)",lineHeight:1.75,maxWidth:480,marginBottom:36,fontWeight:400,opacity:heroInView?1:0,transform:heroInView?"translateY(0)":"translateY(20px)",transition:"all 0.7s ease 0.3s"}}>
+              Most students choose their future based on salary or parental advice — without ever living a day in that field. Pathways changes that.
+            </p>
+            <div style={{display:"flex",gap:12,flexWrap:"wrap",opacity:heroInView?1:0,transform:heroInView?"translateY(0)":"translateY(20px)",transition:"all 0.7s ease 0.4s"}}>
+              <Btn onClick={()=>scrollTo("quiz")} style={{padding:"14px 32px",fontSize:16}}>Find My Path →</Btn>
+              <Btn variant="secondary" onClick={()=>scrollTo("howitworks")} style={{padding:"14px 24px",fontSize:15}}>See How It Works</Btn>
+            </div>
+            {/* Not a personality test */}
+            <div style={{display:"flex",gap:16,marginTop:40,flexWrap:"wrap",opacity:heroInView?1:0,transition:"all 0.7s ease 0.5s"}}>
+              {["Not a personality test.","Not a list of random careers.","Built around you."].map(t=>(
+                <div key={t} style={{display:"flex",alignItems:"center",gap:6}}>
+                  <div style={{width:16,height:16,borderRadius:"50%",background:"#FF6B3520",border:"1px solid #FF6B3550",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"#FF6B35",flexShrink:0}}>✓</div>
+                  <span style={{color:"#444",fontSize:13,fontWeight:500}}>{t}</span>
                 </div>
               ))}
             </div>
-            <p style={{color:"#555",fontSize:14,marginBottom:28}}>~8 minutes · 57 questions · Careers + Opportunities + Roadmap</p>
-            <button className="cta-btn" onClick={()=>setQuizStep("quiz")} style={{background:"#FF6B35",color:"#fff",border:"none",borderRadius:999,padding:"15px 40px",fontSize:16,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>Start the Quiz →</button>
           </div>
-        )}
 
-        {quizStep==="quiz"&&<QuizFlow onComplete={handleQuizComplete}/>}
+          {/* Right: viz */}
+          <div style={{flex:1,height:380,position:"relative",display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <div style={{width:"100%",maxWidth:360,height:360,position:"relative"}}>
+              <div style={{position:"absolute",inset:0,borderRadius:"50%",background:"radial-gradient(circle,rgba(255,107,53,0.04) 0%,transparent 70%)"}}/>
+              <PathwayViz/>
+            </div>
+          </div>
+        </div>
 
-        {quizStep==="result"&&result&&(
-          <ResultsView result={result} onRetake={()=>{setQuizStep("intro");setResult(null);}} onChat={handleChatFromResult}/>
-        )}
-      </section>
-
-      {/* Problem */}
-      <section style={{padding:"100px 5%"}}>
-        <div style={{maxWidth:900,margin:"0 auto"}}>
-          <div style={{color:"#FF6B35",fontSize:11,letterSpacing:3,textTransform:"uppercase",marginBottom:24}}>The Problem We're Solving</div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
-            {[{label:"Pick classes for friends, not fit",icon:"👥"},{label:"Choose majors for salary alone",icon:"💰"},{label:"No idea what internships exist",icon:"🔍"},{label:"Never lived a day in their future field",icon:"📆"},{label:"Doing work, but losing curiosity",icon:"📉"},{label:"No one sees the middle group",icon:"🫥"}].map(p=>(
-              <div key={p.label} style={{background:"#0d0d0d",border:"1px solid #191919",borderRadius:16,padding:"20px 24px",display:"flex",alignItems:"center",gap:16}}>
-                <span style={{fontSize:22}}>{p.icon}</span>
-                <span style={{color:"#666",fontSize:14,lineHeight:1.5}}>{p.label}</span>
+        {/* Stats */}
+        <div style={{position:"absolute",bottom:0,left:0,right:0,padding:"0 5%",borderTop:"1px solid #0e0e0e"}}>
+          <div style={{maxWidth:1200,margin:"0 auto",display:"flex",gap:0}}>
+            {[{n:"25+",l:"Career Paths"},{n:"5",l:"Discovery Sections"},{n:"15+",l:"Opportunities Matched"}].map((s,i)=>(
+              <div key={s.l} style={{flex:1,padding:"20px 0",paddingRight:40,borderRight:i<2?"1px solid #0e0e0e":"none",paddingLeft:i>0?40:0}}>
+                <div style={{fontWeight:800,fontSize:32,letterSpacing:-1,color:"#fff"}}>{s.n}</div>
+                <div style={{color:"#333",fontSize:13,marginTop:2,fontWeight:500}}>{s.l}</div>
               </div>
             ))}
           </div>
-          <div style={{marginTop:40,padding:"32px 36px",background:"#FF6B35",borderRadius:20,display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:20}}>
-            <div>
-              <div style={{fontWeight:800,fontSize:26,marginBottom:6}}>Pathways fixes all of this.</div>
-              <div style={{color:"rgba(255,255,255,0.7)",fontSize:14}}>One platform. Built for students who want real answers.</div>
-            </div>
-            <button style={{background:"#fff",color:"#FF6B35",border:"none",borderRadius:999,padding:"13px 32px",fontSize:15,fontWeight:700,cursor:"pointer"}}>Join the Waitlist</button>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section id="howitworks" style={{padding:"100px 5%",borderTop:"1px solid #0e0e0e"}}>
+        <div ref={howRef} style={{maxWidth:1100,margin:"0 auto"}}>
+          <div style={{textAlign:"center",marginBottom:64,opacity:howInView?1:0,transform:howInView?"translateY(0)":"translateY(24px)",transition:"all 0.8s ease"}}>
+            <Pill style={{marginBottom:20}}>How It Works</Pill>
+            <h2 style={{fontWeight:800,fontSize:"clamp(32px,5vw,56px)",letterSpacing:-2,lineHeight:1.1,marginTop:16,marginBottom:16}}>Your future shouldn't<br/>be a <span style={{color:"#FF6B35"}}>guess.</span></h2>
+            <p style={{color:"#444",fontSize:16,maxWidth:500,margin:"0 auto",lineHeight:1.7}}>Pathways considers your interests, experience, work style, and what you're actually willing to try.</p>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}}>
+            {[
+              {n:"01",icon:"🔍",title:"Discover",desc:"Answer questions about what interests you, how you think, and what you actually enjoy doing."},
+              {n:"02",icon:"⚡",title:"Match",desc:"Pathways analyzes your answers against 25+ career profiles using your RIASEC personality type."},
+              {n:"03",icon:"🌍",title:"Explore",desc:"See what careers actually look like — skills, education, work environment, and real opportunities."},
+              {n:"04",icon:"🗺️",title:"Choose Your Path",desc:"Walk away with a 30-day roadmap, matched opportunities, and a clearer direction for your future."},
+            ].map((s,i)=>(
+              <div key={s.n} style={{background:"#0a0a0a",border:"1px solid #111",borderRadius:20,padding:"32px 28px",opacity:howInView?1:0,transform:howInView?"translateY(0)":"translateY(30px)",transition:`all 0.7s ease ${i*0.12}s`}}>
+                <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
+                  <div style={{width:40,height:40,borderRadius:12,background:"#FF6B3518",border:"1px solid #FF6B3530",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{s.icon}</div>
+                  <span style={{color:"#333",fontSize:12,fontWeight:700,letterSpacing:1}}>{s.n}</span>
+                </div>
+                <h3 style={{fontWeight:700,fontSize:22,marginBottom:10,letterSpacing:-0.5}}>{s.title}</h3>
+                <p style={{color:"#444",fontSize:14,lineHeight:1.7}}>{s.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      <footer style={{borderTop:"1px solid #111",padding:"40px 5%",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:16}}>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <div style={{width:24,height:24,borderRadius:6,background:"#FF6B35",display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1L13 7L7 13M1 7H13" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+      {/* WHAT PATHWAYS CONSIDERS */}
+      <section style={{padding:"80px 5%",background:"#050505"}}>
+        <div style={{maxWidth:1100,margin:"0 auto",display:"flex",gap:60,alignItems:"center",flexWrap:"wrap"}}>
+          <div style={{flex:"0 0 40%",minWidth:280}}>
+            <Pill style={{marginBottom:20}}>What We Consider</Pill>
+            <h2 style={{fontWeight:800,fontSize:"clamp(28px,4vw,44px)",letterSpacing:-1.5,lineHeight:1.1,marginTop:16,marginBottom:16}}>Not just what<br/>you <span style={{color:"#FF6B35"}}>like.</span><br/>What fits <span style={{color:"#FF6B35"}}>you.</span></h2>
+            <p style={{color:"#444",fontSize:15,lineHeight:1.7}}>Most career quizzes stop at interests. Pathways goes further — matching you based on how you actually want to work.</p>
           </div>
-          <span style={{fontWeight:700,fontSize:16}}>Pathways</span>
+          <div style={{flex:1,display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+            {[["🧠","Interests","What you genuinely enjoy"],["💼","Experience","What you've actually done"],["⚙️","Work Style","How you like to work"],["🎯","Preferences","What matters in a career"],["⚡","Reality","What you can handle day-to-day"],["🔬","Exploration","What you'd be willing to try"]].map(([icon,label,desc])=>(
+              <div key={label} style={{background:"#0e0e0e",border:"1px solid #141414",borderRadius:16,padding:"18px 16px",display:"flex",gap:12,alignItems:"flex-start"}}>
+                <div style={{width:34,height:34,borderRadius:10,background:"#FF6B3518",border:"1px solid #FF6B3530",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0}}>{icon}</div>
+                <div>
+                  <div style={{fontWeight:600,fontSize:14,marginBottom:3}}>{label}</div>
+                  <div style={{color:"#444",fontSize:12,lineHeight:1.5}}>{desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-        <span style={{color:"#333",fontSize:13}}>Helping the next generation find their direction.</span>
+      </section>
+
+      {/* CAREER PREVIEW */}
+      <section style={{padding:"100px 5%"}}>
+        <div style={{maxWidth:1100,margin:"0 auto"}} ref={prevRef}>
+          <div style={{textAlign:"center",marginBottom:52,opacity:prevInView?1:0,transform:prevInView?"translateY(0)":"translateY(24px)",transition:"all 0.8s ease"}}>
+            <Pill style={{marginBottom:20}}>Example Results</Pill>
+            <h2 style={{fontWeight:800,fontSize:"clamp(28px,4vw,48px)",letterSpacing:-2,lineHeight:1.1,marginTop:16,marginBottom:14}}>Don't just get a career.<br/>Get a <span style={{color:"#FF6B35"}}>direction.</span></h2>
+            <p style={{color:"#444",fontSize:15,maxWidth:480,margin:"0 auto",lineHeight:1.7}}>Here's a preview of the career cards you'll receive. Take the quiz to see which ones match you.</p>
+          </div>
+          <div style={{display:"flex",gap:14,flexWrap:"wrap"}}>
+            {previewCareers.map((c,i)=>(
+              <div key={c.id} style={{opacity:prevInView?1:0,transform:prevInView?"translateY(0)":"translateY(30px)",transition:`all 0.7s ease ${i*0.1}s`,flex:"1 1 200px"}}>
+                <CareerPreviewCard career={c}/>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* QUIZ SECTION */}
+      <section id="quiz" style={{padding:"80px 5% 100px",background:"#050505"}}>
+        {step==="intro"&&(
+          <div ref={ctaRef} style={{maxWidth:700,margin:"0 auto",textAlign:"center",opacity:ctaInView?1:0,transform:ctaInView?"translateY(0)":"translateY(24px)",transition:"all 0.8s ease"}}>
+            <div style={{background:"radial-gradient(ellipse at center,rgba(255,107,53,0.08) 0%,transparent 70%)",borderRadius:32,padding:"60px 40px",border:"1px solid #111",boxShadow:"0 40px 80px #00000060"}}>
+              <Pill style={{marginBottom:20}}>Take the Quiz</Pill>
+              <h2 style={{fontWeight:800,fontSize:"clamp(30px,5vw,52px)",letterSpacing:-2,lineHeight:1.05,marginTop:16,marginBottom:16}}>Your future has<br/>more than one <span style={{color:"#FF6B35"}}>path.</span></h2>
+              <p style={{color:"#555",fontSize:16,lineHeight:1.7,maxWidth:480,margin:"0 auto 36px"}}>You don't need to know exactly what you want to do yet. You just need to start exploring.</p>
+              <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap",marginBottom:36}}>
+                {[["📋","57 Questions"],["⏱️","~8 Minutes"],["🎯","25+ Careers"],["🚀","Instant Results"]].map(([i,l])=>(
+                  <div key={l} style={{background:"#0e0e0e",border:"1px solid #141414",borderRadius:999,padding:"8px 16px",display:"flex",alignItems:"center",gap:6}}>
+                    <span style={{fontSize:14}}>{i}</span><span style={{color:"#555",fontSize:13,fontWeight:500}}>{l}</span>
+                  </div>
+                ))}
+              </div>
+              <Btn onClick={()=>setStep("quiz")} style={{padding:"16px 40px",fontSize:16}}>Find My Path →</Btn>
+            </div>
+          </div>
+        )}
+        {step==="quiz"&&<QuizFlow onComplete={handleQuizComplete}/>}
+        {step==="result"&&result&&<ResultsView result={result} onRetake={()=>{setStep("intro");setResult(null);}} onChat={handleChat}/>}
+      </section>
+
+      {/* PROBLEM SECTION */}
+      <section style={{padding:"80px 5%"}}>
+        <div style={{maxWidth:1000,margin:"0 auto"}}>
+          <div style={{marginBottom:32}}>
+            <Pill style={{marginBottom:16}}>The Problem We're Solving</Pill>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:32}}>
+            {[{l:"Pick classes for friends, not fit",i:"👥"},{l:"Choose majors for salary alone",i:"💰"},{l:"No idea what internships exist",i:"🔍"},{l:"Never lived a day in their future field",i:"📆"},{l:"Doing work, but losing curiosity",i:"📉"},{l:"No one sees the middle group",i:"🫥"}].map(p=>(
+              <div key={p.l} style={{background:"#0a0a0a",border:"1px solid #0e0e0e",borderRadius:14,padding:"18px 20px",display:"flex",alignItems:"center",gap:14}}>
+                <span style={{fontSize:20}}>{p.i}</span><span style={{color:"#444",fontSize:14,lineHeight:1.5}}>{p.l}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{background:"linear-gradient(135deg,#FF6B35,#e05a28)",borderRadius:20,padding:"28px 32px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:20,boxShadow:"0 20px 60px #FF6B3530"}}>
+            <div>
+              <div style={{fontWeight:800,fontSize:24,marginBottom:4}}>Pathways fixes all of this.</div>
+              <div style={{color:"rgba(255,255,255,0.7)",fontSize:14}}>One platform. Built for students who want real answers.</div>
+            </div>
+            <Btn variant="secondary" onClick={()=>scrollTo("quiz")} style={{borderColor:"rgba(255,255,255,0.3)",color:"#fff",padding:"12px 28px"}}>Start the Quiz →</Btn>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer style={{borderTop:"1px solid #0a0a0a",padding:"48px 5% 32px"}}>
+        <div style={{maxWidth:1100,margin:"0 auto"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:40,flexWrap:"wrap",gap:32}}>
+            <div style={{maxWidth:280}}>
+              <Logo/>
+              <p style={{color:"#333",fontSize:14,lineHeight:1.7,marginTop:14}}>Career discovery built for your generation.</p>
+            </div>
+            <div style={{display:"flex",gap:48,flexWrap:"wrap"}}>
+              <div>
+                <div style={{color:"#555",fontSize:12,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>Navigate</div>
+                {[["How It Works",()=>scrollTo("howitworks")],["Our Story",()=>setPage("ourstory")],["Find My Path",()=>scrollTo("quiz")],["Talk to Aria",()=>setPage("talktous")]].map(([l,fn])=>(
+                  <div key={l} style={{marginBottom:10}}>
+                    <a href="#" onClick={e=>{e.preventDefault();fn();}} style={{color:"#333",fontSize:14,textDecoration:"none",transition:"color 0.2s"}}
+                      onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="#333"}>{l}</a>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <div style={{color:"#555",fontSize:12,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>Legal</div>
+                {[["Privacy Policy","#"],["Terms of Use","#"]].map(([l,h])=>(
+                  <div key={l} style={{marginBottom:10}}>
+                    <a href={h} style={{color:"#333",fontSize:14,textDecoration:"none"}}
+                      onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="#333"}>{l}</a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div style={{borderTop:"1px solid #0a0a0a",paddingTop:24,display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:10}}>
+            <span style={{color:"#222",fontSize:13}}>© 2026 Pathways. All rights reserved.</span>
+            <span style={{color:"#222",fontSize:13}}>Helping the next generation find their direction.</span>
+          </div>
+        </div>
       </footer>
     </div>
   );
