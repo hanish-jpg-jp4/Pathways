@@ -582,7 +582,7 @@ function OurStory({onBack}){
         <div>
           <div style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600,marginBottom:16}}>The Team</div>
           <div style={{display:"flex",gap:14}}>
-            {[{name:"Coming Soon",role:"Founder"},{name:"Coming Soon",role:"Co-Founder"}].map(p=>(
+            {[{name:"Hanish Dudam",role:"Founder"},{name:"Sriman Padamatinti",role:"Co-Founder"}].map(p=>(
               <div key={p.role} style={{flex:1,background:"#0e0e0e",border:"1px solid #161616",borderRadius:16,padding:"22px 18px",textAlign:"center"}}>
                 <div style={{width:48,height:48,borderRadius:"50%",background:"#141414",border:"1px solid #222",margin:"0 auto 12px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>👤</div>
                 <div style={{fontWeight:600,fontSize:14,marginBottom:3}}>{p.name}</div>
