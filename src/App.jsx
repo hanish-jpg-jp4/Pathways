@@ -1045,7 +1045,7 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12,marginBottom:32}}>
             {[{l:"Pick classes for friends, not fit",i:"👥"},{l:"Choose majors for salary alone",i:"💰"},{l:"No idea what internships exist",i:"🔍"},{l:"Never lived a day in their future field",i:"📆"},{l:"Doing work, but losing curiosity",i:"📉"},{l:"No one sees the middle group",i:"🫥"}].map(p=>(
               <div key={p.l} style={{background:"#0a0a0a",border:"1px solid #0e0e0e",borderRadius:14,padding:"18px 20px",display:"flex",alignItems:"center",gap:14}}>
-                <span style={{fontSize:20}}>{p.i}</span><span style={{color:"#444",fontSize:14,lineHeight:1.5}}>{p.l}</span>
+                <span style={{fontSize:20}}>{p.i}</span>                <span style={{color:"#888",fontSize:14,lineHeight:1.5}}>{p.l}</span>
               </div>
             ))}
           </div>
