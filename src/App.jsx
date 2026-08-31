@@ -304,7 +304,7 @@ function QuizFlow({onComplete}){
             <span style={{background:"#FF6B3520",border:"1px solid #FF6B3540",borderRadius:8,color:"#FF6B35",fontWeight:700,fontSize:12,padding:"4px 10px"}}>{qi+1}</span>
             <span style={{color:"#333",fontSize:13}}>of {sQs[sec].length}</span>
           </div>
-          <p style={{fontSize:21,fontWeight:600,lineHeight:1.5,marginBottom:36,color:"#f0f0f0",letterSpacing:-0.3}}>{cq.text}</p>
+                          <p style={{fontSize:21,fontWeight:600,lineHeight:1.5,marginBottom:36,color:"#ffffff",letterSpacing:-0.3}}>{cq.text}</p>
 
           {cq.type==="slider"?(
             <div>
@@ -316,8 +316,8 @@ function QuizFlow({onComplete}){
                 </div>
                 <input type="range" min={0} max={100} value={sv} onChange={e=>setSv(Number(e.target.value))} style={{width:"100%"}}/>
                 <div style={{display:"flex",justifyContent:"space-between"}}>
-                  <span style={{color:"#333",fontSize:12}}>Strongly disagree</span>
-                  <span style={{color:"#333",fontSize:12}}>Strongly agree</span>
+                  <span style={{color:"#666",fontSize:12}}>Strongly disagree</span>
+                  <span style={{color:"#666",fontSize:12}}>Strongly agree</span>
                 </div>
               </div>
               <div style={{display:"flex",justifyContent:"center",marginTop:28}}>
