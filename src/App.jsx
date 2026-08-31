@@ -297,9 +297,9 @@ function QuizFlow({onComplete}){
 
       <div style={{opacity:vis?1:0,transform:vis?"translateY(0)":"translateY(12px)",transition:"all 0.22s ease"}}>
         <div style={{background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:24,padding:"40px 36px",marginBottom:20,boxShadow:"0 20px 60px #00000060"}}>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:20}}>
-            <div style={{width:28,height:28,borderRadius:8,background:"#FF6B3520",border:"1px solid #FF6B3540",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#FF6B35",fontWeight:700}}>{qi+1}</div>
-            <span style={{color:"#333",fontSize:13}}>of {sQs[sec].length}</span>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:20}}>
+            <div style={{width:28,height:28,borderRadius:8,background:"#FF6B3520",border:"1px solid #FF6B3540",display:"flex",alignItems:"center",justifyContent:"center",fontSize:12,color:"#FF6B35",fontWeight:700,lineHeight:1}}>{qi+1}</div>
+            <span style={{color:"#333",fontSize:13,lineHeight:1}}>of {sQs[sec].length}</span>
           </div>
           <p style={{fontSize:21,fontWeight:600,lineHeight:1.5,marginBottom:36,color:"#f0f0f0",letterSpacing:-0.3}}>{cq.text}</p>
 
