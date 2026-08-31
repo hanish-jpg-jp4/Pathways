@@ -203,8 +203,11 @@ const G = `
   .slide-left.visible{opacity:1;transform:translateX(0);}
   input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;width:100%;}
   input[type=range]::-webkit-slider-runnable-track{height:4px;background:#1e1e1e;border-radius:999px;}
-  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#FF6B35;margin-top:-9px;cursor:pointer;box-shadow:0 0 12px #FF6B3566;transition:transform 0.15s;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:#FF6B35;margin-top:-9px;cursor:pointer;box-shadow:0 0 12px #FF6B3566;transition:transform 0.15s;position:relative;top:0;}
+  input[type=range]::-moz-range-track{height:4px;background:#1e1e1e;border-radius:999px;}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#FF6B35;border:none;cursor:pointer;box-shadow:0 0 12px #FF6B3566;}
   input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.15);}
+  input[type=range]{padding:10px 0;}
   @keyframes pulse-slow{0%,100%{opacity:0.4;transform:scale(1);}50%{opacity:0.7;transform:scale(1.05);}}
   @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
   @keyframes spin-slow{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
@@ -305,14 +308,17 @@ function QuizFlow({onComplete}){
 
           {cq.type==="slider"?(
             <div>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
-                <span style={{color:"#333",fontSize:13}}>Strongly disagree</span>
-                <div style={{background:"#FF6B3520",border:"1px solid #FF6B3550",borderRadius:999,padding:"4px 16px"}}>
-                  <span style={{color:"#FF6B35",fontSize:16,fontWeight:700}}>{sv}</span>
+              <div style={{position:"relative",marginBottom:8}}>
+                <input type="range" min={0} max={100} value={sv} onChange={e=>setSv(Number(e.target.value))} style={{width:"100%"}}/>
+                {/* Floating value bubble — moves with slider */}
+                <div style={{position:"absolute",top:-36,left:`calc(${sv}% - ${sv*0.28}px - 20px)`,background:"#FF6B35",borderRadius:999,padding:"3px 12px",pointerEvents:"none",transition:"left 0s",whiteSpace:"nowrap"}}>
+                  <span style={{color:"#fff",fontSize:14,fontWeight:700}}>{sv}</span>
                 </div>
-                <span style={{color:"#333",fontSize:13}}>Strongly agree</span>
               </div>
-              <input type="range" min={0} max={100} value={sv} onChange={e=>setSv(Number(e.target.value))}/>
+              <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
+                <span style={{color:"#333",fontSize:12}}>Strongly disagree</span>
+                <span style={{color:"#333",fontSize:12}}>Strongly agree</span>
+              </div>
               <div style={{display:"flex",justifyContent:"center",marginTop:28}}>
                 <Btn onClick={()=>answer(sv)}>Continue →</Btn>
               </div>
