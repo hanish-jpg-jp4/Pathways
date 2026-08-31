@@ -308,16 +308,17 @@ function QuizFlow({onComplete}){
 
           {cq.type==="slider"?(
             <div>
-              <div style={{position:"relative",marginBottom:8}}>
-                <input type="range" min={0} max={100} value={sv} onChange={e=>setSv(Number(e.target.value))} style={{width:"100%"}}/>
-                {/* Floating value bubble — moves with slider */}
-                <div style={{position:"absolute",top:-36,left:`calc(${sv}% - ${sv*0.28}px - 20px)`,background:"#FF6B35",borderRadius:999,padding:"3px 12px",pointerEvents:"none",transition:"left 0s",whiteSpace:"nowrap"}}>
-                  <span style={{color:"#fff",fontSize:14,fontWeight:700}}>{sv}</span>
+              <div style={{display:"flex",flexDirection:"column",gap:10}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+                  <div style={{background:"#FF6B35",borderRadius:999,padding:"4px 18px",display:"inline-block"}}>
+                    <span style={{color:"#fff",fontSize:16,fontWeight:700}}>{sv}</span>
+                  </div>
                 </div>
-              </div>
-              <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
-                <span style={{color:"#333",fontSize:12}}>Strongly disagree</span>
-                <span style={{color:"#333",fontSize:12}}>Strongly agree</span>
+                <input type="range" min={0} max={100} value={sv} onChange={e=>setSv(Number(e.target.value))} style={{width:"100%"}}/>
+                <div style={{display:"flex",justifyContent:"space-between"}}>
+                  <span style={{color:"#333",fontSize:12}}>Strongly disagree</span>
+                  <span style={{color:"#333",fontSize:12}}>Strongly agree</span>
+                </div>
               </div>
               <div style={{display:"flex",justifyContent:"center",marginTop:28}}>
                 <Btn onClick={()=>answer(sv)}>Continue →</Btn>
