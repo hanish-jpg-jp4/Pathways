@@ -245,7 +245,7 @@ function Btn({children,onClick,variant="primary",style={}}){
   const base={display:"inline-flex",alignItems:"center",gap:8,borderRadius:999,padding:"13px 28px",fontSize:15,fontWeight:600,cursor:"pointer",border:"none",transition:"all 0.25s ease",outline:"none",...style};
   const styles={
     primary:{...base,background:"#FF6B35",color:"#fff",boxShadow:hov?"0 8px 32px #FF6B3560":"0 4px 16px #FF6B3530",transform:hov?"translateY(-2px) scale(1.02)":"translateY(0) scale(1)"},
-    secondary:{...base,background:"transparent",color:"#888",border:"1px solid #222",transform:hov?"translateY(-1px)":"translateY(0)",color:hov?"#fff":"#888",borderColor:hov?"#444":"#222"},
+    secondary:{...base,background:"transparent",color:"#888",border:"1px solid #222",transform:hov?"translateY(-1px)":"translateY(0)",color:hov?"#fff":"#888",borderColor:hov?"#888":"#222"},
     ghost:{...base,background:"transparent",color:"#FF6B35",padding:"10px 20px",fontSize:14},
   };
   return<button style={styles[variant]||styles.primary} onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} onClick={onClick}>{children}</button>;
@@ -290,19 +290,19 @@ function QuizFlow({onComplete}){
       <div style={{marginBottom:40}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
           <span style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600}}>{SECTION_LABELS[sec]} · Section {sec+1} of 5</span>
-          <span style={{color:"#444",fontSize:13,fontWeight:500}}>{prog}%</span>
+          <span style={{color:"#888",fontSize:13,fontWeight:500}}>{prog}%</span>
         </div>
         <div style={{height:2,background:"#111",borderRadius:999,overflow:"hidden"}}>
           <div style={{height:"100%",background:"linear-gradient(90deg,#FF6B35,#ff9a6c)",width:`${prog}%`,transition:"width 0.5s ease",borderRadius:999}}/>
         </div>
-        <p style={{color:"#333",fontSize:13,marginTop:10}}>{SECTION_DESCS[sec]}</p>
+        <p style={{color:"#777",fontSize:13,marginTop:10}}>{SECTION_DESCS[sec]}</p>
       </div>
 
       <div style={{opacity:vis?1:0,transform:vis?"translateY(0)":"translateY(12px)",transition:"all 0.22s ease"}}>
         <div style={{background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:24,padding:"40px 36px",marginBottom:20,boxShadow:"0 20px 60px #00000060"}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:20}}>
             <span style={{background:"#FF6B3520",border:"1px solid #FF6B3540",borderRadius:8,color:"#FF6B35",fontWeight:700,fontSize:12,padding:"4px 10px"}}>{qi+1}</span>
-            <span style={{color:"#333",fontSize:13}}>of {sQs[sec].length}</span>
+            <span style={{color:"#777",fontSize:13}}>of {sQs[sec].length}</span>
           </div>
                           <p style={{fontSize:21,fontWeight:600,lineHeight:1.5,marginBottom:36,color:"#ffffff",letterSpacing:-0.3}}>{cq.text}</p>
 
@@ -343,8 +343,8 @@ function QuizFlow({onComplete}){
           )}
         </div>
         {(sec>0||qi>0)&&(
-          <button onClick={back} style={{background:"transparent",color:"#444",border:"none",fontSize:13,cursor:"pointer",padding:"8px 0",display:"flex",alignItems:"center",gap:6}}
-            onMouseEnter={e=>e.currentTarget.style.color="#888"} onMouseLeave={e=>e.currentTarget.style.color="#444"}>
+          <button onClick={back} style={{background:"transparent",color:"#888",border:"none",fontSize:13,cursor:"pointer",padding:"8px 0",display:"flex",alignItems:"center",gap:6}}
+            onMouseEnter={e=>e.currentTarget.style.color="#888"} onMouseLeave={e=>e.currentTarget.style.color="#888"}>
             ← Back
           </button>
         )}
@@ -365,7 +365,7 @@ function RatingRing({value,size=80,sw=5}){
       </svg>
       <div style={{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column"}}>
         <span style={{fontSize:size*0.22,fontWeight:800,color:"#fff"}}>{value}</span>
-        <span style={{fontSize:size*0.1,color:"#444"}}>/100</span>
+        <span style={{fontSize:size*0.1,color:"#888"}}>/100</span>
       </div>
     </div>
   );
@@ -387,22 +387,22 @@ function ResultsView({result,onRetake,onChat}){
           <Pill color="#4ade80">Confidence: {result.explorationConfidence}%</Pill>
         </div>
         <h2 style={{fontWeight:800,fontSize:"clamp(28px,4vw,48px)",letterSpacing:-2,marginBottom:10,lineHeight:1.1}}>Your Career Profile</h2>
-        <p style={{color:"#555",fontSize:15}}>Top values: {result.topValues.join(" · ")}</p>
+        <p style={{color:"#888",fontSize:15}}>Top values: {result.topValues.join(" · ")}</p>
       </div>
 
       {/* RIASEC */}
       <div style={{background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:20,padding:"24px 28px",marginBottom:16,boxShadow:"0 8px 40px #00000040"}}>
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:18}}>
           <span style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600}}>Interest Profile · RIASEC</span>
-          <span style={{color:"#333",fontSize:12}}>Based on your answers</span>
+          <span style={{color:"#777",fontSize:12}}>Based on your answers</span>
         </div>
         {Object.entries(result.riasec).map(([c,s])=>(
           <div key={c} style={{display:"flex",alignItems:"center",gap:14,marginBottom:11}}>
-            <span style={{color:"#444",fontSize:13,width:110,flexShrink:0}}>{rl[c]}</span>
+            <span style={{color:"#888",fontSize:13,width:110,flexShrink:0}}>{rl[c]}</span>
             <div style={{flex:1,height:4,background:"#141414",borderRadius:999,overflow:"hidden"}}>
-              <div style={{height:"100%",background:s>=70?"#FF6B35":s>=50?"#FF6B3580":"#333",borderRadius:999,width:`${s}%`,transition:"width 1.2s cubic-bezier(.4,0,.2,1)"}}/>
+              <div style={{height:"100%",background:s>=70?"#FF6B35":s>=50?"#FF6B3580":"#777",borderRadius:999,width:`${s}%`,transition:"width 1.2s cubic-bezier(.4,0,.2,1)"}}/>
             </div>
-            <span style={{color:"#444",fontSize:13,width:30,textAlign:"right",fontWeight:600}}>{s}</span>
+            <span style={{color:"#888",fontSize:13,width:30,textAlign:"right",fontWeight:600}}>{s}</span>
           </div>
         ))}
       </div>
@@ -410,7 +410,7 @@ function ResultsView({result,onRetake,onChat}){
       {/* Tabs */}
       <div style={{display:"flex",gap:6,marginBottom:16,background:"#0a0a0a",border:"1px solid #141414",borderRadius:16,padding:6}}>
         {[["careers","🎯 Careers"],["opportunities","🚀 Opportunities"],["roadmap","🗺️ Roadmap"]].map(([t,l])=>(
-          <button key={t} onClick={()=>setTab(t)} style={{flex:1,background:tab===t?"#FF6B35":"transparent",color:tab===t?"#fff":"#555",border:"none",borderRadius:12,padding:"10px 0",fontSize:13,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>{l}</button>
+          <button key={t} onClick={()=>setTab(t)} style={{flex:1,background:tab===t?"#FF6B35":"transparent",color:tab===t?"#fff":"#888",border:"none",borderRadius:12,padding:"10px 0",fontSize:13,fontWeight:600,cursor:"pointer",transition:"all 0.2s"}}>{l}</button>
         ))}
       </div>
 
@@ -427,12 +427,12 @@ function ResultsView({result,onRetake,onChat}){
                   <span style={{background:`${c.color}18`,color:c.color,fontSize:11,fontWeight:700,borderRadius:999,padding:"2px 10px",border:`1px solid ${c.color}44`}}>{c.label}</span>
                   {i===0&&<span style={{background:"#FF6B3520",color:"#FF6B35",fontSize:11,fontWeight:700,borderRadius:999,padding:"2px 10px",border:"1px solid #FF6B3544"}}>⭐ Best Match</span>}
                 </div>
-                <p style={{color:"#555",fontSize:13,lineHeight:1.6,marginBottom:10}}>{c.description}</p>
+                <p style={{color:"#888",fontSize:13,lineHeight:1.6,marginBottom:10}}>{c.description}</p>
                 <div style={{display:"flex",flexWrap:"wrap",gap:6,marginBottom:10}}>
-                  {c.fields.map(f=><span key={f} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#555",fontSize:11,borderRadius:999,padding:"3px 10px"}}>{f}</span>)}
-                  {c.tags?.slice(0,2).map(t=><span key={t} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#555",fontSize:11,borderRadius:999,padding:"3px 10px"}}>#{t}</span>)}
+                  {c.fields.map(f=><span key={f} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#888",fontSize:11,borderRadius:999,padding:"3px 10px"}}>{f}</span>)}
+                  {c.tags?.slice(0,2).map(t=><span key={t} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#888",fontSize:11,borderRadius:999,padding:"3px 10px"}}>#{t}</span>)}
                 </div>
-                {c.explorationActivities&&<p style={{color:"#FF6B35",fontSize:13}}><span style={{color:"#444"}}>Try: </span>{c.explorationActivities[0]}</p>}
+                {c.explorationActivities&&<p style={{color:"#FF6B35",fontSize:13}}><span style={{color:"#888"}}>Try: </span>{c.explorationActivities[0]}</p>}
               </div>
             </div>
           ))}
@@ -446,17 +446,17 @@ function ResultsView({result,onRetake,onChat}){
             <div key={o.id} style={{background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:16,padding:"20px 22px",display:"flex",gap:16,alignItems:"flex-start"}}>
               <div style={{flexShrink:0,background:"#FF6B3515",border:"1px solid #FF6B3530",borderRadius:12,padding:"8px 12px",textAlign:"center",minWidth:52}}>
                 <div style={{color:"#FF6B35",fontSize:14,fontWeight:700}}>{o.score}%</div>
-                <div style={{color:"#444",fontSize:10}}>match</div>
+                <div style={{color:"#888",fontSize:10}}>match</div>
               </div>
               <div style={{flex:1}}>
                 <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4,flexWrap:"wrap"}}>
                   <span style={{fontWeight:600,fontSize:15,color:"#f0f0f0"}}>{o.name}</span>
-                  <span style={{background:"#141414",border:"1px solid #222",color:"#555",fontSize:11,borderRadius:999,padding:"2px 8px"}}>{o.type}</span>
-                  <span style={{background:"#141414",border:"1px solid #222",color:"#555",fontSize:11,borderRadius:999,padding:"2px 8px"}}>{o.difficulty}</span>
+                  <span style={{background:"#141414",border:"1px solid #222",color:"#888",fontSize:11,borderRadius:999,padding:"2px 8px"}}>{o.type}</span>
+                  <span style={{background:"#141414",border:"1px solid #222",color:"#888",fontSize:11,borderRadius:999,padding:"2px 8px"}}>{o.difficulty}</span>
                 </div>
-                <p style={{color:"#444",fontSize:12,marginBottom:4}}>{o.organization}</p>
-                <p style={{color:"#555",fontSize:13,lineHeight:1.5,marginBottom:8}}>{o.description}</p>
-                {o.url?<a href={o.url} target="_blank" rel="noopener noreferrer" style={{color:"#FF6B35",fontSize:13,textDecoration:"none",fontWeight:500}}>Learn more →</a>:<span style={{color:"#333",fontSize:13}}>Search online for current openings</span>}
+                <p style={{color:"#888",fontSize:12,marginBottom:4}}>{o.organization}</p>
+                <p style={{color:"#888",fontSize:13,lineHeight:1.5,marginBottom:8}}>{o.description}</p>
+                {o.url?<a href={o.url} target="_blank" rel="noopener noreferrer" style={{color:"#FF6B35",fontSize:13,textDecoration:"none",fontWeight:500}}>Learn more →</a>:<span style={{color:"#777",fontSize:13}}>Search online for current openings</span>}
               </div>
             </div>
           ))}
@@ -520,11 +520,11 @@ function TalkToUs({onBack,initialContext}){
           <div style={{width:44,height:44,borderRadius:"50%",background:"linear-gradient(135deg,#FF6B35,#ff9a6c)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20,flexShrink:0,boxShadow:"0 4px 20px #FF6B3540"}}>✨</div>
           <div>
             <div style={{fontWeight:700,fontSize:17}}>Aria <span style={{color:"#FF6B35",fontSize:11,fontWeight:600,background:"#FF6B3518",border:"1px solid #FF6B3540",borderRadius:999,padding:"2px 10px",marginLeft:8}}>AI Counselor</span></div>
-            <div style={{color:"#444",fontSize:13}}>Ask about careers, internships, or your next step.</div>
+            <div style={{color:"#888",fontSize:13}}>Ask about careers, internships, or your next step.</div>
           </div>
           <div style={{marginLeft:"auto",display:"flex",alignItems:"center",gap:6}}>
             <div style={{width:7,height:7,borderRadius:"50%",background:"#4ade80",animation:"pulse-slow 2s infinite"}}/>
-            <span style={{color:"#444",fontSize:12}}>Online</span>
+            <span style={{color:"#888",fontSize:12}}>Online</span>
           </div>
         </div>
       </div>
@@ -545,7 +545,7 @@ function TalkToUs({onBack,initialContext}){
           <textarea value={inp} onChange={e=>setInp(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}} placeholder="Ask Aria anything..." rows={1}
             style={{flex:1,background:"#0e0e0e",border:"1px solid #1a1a1a",borderRadius:14,padding:"13px 16px",color:"#f0f0f0",fontSize:14,outline:"none",resize:"none",fontFamily:"inherit",lineHeight:1.5}}/>
           <button onClick={send} disabled={!inp.trim()||load}
-            style={{background:inp.trim()&&!load?"#FF6B35":"#111",color:inp.trim()&&!load?"#fff":"#333",border:"none",borderRadius:12,width:46,height:46,fontSize:16,cursor:inp.trim()&&!load?"pointer":"default",transition:"all 0.2s",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:inp.trim()&&!load?"0 4px 16px #FF6B3540":"none"}}>→</button>
+            style={{background:inp.trim()&&!load?"#FF6B35":"#111",color:inp.trim()&&!load?"#fff":"#777",border:"none",borderRadius:12,width:46,height:46,fontSize:16,cursor:inp.trim()&&!load?"pointer":"default",transition:"all 0.2s",flexShrink:0,display:"flex",alignItems:"center",justifyContent:"center",boxShadow:inp.trim()&&!load?"0 4px 16px #FF6B3540":"none"}}>→</button>
         </div>
         <div style={{maxWidth:720,margin:"8px auto 0",color:"#222",fontSize:12,textAlign:"center"}}>Enter to send · Shift+Enter for new line</div>
       </div>
@@ -564,7 +564,7 @@ function OurStory({onBack}){
       <section style={{padding:"80px 5% 60px",maxWidth:860,margin:"0 auto"}}>
         <Pill style={{marginBottom:28}}>Who we are</Pill>
         <h1 style={{fontWeight:800,fontSize:"clamp(44px,7vw,80px)",lineHeight:1.0,letterSpacing:-3,marginBottom:24,marginTop:20}}>Built by students,<br/>for <span style={{color:"#FF6B35"}}>students.</span></h1>
-        <p style={{color:"#555",fontSize:18,lineHeight:1.8,maxWidth:560,fontWeight:300}}>We got tired of watching our peers pick careers based on salary charts and parental pressure — with no real sense of what their future actually looked like day-to-day. So we built Pathways.</p>
+        <p style={{color:"#888",fontSize:18,lineHeight:1.8,maxWidth:560,fontWeight:300}}>We got tired of watching our peers pick careers based on salary charts and parental pressure — with no real sense of what their future actually looked like day-to-day. So we built Pathways.</p>
       </section>
       <section style={{padding:"0 5% 80px",maxWidth:860,margin:"0 auto"}}>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16,marginBottom:40}}>
@@ -575,7 +575,7 @@ function OurStory({onBack}){
                 <span style={{fontSize:20}}>{item.icon}</span>
               </div>
               <h3 style={{fontWeight:700,fontSize:20,marginBottom:10}}>{item.title}</h3>
-              <p style={{color:"#444",fontSize:14,lineHeight:1.7}}>{item.desc}</p>
+              <p style={{color:"#888",fontSize:14,lineHeight:1.7}}>{item.desc}</p>
             </div>
           ))}
         </div>
@@ -593,7 +593,7 @@ function OurStory({onBack}){
               <div key={p.role} style={{flex:1,background:"#0e0e0e",border:"1px solid #161616",borderRadius:16,padding:"22px 18px",textAlign:"center"}}>
                 <div style={{width:48,height:48,borderRadius:"50%",background:"#141414",border:"1px solid #222",margin:"0 auto 12px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:18}}>👤</div>
                 <div style={{fontWeight:600,fontSize:14,marginBottom:3}}>{p.name}</div>
-                <div style={{color:"#444",fontSize:13}}>{p.role}</div>
+                <div style={{color:"#888",fontSize:13}}>{p.role}</div>
               </div>
             ))}
           </div>
@@ -645,18 +645,18 @@ function Dashboard({onBack,onChat}){
           <h1 style={{fontWeight:800,fontSize:"clamp(28px,4vw,44px)",letterSpacing:-2,marginTop:12,marginBottom:8}}>
             Welcome back{user?.firstName?`, ${user.firstName}`:""}. 👋
           </h1>
-          <p style={{color:"#444",fontSize:15}}>Here are your past career discovery results.</p>
+          <p style={{color:"#888",fontSize:15}}>Here are your past career discovery results.</p>
         </div>
 
         {loading&&(
-          <div style={{textAlign:"center",padding:"60px 0",color:"#333",fontSize:15}}>Loading your results...</div>
+          <div style={{textAlign:"center",padding:"60px 0",color:"#777",fontSize:15}}>Loading your results...</div>
         )}
 
         {!loading&&results.length===0&&(
           <div style={{background:"#0e0e0e",border:"1px solid #141414",borderRadius:24,padding:"60px 40px",textAlign:"center"}}>
             <div style={{fontSize:48,marginBottom:16}}>🔍</div>
             <h3 style={{fontWeight:700,fontSize:22,marginBottom:10}}>No results yet</h3>
-            <p style={{color:"#444",fontSize:15,marginBottom:28}}>Take the career quiz to discover your personality type and top career matches.</p>
+            <p style={{color:"#888",fontSize:15,marginBottom:28}}>Take the career quiz to discover your personality type and top career matches.</p>
             <Btn onClick={onBack}>Take the Quiz →</Btn>
           </div>
         )}
@@ -679,12 +679,12 @@ function Dashboard({onBack,onChat}){
                       </div>
                       <div style={{minWidth:0}}>
                         <div style={{fontWeight:700,fontSize:16,color:"#f0f0f0",marginBottom:3}}>{r.personality_code} — Career Personality</div>
-                        <div style={{color:"#444",fontSize:13}}>{date} · {careers.length} career matches</div>
+                        <div style={{color:"#888",fontSize:13}}>{date} · {careers.length} career matches</div>
                       </div>
                     </div>
                     <div style={{display:"flex",gap:8,alignItems:"center",flexShrink:0}}>
-                      {careers.slice(0,2).map(c=><span key={c.name||c.id} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#555",fontSize:11,borderRadius:999,padding:"3px 10px",display:"none"}}>{c.name}</span>)}
-                      <span style={{color:"#444",fontSize:18,transition:"transform 0.3s",transform:isOpen?"rotate(180deg)":"rotate(0deg)"}}>⌄</span>
+                      {careers.slice(0,2).map(c=><span key={c.name||c.id} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#888",fontSize:11,borderRadius:999,padding:"3px 10px",display:"none"}}>{c.name}</span>)}
+                      <span style={{color:"#888",fontSize:18,transition:"transform 0.3s",transform:isOpen?"rotate(180deg)":"rotate(0deg)"}}>⌄</span>
                     </div>
                   </button>
 
@@ -707,11 +707,11 @@ function Dashboard({onBack,onChat}){
                           <div style={{color:"#FF6B35",fontSize:11,letterSpacing:2,textTransform:"uppercase",fontWeight:600,marginBottom:12}}>Interest Profile</div>
                           {Object.entries(riasec).map(([c,s])=>(
                             <div key={c} style={{display:"flex",alignItems:"center",gap:12,marginBottom:8}}>
-                              <span style={{color:"#444",fontSize:12,width:90,flexShrink:0}}>{rl[c]||c}</span>
+                              <span style={{color:"#888",fontSize:12,width:90,flexShrink:0}}>{rl[c]||c}</span>
                               <div style={{flex:1,height:3,background:"#141414",borderRadius:999,overflow:"hidden"}}>
                                 <div style={{height:"100%",background:s>=70?"#FF6B35":s>=50?"#FF6B3580":"#222",borderRadius:999,width:`${s}%`,transition:"width 1s ease"}}/>
                               </div>
-                              <span style={{color:"#333",fontSize:12,width:28,textAlign:"right"}}>{s}</span>
+                              <span style={{color:"#777",fontSize:12,width:28,textAlign:"right"}}>{s}</span>
                             </div>
                           ))}
                         </div>
@@ -728,13 +728,13 @@ function Dashboard({onBack,onChat}){
                                 <div key={j} style={{background:"#141414",border:"1px solid #1a1a1a",borderRadius:14,padding:"16px 18px",display:"flex",gap:14,alignItems:"flex-start"}}>
                                   <div style={{flexShrink:0,textAlign:"center",minWidth:52}}>
                                     <div style={{fontWeight:800,fontSize:18,color:"#FF6B35"}}>{c.score}</div>
-                                    <div style={{color:"#333",fontSize:10}}>/100</div>
+                                    <div style={{color:"#777",fontSize:10}}>/100</div>
                                   </div>
                                   <div style={{flex:1}}>
                                     <div style={{fontWeight:600,fontSize:15,marginBottom:3}}>{c.name}</div>
-                                    {fullCareer&&<p style={{color:"#444",fontSize:13,lineHeight:1.5,marginBottom:6}}>{fullCareer.description}</p>}
+                                    {fullCareer&&<p style={{color:"#888",fontSize:13,lineHeight:1.5,marginBottom:6}}>{fullCareer.description}</p>}
                                     {fullCareer&&<div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                                      {fullCareer.fields.map(f=><span key={f} style={{background:"#1a1a1a",border:"1px solid #222",color:"#444",fontSize:11,borderRadius:999,padding:"2px 8px"}}>{f}</span>)}
+                                      {fullCareer.fields.map(f=><span key={f} style={{background:"#1a1a1a",border:"1px solid #222",color:"#888",fontSize:11,borderRadius:999,padding:"2px 8px"}}>{f}</span>)}
                                     </div>}
                                   </div>
                                 </div>
@@ -808,17 +808,17 @@ function CareerPreviewCard({career}){
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:14}}>
         <div>
           <div style={{fontWeight:700,fontSize:16,color:"#f0f0f0",marginBottom:4}}>{career.name}</div>
-          <div style={{color:"#444",fontSize:12}}>{career.fields[0]}</div>
+          <div style={{color:"#888",fontSize:12}}>{career.fields[0]}</div>
         </div>
         <span style={{color:"#FF6B35",fontSize:18,transition:"transform 0.3s",transform:hov?"translateX(3px)":"translateX(0)"}}>→</span>
       </div>
-      <p style={{color:"#444",fontSize:13,lineHeight:1.6,marginBottom:14}}>{career.description}</p>
+      <p style={{color:"#888",fontSize:13,lineHeight:1.6,marginBottom:14}}>{career.description}</p>
       <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-        {career.skills?.slice(0,3).map(s=><span key={s} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#555",fontSize:11,borderRadius:999,padding:"3px 10px"}}>{s}</span>)}
+        {career.skills?.slice(0,3).map(s=><span key={s} style={{background:"#141414",border:"1px solid #1e1e1e",color:"#888",fontSize:11,borderRadius:999,padding:"3px 10px"}}>{s}</span>)}
       </div>
       {hov&&<div style={{marginTop:14,paddingTop:14,borderTop:"1px solid #1a1a1a"}}>
         <div style={{color:"#FF6B35",fontSize:11,fontWeight:600,letterSpacing:0.5,textTransform:"uppercase",marginBottom:6}}>Try This</div>
-        <p style={{color:"#555",fontSize:12,lineHeight:1.5}}>{career.explorationActivities[0]}</p>
+        <p style={{color:"#888",fontSize:12,lineHeight:1.5}}>{career.explorationActivities[0]}</p>
       </div>}
     </div>
   );
@@ -870,12 +870,12 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
         <div style={{display:"flex",gap:28,alignItems:"center"}}>
           {[["How It Works","howitworks"],["Our Story","ourstory"],["Want Help?","talktous"]].map(([l,t])=>(
             <a key={l} href="#" onClick={e=>{e.preventDefault();t==="ourstory"?setPage("ourstory"):t==="talktous"?setPage("talktous"):scrollTo(t);}}
-              style={{color:"#555",fontSize:14,fontWeight:500,textDecoration:"none",transition:"color 0.2s"}}
-              onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="#555"}>{l}</a>
+              style={{color:"#888",fontSize:14,fontWeight:500,textDecoration:"none",transition:"color 0.2s"}}
+              onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="#888"}>{l}</a>
           ))}
           {isSignedIn?(
             <div style={{display:"flex",gap:10,alignItems:"center"}}>
-              <Btn variant="ghost" onClick={()=>setPage("dashboard")} style={{padding:"8px 16px",fontSize:13,color:"#555"}}>My Results</Btn>
+              <Btn variant="ghost" onClick={()=>setPage("dashboard")} style={{padding:"8px 16px",fontSize:13,color:"#888"}}>My Results</Btn>
               <UserButton afterSignOutUrl="#" appearance={{elements:{avatarBox:{width:34,height:34}}}}/>
             </div>
           ):(
@@ -905,7 +905,7 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
             <h1 style={{fontWeight:900,fontSize:"clamp(48px,6.5vw,88px)",lineHeight:0.95,letterSpacing:-3,marginBottom:24,opacity:heroInView?1:0,transform:heroInView?"translateY(0)":"translateY(30px)",transition:"all 0.7s ease 0.2s"}}>
               Stop picking<br/><span style={{color:"#FF6B35",display:"inline-block"}}>careers</span><br/>in the dark.
             </h1>
-            <p style={{color:"#555",fontSize:"clamp(15px,1.8vw,18px)",lineHeight:1.75,maxWidth:480,marginBottom:36,fontWeight:400,opacity:heroInView?1:0,transform:heroInView?"translateY(0)":"translateY(20px)",transition:"all 0.7s ease 0.3s"}}>
+            <p style={{color:"#888",fontSize:"clamp(15px,1.8vw,18px)",lineHeight:1.75,maxWidth:480,marginBottom:36,fontWeight:400,opacity:heroInView?1:0,transform:heroInView?"translateY(0)":"translateY(20px)",transition:"all 0.7s ease 0.3s"}}>
               Most students choose their future based on salary or parental advice — without ever living a day in that field. Pathways changes that.
             </p>
             <div style={{display:"flex",gap:12,flexWrap:"wrap",opacity:heroInView?1:0,transform:heroInView?"translateY(0)":"translateY(20px)",transition:"all 0.7s ease 0.4s"}}>
@@ -917,7 +917,7 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
               {["Not a personality test.","Not a list of random careers.","Built around you."].map(t=>(
                 <div key={t} style={{display:"flex",alignItems:"center",gap:6}}>
                   <div style={{width:16,height:16,borderRadius:"50%",background:"#FF6B3520",border:"1px solid #FF6B3550",display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:"#FF6B35",flexShrink:0}}>✓</div>
-                  <span style={{color:"#444",fontSize:13,fontWeight:500}}>{t}</span>
+                  <span style={{color:"#888",fontSize:13,fontWeight:500}}>{t}</span>
                 </div>
               ))}
             </div>
@@ -938,7 +938,7 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
             {[{n:"25+",l:"Career Paths"},{n:"5",l:"Discovery Sections"},{n:"15+",l:"Opportunities Matched"}].map((s,i)=>(
               <div key={s.l} style={{flex:1,padding:"20px 0",paddingRight:40,borderRight:i<2?"1px solid #0e0e0e":"none",paddingLeft:i>0?40:0}}>
                 <div style={{fontWeight:800,fontSize:32,letterSpacing:-1,color:"#fff"}}>{s.n}</div>
-                <div style={{color:"#333",fontSize:13,marginTop:2,fontWeight:500}}>{s.l}</div>
+                <div style={{color:"#777",fontSize:13,marginTop:2,fontWeight:500}}>{s.l}</div>
               </div>
             ))}
           </div>
@@ -951,7 +951,7 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
           <div style={{textAlign:"center",marginBottom:64,opacity:howInView?1:0,transform:howInView?"translateY(0)":"translateY(24px)",transition:"all 0.8s ease"}}>
             <Pill style={{marginBottom:20}}>How It Works</Pill>
             <h2 style={{fontWeight:800,fontSize:"clamp(32px,5vw,56px)",letterSpacing:-2,lineHeight:1.1,marginTop:16,marginBottom:16}}>Your future shouldn't<br/>be a <span style={{color:"#FF6B35"}}>guess.</span></h2>
-            <p style={{color:"#444",fontSize:16,maxWidth:500,margin:"0 auto",lineHeight:1.7}}>Pathways considers your interests, experience, work style, and what you're actually willing to try.</p>
+            <p style={{color:"#888",fontSize:16,maxWidth:500,margin:"0 auto",lineHeight:1.7}}>Pathways considers your interests, experience, work style, and what you're actually willing to try.</p>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:16}}>
             {[
@@ -963,10 +963,10 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
               <div key={s.n} style={{background:"#0a0a0a",border:"1px solid #111",borderRadius:20,padding:"32px 28px",opacity:howInView?1:0,transform:howInView?"translateY(0)":"translateY(30px)",transition:`all 0.7s ease ${i*0.12}s`}}>
                 <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
                   <div style={{width:40,height:40,borderRadius:12,background:"#FF6B3518",border:"1px solid #FF6B3530",display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>{s.icon}</div>
-                  <span style={{color:"#333",fontSize:12,fontWeight:700,letterSpacing:1}}>{s.n}</span>
+                  <span style={{color:"#777",fontSize:12,fontWeight:700,letterSpacing:1}}>{s.n}</span>
                 </div>
                 <h3 style={{fontWeight:700,fontSize:22,marginBottom:10,letterSpacing:-0.5}}>{s.title}</h3>
-                <p style={{color:"#444",fontSize:14,lineHeight:1.7}}>{s.desc}</p>
+                <p style={{color:"#888",fontSize:14,lineHeight:1.7}}>{s.desc}</p>
               </div>
             ))}
           </div>
@@ -979,7 +979,7 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
           <div style={{flex:"0 0 40%",minWidth:280}}>
             <Pill style={{marginBottom:20}}>What We Consider</Pill>
             <h2 style={{fontWeight:800,fontSize:"clamp(28px,4vw,44px)",letterSpacing:-1.5,lineHeight:1.1,marginTop:16,marginBottom:16}}>Not just what<br/>you <span style={{color:"#FF6B35"}}>like.</span><br/>What fits <span style={{color:"#FF6B35"}}>you.</span></h2>
-            <p style={{color:"#444",fontSize:15,lineHeight:1.7}}>Most career quizzes stop at interests. Pathways goes further — matching you based on how you actually want to work.</p>
+            <p style={{color:"#888",fontSize:15,lineHeight:1.7}}>Most career quizzes stop at interests. Pathways goes further — matching you based on how you actually want to work.</p>
           </div>
           <div style={{flex:1,display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
             {[["🧠","Interests","What you genuinely enjoy"],["💼","Experience","What you've actually done"],["⚙️","Work Style","How you like to work"],["🎯","Preferences","What matters in a career"],["⚡","Reality","What you can handle day-to-day"],["🔬","Exploration","What you'd be willing to try"]].map(([icon,label,desc])=>(
@@ -987,7 +987,7 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
                 <div style={{width:34,height:34,borderRadius:10,background:"#FF6B3518",border:"1px solid #FF6B3530",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,flexShrink:0}}>{icon}</div>
                 <div>
                   <div style={{fontWeight:600,fontSize:14,marginBottom:3}}>{label}</div>
-                  <div style={{color:"#444",fontSize:12,lineHeight:1.5}}>{desc}</div>
+                  <div style={{color:"#888",fontSize:12,lineHeight:1.5}}>{desc}</div>
                 </div>
               </div>
             ))}
@@ -1001,7 +1001,7 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
           <div style={{textAlign:"center",marginBottom:52,opacity:prevInView?1:0,transform:prevInView?"translateY(0)":"translateY(24px)",transition:"all 0.8s ease"}}>
             <Pill style={{marginBottom:20}}>Example Results</Pill>
             <h2 style={{fontWeight:800,fontSize:"clamp(28px,4vw,48px)",letterSpacing:-2,lineHeight:1.1,marginTop:16,marginBottom:14}}>Don't just get a career.<br/>Get a <span style={{color:"#FF6B35"}}>direction.</span></h2>
-            <p style={{color:"#444",fontSize:15,maxWidth:480,margin:"0 auto",lineHeight:1.7}}>Here's a preview of the career cards you'll receive. Take the quiz to see which ones match you.</p>
+            <p style={{color:"#888",fontSize:15,maxWidth:480,margin:"0 auto",lineHeight:1.7}}>Here's a preview of the career cards you'll receive. Take the quiz to see which ones match you.</p>
           </div>
           <div style={{display:"flex",gap:14,flexWrap:"wrap"}}>
             {previewCareers.map((c,i)=>(
@@ -1020,11 +1020,11 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
             <div style={{background:"radial-gradient(ellipse at center,rgba(255,107,53,0.08) 0%,transparent 70%)",borderRadius:32,padding:"60px 40px",border:"1px solid #111",boxShadow:"0 40px 80px #00000060"}}>
               <Pill style={{marginBottom:20}}>Take the Quiz</Pill>
               <h2 style={{fontWeight:800,fontSize:"clamp(30px,5vw,52px)",letterSpacing:-2,lineHeight:1.05,marginTop:16,marginBottom:16}}>Your future has<br/>more than one <span style={{color:"#FF6B35"}}>path.</span></h2>
-              <p style={{color:"#555",fontSize:16,lineHeight:1.7,maxWidth:480,margin:"0 auto 36px"}}>You don't need to know exactly what you want to do yet. You just need to start exploring.</p>
+              <p style={{color:"#888",fontSize:16,lineHeight:1.7,maxWidth:480,margin:"0 auto 36px"}}>You don't need to know exactly what you want to do yet. You just need to start exploring.</p>
               <div style={{display:"flex",gap:10,justifyContent:"center",flexWrap:"wrap",marginBottom:36}}>
                 {[["📋","57 Questions"],["⏱️","~8 Minutes"],["🎯","25+ Careers"],["🚀","Instant Results"]].map(([i,l])=>(
                   <div key={l} style={{background:"#0e0e0e",border:"1px solid #141414",borderRadius:999,padding:"8px 16px",display:"flex",alignItems:"center",gap:6}}>
-                    <span style={{fontSize:14}}>{i}</span><span style={{color:"#555",fontSize:13,fontWeight:500}}>{l}</span>
+                    <span style={{fontSize:14}}>{i}</span><span style={{color:"#888",fontSize:13,fontWeight:500}}>{l}</span>
                   </div>
                 ))}
               </div>
@@ -1065,24 +1065,24 @@ function Pathways({isSignedIn,userId,onSignIn,onSignUp}){
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:40,flexWrap:"wrap",gap:32}}>
             <div style={{maxWidth:280}}>
               <Logo/>
-              <p style={{color:"#333",fontSize:14,lineHeight:1.7,marginTop:14}}>Career discovery built for your generation.</p>
+              <p style={{color:"#777",fontSize:14,lineHeight:1.7,marginTop:14}}>Career discovery built for your generation.</p>
             </div>
             <div style={{display:"flex",gap:48,flexWrap:"wrap"}}>
               <div>
-                <div style={{color:"#555",fontSize:12,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>Navigate</div>
+                <div style={{color:"#888",fontSize:12,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>Navigate</div>
                 {[["How It Works",()=>scrollTo("howitworks")],["Our Story",()=>setPage("ourstory")],["Find My Path",()=>scrollTo("quiz")],["Talk to Aria",()=>setPage("talktous")]].map(([l,fn])=>(
                   <div key={l} style={{marginBottom:10}}>
-                    <a href="#" onClick={e=>{e.preventDefault();fn();}} style={{color:"#333",fontSize:14,textDecoration:"none",transition:"color 0.2s"}}
-                      onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="#333"}>{l}</a>
+                    <a href="#" onClick={e=>{e.preventDefault();fn();}} style={{color:"#777",fontSize:14,textDecoration:"none",transition:"color 0.2s"}}
+                      onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="#777"}>{l}</a>
                   </div>
                 ))}
               </div>
               <div>
-                <div style={{color:"#555",fontSize:12,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>Legal</div>
+                <div style={{color:"#888",fontSize:12,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>Legal</div>
                 {[["Privacy Policy","#"],["Terms of Use","#"]].map(([l,h])=>(
                   <div key={l} style={{marginBottom:10}}>
-                    <a href={h} style={{color:"#333",fontSize:14,textDecoration:"none"}}
-                      onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="#333"}>{l}</a>
+                    <a href={h} style={{color:"#777",fontSize:14,textDecoration:"none"}}
+                      onMouseEnter={e=>e.currentTarget.style.color="#fff"} onMouseLeave={e=>e.currentTarget.style.color="#777"}>{l}</a>
                   </div>
                 ))}
               </div>
